@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro Exitoso | Patitas Felices</title>
+    <link rel="stylesheet" href="../css/estilos.css" />
+    <link rel="stylesheet" href="../css/estilos-login.css" />
+</head>
+<body>
+    <nav class="navegacion">
+        <div class="contenedor">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../assets/images/logo.png" alt="Patitas Felices" />
+                    <span class="logo-texto">Patitas Felices</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="contenedor-formulario">
+        <div class="tarjeta-formulario pantalla-exito">
+            <div class="icono-exito">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="#9b87f5" stroke-width="2"/>
+                    <path d="M8 12L11 15L16 9" stroke="#9b87f5" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            
+            <h2>Registro exitoso</h2>
+            
+            <div class="mensaje-exito-block">
+                <p>Tu cuenta ha sido creada correctamente.</p>
+                <p class="email-registrado" id="emailRegistrado"></p>
+            </div>
+
+            <div class="acciones-exito">
+                <a href="login.html" class="btn btn-primario">Iniciar sesion</a>
+                <a href="../index.html" class="btn btn-outline">Volver al inicio</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const email = sessionStorage.getItem('emailRegistrado');
+        if (email) {
+            document.getElementById('emailRegistrado').textContent = email;
+            sessionStorage.removeItem('emailRegistrado');
+        }
+    </script>
+</body>
+</html>

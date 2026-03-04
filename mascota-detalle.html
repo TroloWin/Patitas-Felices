@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle de Mascota | Patitas Felices</title>
+    <link rel="stylesheet" href="css/estilos.css" />
+</head>
+<body>
+    <!-- navegacion principal -->
+    <nav class="navegacion">
+        <div class="contenedor">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/images/logo.png" alt="Patitas Felices" />
+                    <span class="logo-texto">Patitas Felices</span>
+                </a>
+            </div>
+            
+            <div class="enlaces-nav" id="enlacesNav"></div>
+            
+            <button class="menu-movil" id="menuMovil">
+                <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
+            </button>
+        </div>
+    </nav>
+
+    <main class="detalle-mascota">
+        <div class="contenedor" id="detalleContainer">
+            <div class="cargando">Cargando detalles de la mascota...</div>
+        </div>
+    </main>
+
+    <!-- Modal de confirmacion de solicitud -->
+    <div id="modalSolicitud" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Confirmar solicitud</h2>
+                <button onclick="cerrarModal()" class="cerrar-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estas seguro de que deseas solicitar la adopcion de <strong id="mascotaNombreModal"></strong>?</p>
+                <p>Una vez enviada la solicitud, el administrador la revisara y podras ver el estado en "Mis Solicitudes".</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()" class="btn btn-outline">Cancelar</button>
+                <button onclick="confirmarSolicitud()" class="btn btn-primario">Enviar solicitud</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito -->
+    <div id="modalExito" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Solicitud enviada</h2>
+                <button onclick="cerrarModalExito()" class="cerrar-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Tu solicitud ha sido enviada correctamente.</p>
+                <p>El administrador revisara tu solicitud y te notificara la decision.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="mis-solicitudes.html" class="btn btn-primario">Ver mis solicitudes</a>
+                <button onclick="cerrarModalExito()" class="btn btn-outline">Seguir viendo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de error -->
+    <div id="modalError" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Error</h2>
+                <button onclick="cerrarModalError()" class="cerrar-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeError"></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModalError()" class="btn btn-primario">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Configuracion -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/mascotas.js"></script>
+    <script src="js/solicitudes.js"></script>
+    
+    <script>
+        const enlacesNav = document.getElementById('enlacesNav');
+        const detalleContainer = document.getElementById('detalleContainer');
+        const modalSolicitud = document.getElementById('modalSolicitud');
+        const modalExito = document.getElementById('modalExito');
+        const modalError = document.getElementById('modalError');
+        const mascotaNombreModal = document.getElementById('mascotaNombreModal');
+        const mensajeError = document.getElementById('mensajeError');
+        
+        let mascotaActual = null;
+
+        // Cerrar sesion
+        window.cerrarSesion = async function() {
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error al cerrar sesion:', error);
+                mostrarError('Error al cerrar sesion');
+            }
+        };
+
+        // Crear enlaces de navegacion
+        function crearEnlacesNavegacion(usuario = null, userData = null) {
+            if (usuario && userData) {
+                return `
+                    <a href="index.html" class="enlace">
+                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                        Inicio
+                    </a>
+                    <a href="adoptar.html" class="enlace">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
+                        Adoptar
+                    </a>
+                    <a href="donadores.html" class="enlace">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                        Donadores
+                    </a>
+                    <a href="nosotros.html" class="enlace">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                        Nosotros
+                    </a>
+                    <div class="usuario-menu-container">
+                        <div class="usuario-menu" onclick="toggleDropdown(event)">
+                            <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
+                            <span class="usuario-nombre">${userData.nombre || 'Usuario'}</span>
+                            <img src="assets/icons/arrow-down.svg" alt="▼" class="icono-pequeno" />
+                        </div>
+                        <div class="usuario-dropdown" id="usuarioDropdown">
+                            <a href="mis-solicitudes.html">
+                                <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
+                                Mis Solicitudes
+                            </a>
+                            <hr>
+                            <a href="#" onclick="cerrarSesion(); return false;">
+                                <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
+                                Cerrar Sesion
+                            </a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <a href="index.html" class="enlace">
+                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                        Inicio
+                    </a>
+                    <a href="adoptar.html" class="enlace">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
+                        Adoptar
+                    </a>
+                    <a href="donadores.html" class="enlace">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                        Donadores
+                    </a>
+                    <a href="nosotros.html" class="enlace">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                        Nosotros
+                    </a>
+                    <a href="login/login.html" class="btn btn-outline">
+                        <img src="assets/icons/user.svg" alt="Login" class="icono" />
+                        Iniciar Sesion
+                    </a>
+                    <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
+                `;
+            }
+        }
+
+        // Toggle dropdown
+        window.toggleDropdown = function(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('usuarioDropdown');
+            dropdown.classList.toggle('show');
+        };
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('usuarioDropdown');
+            if (dropdown && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Obtener ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const mascotaId = urlParams.get('id');
+
+        // Cargar detalle de mascota
+        function cargarDetalle() {
+            mascotaActual = obtenerMascotaPorId(mascotaId);
+            
+            if (!mascotaActual) {
+                detalleContainer.innerHTML = '<p class="sin-resultados">Mascota no encontrada</p>';
+                return;
+            }
+            
+            // Generar lista de personalidad si existe
+            const personalidadLista = mascotaActual.personalidad ? 
+                mascotaActual.personalidad.map(p => `<li>${p}</li>`).join('') : 
+                '<li>No especificado</li>';
+            
+            // Determinar texto de estado
+            const estadoTexto = mascotaActual.estado === 'disponible' ? 'Disponible' : 
+                               (mascotaActual.estado === 'proceso' ? 'En proceso' : 'Adoptado');
+            
+            detalleContainer.innerHTML = `
+                <div class="detalle-grid">
+                    <div class="detalle-imagenes">
+                        <div class="imagen-principal">
+                            <img src="${mascotaActual.imagen}" alt="${mascotaActual.nombre}" />
+                        </div>
+                    </div>
+                    <div class="detalle-info">
+                        <div class="detalle-encabezado">
+                            <h1>${mascotaActual.nombre}</h1>
+                            <span class="mascota-etiqueta grande ${mascotaActual.estado}">
+                                ${estadoTexto}
+                            </span>
+                        </div>
+                        
+                        <div class="detalle-caracteristicas">
+                            <div class="caracteristica">
+                                <strong>Edad:</strong> ${mascotaActual.edad} años
+                            </div>
+                            <div class="caracteristica">
+                                <strong>Especie:</strong> ${mascotaActual.especie}
+                            </div>
+                            <div class="caracteristica">
+                                <strong>Raza:</strong> ${mascotaActual.raza}
+                            </div>
+                            <div class="caracteristica">
+                                <strong>Tamaño:</strong> ${mascotaActual.tamano}
+                            </div>
+                            <div class="caracteristica">
+                                <strong>Sexo:</strong> ${mascotaActual.sexo}
+                            </div>
+                            <div class="caracteristica">
+                                <strong>Color:</strong> ${mascotaActual.color}
+                            </div>
+                        </div>
+                        
+                        <div class="detalle-descripcion">
+                            <h3>Descripcion</h3>
+                            <p>${mascotaActual.descripcion}</p>
+                        </div>
+                        
+                        <div class="detalle-requisitos">
+                            <h3>Personalidad</h3>
+                            <ul>${personalidadLista}</ul>
+                        </div>
+                        
+                        <div class="detalle-requisitos">
+                            <h3>Salud</h3>
+                            <p>${mascotaActual.salud || 'No especificado'}</p>
+                        </div>
+                        
+                        <div class="detalle-acciones">
+                            ${mascotaActual.estado === 'disponible' ? 
+                                `<button onclick="abrirModalSolicitud()" class="btn btn-primario btn-grande btn-bloque">
+                                    Solicitar adopcion
+                                </button>` : 
+                                `<button class="btn btn-secundario btn-grande btn-bloque" disabled>
+                                    No disponible
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Funciones para modales
+        window.abrirModalSolicitud = function() {
+            const user = auth.currentUser;
+            if (!user) {
+                mostrarError('Debes iniciar sesion para solicitar una adopcion');
+                setTimeout(() => {
+                    window.location.href = 'login/login.html';
+                }, 2000);
+                return;
+            }
+            mascotaNombreModal.textContent = mascotaActual.nombre;
+            modalSolicitud.style.display = 'flex';
+        };
+
+        window.cerrarModal = function() {
+            modalSolicitud.style.display = 'none';
+        };
+
+        window.cerrarModalExito = function() {
+            modalExito.style.display = 'none';
+        };
+
+        window.cerrarModalError = function() {
+            modalError.style.display = 'none';
+        };
+
+        function mostrarError(mensaje) {
+            mensajeError.textContent = mensaje;
+            modalError.style.display = 'flex';
+        }
+
+        window.confirmarSolicitud = async function() {
+            const user = auth.currentUser;
+            
+            if (!user) {
+                cerrarModal();
+                mostrarError('Debes iniciar sesion');
+                return;
+            }
+            
+            cerrarModal();
+            
+            try {
+                console.log('Enviando solicitud para mascota:', mascotaActual.id);
+                
+                const result = await enviarSolicitud(mascotaActual.id, mascotaActual);
+                
+                if (result.success) {
+                    console.log('Solicitud enviada con exito. ID:', result.id);
+                    modalExito.style.display = 'flex';
+                } else {
+                    mostrarError(result.error || 'Error al enviar la solicitud');
+                }
+            } catch (error) {
+                console.error('Error inesperado:', error);
+                mostrarError('Error inesperado al enviar la solicitud');
+            }
+        };
+
+        // Verificar usuario autenticado y actualizar navegacion
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await db.collection('usuarios').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                    } else {
+                        enlacesNav.innerHTML = crearEnlacesNavegacion();
+                    }
+                } catch (error) {
+                    console.error('Error al obtener datos del usuario:', error);
+                    enlacesNav.innerHTML = crearEnlacesNavegacion();
+                }
+            } else {
+                enlacesNav.innerHTML = crearEnlacesNavegacion();
+            }
+        });
+
+        // Cargar detalle al iniciar
+        cargarDetalle();
+    </script>
+</body>
+</html>

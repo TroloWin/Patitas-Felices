@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestionar Usuarios | Admin</title>
+    <link rel="stylesheet" href="../css/estilos.css" />
+    <link rel="stylesheet" href="../css/estilos-admin.css" />
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/images/logo.png" alt="Patitas Felices" />
+                <span>Admin Panel</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html">
+                    <img src="../assets/icons/dashboard.svg" alt="Dashboard" class="icono" />
+                    Dashboard
+                </a>
+                <a href="usuarios.html" class="activo">
+                    <img src="../assets/icons/users.svg" alt="Usuarios" class="icono" />
+                    Usuarios
+                </a>
+                <a href="solicitudes.html">
+                    <img src="../assets/icons/requests.svg" alt="Solicitudes" class="icono" />
+                    Solicitudes
+                </a>
+                <hr>
+                <a href="../index.html">
+                    <img src="../assets/icons/home.svg" alt="Ver sitio" class="icono" />
+                    Ver sitio
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="admin-info" id="adminInfo">
+                    <img src="../assets/icons/admin.svg" alt="Admin" class="icono" />
+                    <div>
+                        <span id="adminNombre">Cargando...</span>
+                        <small>Administrador</small>
+                    </div>
+                </div>
+                <button onclick="cerrarSesion()" class="btn-cerrar">
+                    <img src="../assets/icons/logout.svg" alt="Salir" class="icono" />
+                    Cerrar sesion
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-contenido">
+            <div class="admin-header">
+                <h1>Gestion de Usuarios</h1>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-avanzados">
+                <div class="busqueda">
+                    <input type="text" id="buscarUsuario" placeholder="Buscar por nombre o email...">
+                </div>
+                
+                <select id="filtroTipo">
+                    <option value="todos">Todos los tipos</option>
+                    <option value="admin">Administradores</option>
+                    <option value="adoptante">Adoptantes</option>
+                </select>
+
+                <select id="filtroEstado">
+                    <option value="todos">Todos los estados</option>
+                    <option value="activo">Activos</option>
+                    <option value="inactivo">Inactivos</option>
+                </select>
+
+                <button onclick="aplicarFiltros()" class="btn-primario">Filtrar</button>
+                <button onclick="limpiarFiltros()" class="btn-outline">Limpiar</button>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <table class="tabla-admin">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuarios">
+                    <tr><td colspan="5" class="cargando">Cargando usuarios...</td></tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <!-- Modal de confirmacion -->
+    <div id="modalConfirmar" class="modal">
+        <div class="modal-contenido">
+            <h3 id="modalTitulo">Confirmar accion</h3>
+            <p id="modalMensaje">¿Estas seguro de realizar esta accion?</p>
+            <div class="modal-botones">
+                <button onclick="cerrarModal()" class="btn-outline">Cancelar</button>
+                <button id="btnConfirmar" class="btn-primario">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Configuracion -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    
+    <script>
+        let todosLosUsuarios = [];
+        let usuarioSeleccionado = null;
+        let accionPendiente = null;
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '../login/login.html';
+                return;
+            }
+
+            const userDoc = await db.collection('usuarios').doc(user.uid).get();
+            const userData = userDoc.data();
+
+            if (!userData?.esAdmin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            document.getElementById('adminNombre').textContent = userData.nombre || 'Admin';
+            cargarUsuarios();
+        });
+
+        async function cargarUsuarios() {
+            todosLosUsuarios = await obtenerTodosLosUsuarios();
+            mostrarUsuarios(todosLosUsuarios);
+        }
+
+        function mostrarUsuarios(usuarios) {
+            const tbody = document.getElementById('tablaUsuarios');
+            
+            if (usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="cargando">No hay usuarios</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = usuarios.map(u => {
+                const tipo = u.esAdmin ? 'ADMIN' : 'ADOPTANTE';
+                const estado = u.activo ? 'ACTIVO' : 'INACTIVO';
+                const claseAdmin = u.esAdmin ? 'badge-admin' : 'badge-user';
+                const claseEstado = u.activo ? 'badge-activo' : 'badge-inactivo';
+                
+                return `
+                    <tr>
+                        <td>${u.nombre || '—'}</td>
+                        <td>${u.email}</td>
+                        <td><span class="badge ${claseAdmin}">${tipo}</span></td>
+                        <td><span class="badge ${claseEstado}">${estado}</span></td>
+                        <td class="acciones">
+                            ${!u.esAdmin ? `
+                                <button onclick="abrirModal('admin', '${u.uid}', '${u.nombre}')" class="btn-editar" title="Hacer Administrador">
+                                    <img src="../assets/icons/admin.svg" alt="Hacer Admin" class="icono-pequeno" />
+                                </button>
+                            ` : ''}
+                            <button onclick="abrirModal('estado', '${u.uid}', '${u.nombre}', ${u.activo})" 
+                                    class="${u.activo ? 'btn-eliminar' : 'btn-editar'}" 
+                                    title="${u.activo ? 'Desactivar' : 'Activar'}">
+                                <img src="../assets/icons/${u.activo ? 'delete' : 'check'}.svg" alt="Cambiar Estado" class="icono-pequeno" />
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function aplicarFiltros() {
+            const busqueda = document.getElementById('buscarUsuario').value.toLowerCase();
+            const tipo = document.getElementById('filtroTipo').value;
+            const estado = document.getElementById('filtroEstado').value;
+
+            let filtrados = [...todosLosUsuarios];
+
+            if (busqueda) {
+                filtrados = filtrados.filter(u => 
+                    u.nombre?.toLowerCase().includes(busqueda) || 
+                    u.email.toLowerCase().includes(busqueda)
+                );
+            }
+
+            if (tipo !== 'todos') {
+                filtrados = filtrados.filter(u => 
+                    tipo === 'admin' ? u.esAdmin : !u.esAdmin
+                );
+            }
+
+            if (estado !== 'todos') {
+                filtrados = filtrados.filter(u => 
+                    estado === 'activo' ? u.activo : !u.activo
+                );
+            }
+
+            mostrarUsuarios(filtrados);
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('buscarUsuario').value = '';
+            document.getElementById('filtroTipo').value = 'todos';
+            document.getElementById('filtroEstado').value = 'todos';
+            mostrarUsuarios(todosLosUsuarios);
+        }
+
+        function abrirModal(accion, userId, nombre, estadoActual = null) {
+            usuarioSeleccionado = userId;
+            accionPendiente = accion;
+            
+            const modal = document.getElementById('modalConfirmar');
+            const titulo = document.getElementById('modalTitulo');
+            const mensaje = document.getElementById('modalMensaje');
+            const btnConfirmar = document.getElementById('btnConfirmar');
+
+            if (accion === 'admin') {
+                titulo.textContent = 'Hacer Administrador';
+                mensaje.textContent = `¿Estas seguro de convertir a ${nombre} en administrador?`;
+                btnConfirmar.onclick = hacerAdmin;
+            } else {
+                if (estadoActual) {
+                    titulo.textContent = 'Desactivar Usuario';
+                    mensaje.textContent = `¿Estas seguro de desactivar a ${nombre}?`;
+                } else {
+                    titulo.textContent = 'Activar Usuario';
+                    mensaje.textContent = `¿Estas seguro de activar a ${nombre}?`;
+                }
+                btnConfirmar.onclick = cambiarEstado;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        async function hacerAdmin() {
+            const result = await cambiarRolUsuario(usuarioSeleccionado, true);
+            cerrarModal();
+            if (result.success) {
+                cargarUsuarios();
+                alert('Usuario convertido a administrador');
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        async function cambiarEstado() {
+            const usuario = todosLosUsuarios.find(u => u.uid === usuarioSeleccionado);
+            const nuevoEstado = !usuario.activo;
+            const result = await cambiarEstadoUsuario(usuarioSeleccionado, nuevoEstado);
+            cerrarModal();
+            if (result.success) {
+                cargarUsuarios();
+                alert('Estado actualizado correctamente');
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalConfirmar').style.display = 'none';
+            usuarioSeleccionado = null;
+            accionPendiente = null;
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(() => {
+                window.location.href = '../index.html';
+            });
+        }
+    </script>
+</body>
+</html>

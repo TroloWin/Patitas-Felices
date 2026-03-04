@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Panel Admin</title>
+    <link rel="stylesheet" href="../css/estilos.css" />
+    <link rel="stylesheet" href="../css/estilos-admin.css" />
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/images/logo.png" alt="Patitas Felices" />
+                <span>Admin Panel</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="activo">
+                    <img src="../assets/icons/dashboard.svg" alt="Dashboard" class="icono" />
+                    Dashboard
+                </a>
+                <a href="usuarios.html">
+                    <img src="../assets/icons/users.svg" alt="Usuarios" class="icono" />
+                    Usuarios
+                </a>
+                <a href="solicitudes.html">
+                    <img src="../assets/icons/requests.svg" alt="Solicitudes" class="icono" />
+                    Solicitudes
+                </a>
+                <hr>
+                <a href="../index.html">
+                    <img src="../assets/icons/home.svg" alt="Ver sitio" class="icono" />
+                    Ver sitio
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="admin-info" id="adminInfo">
+                    <img src="../assets/icons/admin.svg" alt="Admin" class="icono" />
+                    <div>
+                        <span id="adminNombre">Cargando...</span>
+                        <small>Administrador</small>
+                    </div>
+                </div>
+                <button onclick="cerrarSesion()" class="btn-cerrar">
+                    <img src="../assets/icons/logout.svg" alt="Salir" class="icono" />
+                    Cerrar sesion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="admin-contenido">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="header-fecha" id="fechaActual"></div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="dashboard-tarjetas" id="dashboardStats">
+                <div class="tarjeta-resumen">
+                    <div class="tarjeta-icono">
+                        <img src="../assets/icons/users.svg" alt="Usuarios" />
+                    </div>
+                    <div class="tarjeta-info">
+                        <h3>Total Usuarios</h3>
+                        <span class="numero" id="totalUsuarios">0</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-resumen">
+                    <div class="tarjeta-icono">
+                        <img src="../assets/icons/requests.svg" alt="Solicitudes" />
+                    </div>
+                    <div class="tarjeta-info">
+                        <h3>Solicitudes Pendientes</h3>
+                        <span class="numero" id="solicitudesPendientes">0</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-resumen">
+                    <div class="tarjeta-icono">
+                        <img src="../assets/icons/admin.svg" alt="Administradores" />
+                    </div>
+                    <div class="tarjeta-info">
+                        <h3>Administradores</h3>
+                        <span class="numero" id="totalAdmins">0</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-resumen">
+                    <div class="tarjeta-icono">
+                        <img src="../assets/icons/check.svg" alt="Adopciones" />
+                    </div>
+                    <div class="tarjeta-info">
+                        <h3>Adopciones Exitosas</h3>
+                        <span class="numero" id="adopcionesExitosas">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rapidas -->
+            <div class="acciones-rapidas">
+                <h2>Acciones rapidas</h2>
+                <div class="botones-accion">
+                    <a href="usuarios.html" class="btn-accion">
+                        <img src="../assets/icons/users.svg" alt="Usuarios" />
+                        <span>Gestionar Usuarios</span>
+                    </a>
+                    <a href="solicitudes.html" class="btn-accion">
+                        <img src="../assets/icons/requests.svg" alt="Solicitudes" />
+                        <span>Revisar Solicitudes</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Configuracion -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    
+    <script>
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '../login/login.html';
+                return;
+            }
+
+            const userDoc = await db.collection('usuarios').doc(user.uid).get();
+            const userData = userDoc.data();
+
+            if (!userData?.esAdmin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            document.getElementById('adminNombre').textContent = userData.nombre || 'Admin';
+            
+            const fecha = new Date();
+            document.getElementById('fechaActual').textContent = fecha.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            cargarEstadisticas();
+        });
+
+        async function cargarEstadisticas() {
+            const stats = await obtenerEstadisticasDashboard();
+            
+            if (stats) {
+                document.getElementById('totalUsuarios').textContent = stats.usuarios.total;
+                document.getElementById('solicitudesPendientes').textContent = stats.solicitudes.pendientes;
+                document.getElementById('totalAdmins').textContent = stats.usuarios.admins;
+                document.getElementById('adopcionesExitosas').textContent = stats.solicitudes.aprobadas;
+            }
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(() => {
+                window.location.href = '../index.html';
+            });
+        }
+    </script>
+</body>
+</html>
