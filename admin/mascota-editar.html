@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Mascota | Admin</title>
+    <link rel="stylesheet" href="../css/estilos-generales.css" />
+    <link rel="stylesheet" href="css/admin-styles.css" />
+    <style>
+        /* Estilos para la previsualización */
+        .preview-container {
+            margin-top: 15px;
+            text-align: center;
+            padding: 15px;
+            border: 2px dashed var(--color-borde);
+            border-radius: 8px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-container img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--color-primario);
+        }
+        
+        .imagen-actual {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .imagen-actual img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            border: 2px solid var(--color-borde);
+        }
+        
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--color-texto-claro);
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .sin-imagen {
+            color: var(--color-texto-claro);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/images/logo.png" alt="Patitas Felices" />
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html">Dashboard</a>
+                <a href="mascotas.html" class="activo">Mascotas</a>
+                <a href="solicitudes.html">Solicitudes</a>
+                <a href="usuarios.html">Usuarios</a>
+                <hr>
+                <a href="../index.html">Ver sitio</a>
+            </nav>
+        </aside>
+
+        <main class="admin-contenido">
+            <div class="admin-header">
+                <h1>Editar Mascota</h1>
+                <a href="mascotas.html" class="btn-secundario">Volver</a>
+            </div>
+
+            <form id="formMascota" class="formulario-admin">
+                <input type="hidden" id="mascotaId">
+                
+                <div class="form-grid">
+                    <!-- Columna izquierda -->
+                    <div class="form-columna">
+                        <h3>Información básica</h3>
+                        
+                        <div class="campo">
+                            <label>Nombre *</label>
+                            <input type="text" id="nombre" required>
+                        </div>
+
+                        <div class="campo">
+                            <label>Especie *</label>
+                            <select id="especie" required>
+                                <option value="">Seleccionar</option>
+                                <option value="perro">Perro</option>
+                                <option value="gato">Gato</option>
+                                <option value="conejo">Conejo</option>
+                                <option value="ave">Ave</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Raza</label>
+                            <input type="text" id="raza">
+                        </div>
+
+                        <div class="campo">
+                            <label>Edad (años) *</label>
+                            <input type="number" id="edad" min="0" step="0.5" required>
+                        </div>
+
+                        <div class="campo">
+                            <label>Tamaño *</label>
+                            <select id="tamano" required>
+                                <option value="">Seleccionar</option>
+                                <option value="pequeno">Pequeño</option>
+                                <option value="mediano">Mediano</option>
+                                <option value="grande">Grande</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Sexo *</label>
+                            <select id="sexo" required>
+                                <option value="">Seleccionar</option>
+                                <option value="macho">Macho</option>
+                                <option value="hembra">Hembra</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Color</label>
+                            <input type="text" id="color">
+                        </div>
+
+                        <div class="campo">
+                            <label>Estado *</label>
+                            <select id="estado" required>
+                                <option value="disponible">Disponible</option>
+                                <option value="proceso">En proceso</option>
+                                <option value="adoptado">Adoptado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="form-columna">
+                        <h3>Características</h3>
+
+                        <div class="campo">
+                            <label>Personalidad</label>
+                            <div class="checkbox-grid" id="personalidadContainer">
+                                <label><input type="checkbox" value="jugueton"> Juguetón</label>
+                                <label><input type="checkbox" value="tranquilo"> Tranquilo</label>
+                                <label><input type="checkbox" value="cariñoso"> Cariñoso</label>
+                                <label><input type="checkbox" value="energico"> Enérgico</label>
+                                <label><input type="checkbox" value="timido"> Tímido</label>
+                                <label><input type="checkbox" value="sociable"> Sociable</label>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label>Salud</label>
+                            <textarea id="salud" rows="2" placeholder="Vacunas, esterilización, condiciones especiales..."></textarea>
+                        </div>
+
+                        <div class="campo">
+                            <label>Descripción *</label>
+                            <textarea id="descripcion" rows="4" required></textarea>
+                        </div>
+
+                        <h3>Imagen</h3>
+                        
+                        <!-- Imagen actual -->
+                        <div class="imagen-actual" id="imagenActualContainer">
+                            <p><strong>Imagen actual:</strong></p>
+                            <img id="imagenActual" src="" alt="Imagen actual" style="display: none;">
+                            <p id="noImagen" class="sin-imagen">No hay imagen</p>
+                        </div>
+                        
+                        <div class="campo">
+                            <label>Cambiar imagen (opcional)</label>
+                            <input type="file" id="imagenFile" accept="image/png, image/jpeg, image/jpg, image/gif">
+                            <small>Selecciona una nueva imagen solo si deseas cambiarla</small>
+                        </div>
+                        
+                        <div class="preview-container" id="previewContainer">
+                            <p class="sin-imagen">Vista previa de nueva imagen</p>
+                        </div>
+                        
+                        <div class="file-info" id="fileInfo"></div>
+                        
+                        <!-- Campo oculto para guardar la ruta -->
+                        <input type="hidden" id="imagenRuta" name="imagenRuta">
+                    </div>
+                </div>
+
+                <div class="form-acciones">
+                    <button type="button" onclick="window.location.href='mascotas.html'" class="btn-secundario">Cancelar</button>
+                    <button type="submit" class="btn-primario">Guardar cambios</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // ===== FORMULARIO DE EDICIÓN DE MASCOTA =====
+        
+        // Obtener ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const mascotaId = urlParams.get('id');
+
+        if (!mascotaId) {
+            window.location.href = 'mascotas.html';
+        }
+
+        // Referencias a elementos
+        const form = document.getElementById('formMascota');
+        const imagenFile = document.getElementById('imagenFile');
+        const previewContainer = document.getElementById('previewContainer');
+        const fileInfo = document.getElementById('fileInfo');
+        const imagenRuta = document.getElementById('imagenRuta');
+        const imagenActual = document.getElementById('imagenActual');
+        const noImagen = document.getElementById('noImagen');
+        
+        let imagenOriginal = ''; // Guardar la ruta de la imagen original
+        let archivoSeleccionado = null;
+
+        // Vista previa de nueva imagen
+        imagenFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validar tipo de archivo
+                const tipoValido = file.type.startsWith('image/');
+                if (!tipoValido) {
+                    alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, GIF)');
+                    imagenFile.value = '';
+                    return;
+                }
+                
+                // Validar tamaño (máximo 5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('La imagen no debe superar los 5MB');
+                    imagenFile.value = '';
+                    return;
+                }
+
+                // Guardar referencia del archivo
+                archivoSeleccionado = file;
+                
+                // Crear nombre único para el archivo
+                const timestamp = Date.now();
+                const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+                const nuevoNombre = `${timestamp}_${nombreLimpio}`;
+                const rutaNueva = `assets/images/mascotas/${nuevoNombre}`;
+                
+                // Guardar la nueva ruta
+                imagenRuta.value = rutaNueva;
+                
+                // Mostrar vista previa
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewContainer.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
+                };
+                reader.readAsDataURL(file);
+                
+                // Mostrar información del archivo
+                fileInfo.innerHTML = `
+                    <strong>Nueva imagen seleccionada:</strong> ${file.name}<br>
+                    <strong>Tamaño:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+                    <strong>Se guardará como:</strong> ${rutaNueva}<br>
+                    <strong>Nota:</strong> La imagen original no será eliminada automáticamente.
+                `;
+            } else {
+                previewContainer.innerHTML = '<p class="sin-imagen">Vista previa de nueva imagen</p>';
+                fileInfo.innerHTML = '';
+                imagenRuta.value = imagenOriginal; // Restaurar ruta original
+                archivoSeleccionado = null;
+            }
+        });
+
+        // Cargar datos de la mascota
+        async function cargarMascota() {
+            try {
+                const doc = await db.collection('mascotas').doc(mascotaId).get();
+                
+                if (!doc.exists) {
+                    alert('Mascota no encontrada');
+                    window.location.href = 'mascotas.html';
+                    return;
+                }
+                
+                const mascota = doc.data();
+                imagenOriginal = mascota.imagen || '';
+                
+                // Llenar formulario
+                document.getElementById('mascotaId').value = mascotaId;
+                document.getElementById('nombre').value = mascota.nombre || '';
+                document.getElementById('especie').value = mascota.especie || '';
+                document.getElementById('raza').value = mascota.raza || '';
+                document.getElementById('edad').value = mascota.edad || '';
+                document.getElementById('tamano').value = mascota.tamano || '';
+                document.getElementById('sexo').value = mascota.sexo || '';
+                document.getElementById('color').value = mascota.color || '';
+                document.getElementById('estado').value = mascota.estado || 'disponible';
+                document.getElementById('salud').value = mascota.salud || '';
+                document.getElementById('descripcion').value = mascota.descripcion || '';
+                
+                // Marcar personalidad
+                if (mascota.personalidad && Array.isArray(mascota.personalidad)) {
+                    document.querySelectorAll('#personalidadContainer input[type="checkbox"]').forEach(cb => {
+                        cb.checked = mascota.personalidad.includes(cb.value);
+                    });
+                }
+                
+                // Mostrar imagen actual
+                if (mascota.imagen) {
+                    imagenActual.src = `../${mascota.imagen}`;
+                    imagenActual.style.display = 'inline-block';
+                    noImagen.style.display = 'none';
+                    
+                    // Guardar ruta original en el campo oculto
+                    imagenRuta.value = mascota.imagen;
+                } else {
+                    imagenActual.style.display = 'none';
+                    noImagen.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error cargando mascota:', error);
+                alert('Error al cargar la mascota');
+            }
+        }
+
+        // Guardar cambios
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Obtener personalidad seleccionada
+            const personalidad = [];
+            document.querySelectorAll('#personalidadContainer input:checked').forEach(cb => {
+                personalidad.push(cb.value);
+            });
+            
+            // Crear objeto con datos
+            const datosMascota = {
+                nombre: document.getElementById('nombre').value,
+                especie: document.getElementById('especie').value,
+                raza: document.getElementById('raza').value || '',
+                edad: parseFloat(document.getElementById('edad').value),
+                tamano: document.getElementById('tamano').value,
+                sexo: document.getElementById('sexo').value,
+                color: document.getElementById('color').value || '',
+                estado: document.getElementById('estado').value,
+                personalidad: personalidad,
+                salud: document.getElementById('salud').value || '',
+                descripcion: document.getElementById('descripcion').value,
+                fechaActualizacion: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Si se seleccionó una nueva imagen, actualizar la ruta
+            if (imagenRuta.value) {
+                datosMascota.imagen = imagenRuta.value;
+            }
+            
+            try {
+                // Actualizar en Firestore
+                await db.collection('mascotas').doc(mascotaId).update(datosMascota);
+                
+                let mensajeExito = '✅ Mascota actualizada correctamente';
+                
+                // Si hay nueva imagen, dar instrucciones
+                if (archivoSeleccionado) {
+                    mensajeExito += `\n\nIMPORTANTE: Debes copiar manualmente el archivo "${archivoSeleccionado.name}" a la carpeta "assets/images/mascotas/" con el nombre "${imagenRuta.value.split('/').pop()}"`;
+                }
+                
+                alert(mensajeExito);
+                window.location.href = 'mascotas.html';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        // Verificar autenticación y cargar datos
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '../login/login.html';
+                return;
+            }
+
+            const userDoc = await db.collection('usuarios').doc(user.uid).get();
+            if (!userDoc.data()?.esAdmin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            cargarMascota();
+        });
+    </script>
+</body>
+</html>

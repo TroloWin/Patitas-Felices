@@ -4,7 +4,300 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalle de Mascota | Patitas Felices</title>
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilos-generales.css" />
+    <style>
+        /* Estilos específicos para detalle de mascota */
+        .detalle-mascota {
+            padding: 60px 0;
+        }
+        
+        .detalle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .detalle-imagenes {
+            width: 100%;
+        }
+        
+        .imagen-principal {
+            width: 100%;
+            height: 400px;
+            background-color: #f0f0f0;
+            border-radius: var(--borde-redondo);
+            overflow: hidden;
+            border: 2px solid var(--color-borde);
+        }
+        
+        .imagen-principal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .detalle-encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .detalle-encabezado h1 {
+            font-size: 2.5rem;
+            color: var(--color-primario-oscuro);
+            margin-bottom: 0;
+        }
+        
+        .mascota-etiqueta.grande {
+            font-size: 1rem;
+            padding: 8px 20px;
+        }
+        
+        .detalle-caracteristicas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--color-primario-claro);
+            border-radius: var(--borde-redondo);
+        }
+        
+        .caracteristica {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .caracteristica .label {
+            font-size: 0.85rem;
+            color: var(--color-texto-claro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .caracteristica .valor {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .detalle-descripcion,
+        .detalle-personalidad,
+        .detalle-salud {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--color-blanco);
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+        }
+        
+        .detalle-descripcion h3,
+        .detalle-personalidad h3,
+        .detalle-salud h3 {
+            color: var(--color-primario-oscuro);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-primario-claro);
+        }
+        
+        .detalle-descripcion p {
+            line-height: 1.8;
+            color: var(--color-texto);
+        }
+        
+        .personalidad-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background-color: var(--color-primario-claro);
+            color: var(--color-primario-oscuro);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .detalle-acciones {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .btn-solicitar {
+            background-color: var(--color-primario);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: var(--borde-redondo);
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .btn-solicitar:hover:not(:disabled) {
+            background-color: var(--color-primario-oscuro);
+            transform: translateY(-2px);
+        }
+        
+        .btn-solicitar:disabled {
+            background-color: var(--color-texto-claro);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-volver {
+            background-color: var(--color-blanco);
+            color: var(--color-texto);
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border: 2px solid var(--color-borde);
+            border-radius: var(--borde-redondo);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-volver:hover {
+            background-color: var(--color-primario-claro);
+            border-color: var(--color-primario);
+        }
+        
+        .cargando {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-texto-claro);
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-error);
+            font-size: 1.2rem;
+        }
+        
+        /* Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-contenido {
+            background-color: var(--color-blanco);
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+            border: 2px solid var(--color-borde);
+            box-shadow: var(--sombra);
+            animation: slideIn 0.3s;
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 2px solid var(--color-borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-primario-claro);
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: var(--color-primario-oscuro);
+            font-size: 1.5rem;
+        }
+        
+        .cerrar-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--color-texto-claro);
+            line-height: 1;
+            transition: all 0.3s;
+        }
+        
+        .cerrar-modal:hover {
+            color: var(--color-error);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-body p {
+            margin-bottom: 15px;
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 2px solid var(--color-borde);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .detalle-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .imagen-principal {
+                height: 300px;
+            }
+            
+            .detalle-encabezado h1 {
+                font-size: 2rem;
+            }
+            
+            .detalle-acciones {
+                flex-direction: column;
+            }
+            
+            .btn-solicitar,
+            .btn-volver {
+                max-width: none;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- navegacion principal -->
@@ -17,7 +310,9 @@
                 </a>
             </div>
             
-            <div class="enlaces-nav" id="enlacesNav"></div>
+            <div class="enlaces-nav" id="enlacesNav">
+                <!-- Se carga dinámicamente con JavaScript -->
+            </div>
             
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
@@ -26,12 +321,14 @@
     </nav>
 
     <main class="detalle-mascota">
-        <div class="contenedor" id="detalleContainer">
-            <div class="cargando">Cargando detalles de la mascota...</div>
+        <div class="contenedor">
+            <div id="detalleContainer">
+                <div class="cargando">Cargando información de la mascota...</div>
+            </div>
         </div>
     </main>
 
-    <!-- Modal de confirmacion de solicitud -->
+    <!-- Modal de confirmación de solicitud -->
     <div id="modalSolicitud" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -39,8 +336,8 @@
                 <button onclick="cerrarModal()" class="cerrar-modal">×</button>
             </div>
             <div class="modal-body">
-                <p>¿Estas seguro de que deseas solicitar la adopcion de <strong id="mascotaNombreModal"></strong>?</p>
-                <p>Una vez enviada la solicitud, el administrador la revisara y podras ver el estado en "Mis Solicitudes".</p>
+                <p>¿Estás seguro de que deseas solicitar la adopción de <strong id="mascotaNombreModal"></strong>?</p>
+                <p>Una vez enviada la solicitud, el administrador la revisará y podrás ver el estado en "Mis Solicitudes".</p>
             </div>
             <div class="modal-footer">
                 <button onclick="cerrarModal()" class="btn btn-outline">Cancelar</button>
@@ -49,7 +346,7 @@
         </div>
     </div>
 
-    <!-- Modal de exito -->
+    <!-- Modal de éxito -->
     <div id="modalExito" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -58,7 +355,7 @@
             </div>
             <div class="modal-body">
                 <p>Tu solicitud ha sido enviada correctamente.</p>
-                <p>El administrador revisara tu solicitud y te notificara la decision.</p>
+                <p>El administrador revisará tu solicitud y te notificará la decisión.</p>
             </div>
             <div class="modal-footer">
                 <a href="mis-solicitudes.html" class="btn btn-primario">Ver mis solicitudes</a>
@@ -83,40 +380,127 @@
         </div>
     </div>
 
+    <!-- Modal de inicio de sesión requerido -->
+    <div id="modalLogin" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Inicia sesión</h2>
+                <button onclick="cerrarModalLogin()" class="cerrar-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Para solicitar una adopción, debes iniciar sesión.</p>
+                <p>¿Quieres iniciar sesión ahora?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModalLogin()" class="btn btn-outline">Cancelar</button>
+                <a href="login/login.html" class="btn btn-primario">Iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- pie de pagina con tus datos -->
+    <footer class="pie-pagina">
+        <div class="contenedor">
+            <div class="footer-grid">
+                <div class="footer-columna">
+                    <div class="logo">
+                        <img src="assets/images/logo.png" alt="Patitas Felices" />
+                        <span class="logo-texto">Patitas Felices</span>
+                    </div>
+                    <p>\(^-^)/</p>
+                </div>
+                
+                <div class="footer-columna">
+                    <h4>Enlaces rápidos</h4>
+                    <a href="adoptar.html">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
+                        Adoptar
+                    </a>
+                    <a href="donadores.html">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
+                        Donadores
+                    </a>
+                    <a href="nosotros.html">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
+                        Nosotros
+                    </a>
+                </div>
+                
+                <div class="footer-columna">
+                    <h4>Contacto</h4>
+                    <p>
+                        <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
+                        patitasfelices.nz@gmail.com
+                    </p>
+                    <p>
+                        <img src="assets/icons/phone.svg" alt="Teléfono" class="icono-footer" />
+                        618 207 4083
+                    </p>
+                    <p>
+                        <img src="assets/icons/location.svg" alt="Ubicación" class="icono-footer" />
+                        Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
+                    </p>
+                </div>
+                
+                <div class="footer-columna">
+                    <h4>Síguenos</h4>
+                    <div class="redes-sociales">
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Configuracion -->
+    <!-- Configuración y funciones -->
     <script src="js/firebase-config.js"></script>
-    <script src="js/auth.js"></script>
     <script src="js/mascotas.js"></script>
     <script src="js/solicitudes.js"></script>
     
     <script>
+        // ===== VARIABLES GLOBALES =====
         const enlacesNav = document.getElementById('enlacesNav');
         const detalleContainer = document.getElementById('detalleContainer');
         const modalSolicitud = document.getElementById('modalSolicitud');
         const modalExito = document.getElementById('modalExito');
         const modalError = document.getElementById('modalError');
+        const modalLogin = document.getElementById('modalLogin');
         const mascotaNombreModal = document.getElementById('mascotaNombreModal');
         const mensajeError = document.getElementById('mensajeError');
         
+        // Obtener ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const mascotaId = urlParams.get('id');
+        
         let mascotaActual = null;
 
-        // Cerrar sesion
+        // ===== FUNCIONES DE NAVEGACIÓN =====
         window.cerrarSesion = async function() {
             try {
                 await auth.signOut();
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error al cerrar sesion:', error);
-                mostrarError('Error al cerrar sesion');
+                console.error('Error al cerrar sesión:', error);
             }
         };
 
-        // Crear enlaces de navegacion
         function crearEnlacesNavegacion(usuario = null, userData = null) {
             if (usuario && userData) {
                 return `
@@ -147,10 +531,16 @@
                                 <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
                                 Mis Solicitudes
                             </a>
+                            ${userData.esAdmin ? `
+                                <a href="admin/index.html">
+                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
+                                    Panel Admin
+                                </a>
+                            ` : ''}
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesion
+                                Cerrar Sesión
                             </a>
                         </div>
                     </div>
@@ -175,21 +565,19 @@
                     </a>
                     <a href="login/login.html" class="btn btn-outline">
                         <img src="assets/icons/user.svg" alt="Login" class="icono" />
-                        Iniciar Sesion
+                        Iniciar Sesión
                     </a>
                     <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
                 `;
             }
         }
 
-        // Toggle dropdown
         window.toggleDropdown = function(event) {
             event.stopPropagation();
             const dropdown = document.getElementById('usuarioDropdown');
             dropdown.classList.toggle('show');
         };
 
-        // Cerrar dropdown al hacer clic fuera
         document.addEventListener('click', function() {
             const dropdown = document.getElementById('usuarioDropdown');
             if (dropdown && dropdown.classList.contains('show')) {
@@ -197,108 +585,7 @@
             }
         });
 
-        // Obtener ID de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const mascotaId = urlParams.get('id');
-
-        // Cargar detalle de mascota
-        function cargarDetalle() {
-            mascotaActual = obtenerMascotaPorId(mascotaId);
-            
-            if (!mascotaActual) {
-                detalleContainer.innerHTML = '<p class="sin-resultados">Mascota no encontrada</p>';
-                return;
-            }
-            
-            // Generar lista de personalidad si existe
-            const personalidadLista = mascotaActual.personalidad ? 
-                mascotaActual.personalidad.map(p => `<li>${p}</li>`).join('') : 
-                '<li>No especificado</li>';
-            
-            // Determinar texto de estado
-            const estadoTexto = mascotaActual.estado === 'disponible' ? 'Disponible' : 
-                               (mascotaActual.estado === 'proceso' ? 'En proceso' : 'Adoptado');
-            
-            detalleContainer.innerHTML = `
-                <div class="detalle-grid">
-                    <div class="detalle-imagenes">
-                        <div class="imagen-principal">
-                            <img src="${mascotaActual.imagen}" alt="${mascotaActual.nombre}" />
-                        </div>
-                    </div>
-                    <div class="detalle-info">
-                        <div class="detalle-encabezado">
-                            <h1>${mascotaActual.nombre}</h1>
-                            <span class="mascota-etiqueta grande ${mascotaActual.estado}">
-                                ${estadoTexto}
-                            </span>
-                        </div>
-                        
-                        <div class="detalle-caracteristicas">
-                            <div class="caracteristica">
-                                <strong>Edad:</strong> ${mascotaActual.edad} años
-                            </div>
-                            <div class="caracteristica">
-                                <strong>Especie:</strong> ${mascotaActual.especie}
-                            </div>
-                            <div class="caracteristica">
-                                <strong>Raza:</strong> ${mascotaActual.raza}
-                            </div>
-                            <div class="caracteristica">
-                                <strong>Tamaño:</strong> ${mascotaActual.tamano}
-                            </div>
-                            <div class="caracteristica">
-                                <strong>Sexo:</strong> ${mascotaActual.sexo}
-                            </div>
-                            <div class="caracteristica">
-                                <strong>Color:</strong> ${mascotaActual.color}
-                            </div>
-                        </div>
-                        
-                        <div class="detalle-descripcion">
-                            <h3>Descripcion</h3>
-                            <p>${mascotaActual.descripcion}</p>
-                        </div>
-                        
-                        <div class="detalle-requisitos">
-                            <h3>Personalidad</h3>
-                            <ul>${personalidadLista}</ul>
-                        </div>
-                        
-                        <div class="detalle-requisitos">
-                            <h3>Salud</h3>
-                            <p>${mascotaActual.salud || 'No especificado'}</p>
-                        </div>
-                        
-                        <div class="detalle-acciones">
-                            ${mascotaActual.estado === 'disponible' ? 
-                                `<button onclick="abrirModalSolicitud()" class="btn btn-primario btn-grande btn-bloque">
-                                    Solicitar adopcion
-                                </button>` : 
-                                `<button class="btn btn-secundario btn-grande btn-bloque" disabled>
-                                    No disponible
-                                </button>`
-                            }
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Funciones para modales
-        window.abrirModalSolicitud = function() {
-            const user = auth.currentUser;
-            if (!user) {
-                mostrarError('Debes iniciar sesion para solicitar una adopcion');
-                setTimeout(() => {
-                    window.location.href = 'login/login.html';
-                }, 2000);
-                return;
-            }
-            mascotaNombreModal.textContent = mascotaActual.nombre;
-            modalSolicitud.style.display = 'flex';
-        };
-
+        // ===== FUNCIONES DE MODALES =====
         window.cerrarModal = function() {
             modalSolicitud.style.display = 'none';
         };
@@ -311,29 +598,40 @@
             modalError.style.display = 'none';
         };
 
+        window.cerrarModalLogin = function() {
+            modalLogin.style.display = 'none';
+        };
+
         function mostrarError(mensaje) {
             mensajeError.textContent = mensaje;
             modalError.style.display = 'flex';
         }
+
+        window.abrirModalSolicitud = function() {
+            const user = auth.currentUser;
+            if (!user) {
+                modalLogin.style.display = 'flex';
+                return;
+            }
+            mascotaNombreModal.textContent = mascotaActual.nombre;
+            modalSolicitud.style.display = 'flex';
+        };
 
         window.confirmarSolicitud = async function() {
             const user = auth.currentUser;
             
             if (!user) {
                 cerrarModal();
-                mostrarError('Debes iniciar sesion');
+                modalLogin.style.display = 'flex';
                 return;
             }
             
             cerrarModal();
             
             try {
-                console.log('Enviando solicitud para mascota:', mascotaActual.id);
-                
                 const result = await enviarSolicitud(mascotaActual.id, mascotaActual);
                 
                 if (result.success) {
-                    console.log('Solicitud enviada con exito. ID:', result.id);
                     modalExito.style.display = 'flex';
                 } else {
                     mostrarError(result.error || 'Error al enviar la solicitud');
@@ -344,28 +642,138 @@
             }
         };
 
-        // Verificar usuario autenticado y actualizar navegacion
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userDoc = await db.collection('usuarios').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
-                    } else {
+        // ===== FUNCIONES DE MASCOTA =====
+        async function cargarDetalle() {
+            if (!mascotaId) {
+                detalleContainer.innerHTML = '<div class="error">No se especificó una mascota</div>';
+                return;
+            }
+            
+            try {
+                const mascota = await obtenerMascotaPorId(mascotaId);
+                
+                if (!mascota) {
+                    detalleContainer.innerHTML = '<div class="error">Mascota no encontrada</div>';
+                    return;
+                }
+                
+                mascotaActual = mascota;
+                
+                // Formatear personalidad
+                const personalidadHtml = mascota.personalidad && mascota.personalidad.length > 0
+                    ? mascota.personalidad.map(p => `<span class="tag">${p}</span>`).join('')
+                    : '<p>No especificada</p>';
+                
+                // Determinar si el botón de solicitud está habilitado
+                const botonHabilitado = mascota.estado === 'disponible';
+                const estadoTexto = mascota.estado === 'disponible' ? 'Disponible' : 
+                                   (mascota.estado === 'proceso' ? 'En proceso de adopción' : 'Ya adoptado');
+                
+                detalleContainer.innerHTML = `
+                    <div class="detalle-grid">
+                        <div class="detalle-imagenes">
+                            <div class="imagen-principal">
+                                <img src="${mascota.imagen || 'assets/images/default-pet.png'}" alt="${mascota.nombre}" />
+                            </div>
+                        </div>
+                        <div class="detalle-info">
+                            <div class="detalle-encabezado">
+                                <h1>${mascota.nombre}</h1>
+                                <span class="mascota-etiqueta grande ${mascota.estado}">${estadoTexto}</span>
+                            </div>
+                            
+                            <div class="detalle-caracteristicas">
+                                <div class="caracteristica">
+                                    <span class="label">Especie</span>
+                                    <span class="valor">${mascota.especie || 'No especificada'}</span>
+                                </div>
+                                <div class="caracteristica">
+                                    <span class="label">Raza</span>
+                                    <span class="valor">${mascota.raza || 'No especificada'}</span>
+                                </div>
+                                <div class="caracteristica">
+                                    <span class="label">Edad</span>
+                                    <span class="valor">${mascota.edad || '?'} años</span>
+                                </div>
+                                <div class="caracteristica">
+                                    <span class="label">Tamaño</span>
+                                    <span class="valor">${mascota.tamano || 'No especificado'}</span>
+                                </div>
+                                <div class="caracteristica">
+                                    <span class="label">Sexo</span>
+                                    <span class="valor">${mascota.sexo || 'No especificado'}</span>
+                                </div>
+                                <div class="caracteristica">
+                                    <span class="label">Color</span>
+                                    <span class="valor">${mascota.color || 'No especificado'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detalle-descripcion">
+                                <h3>Descripción</h3>
+                                <p>${mascota.descripcion || 'No hay descripción disponible'}</p>
+                            </div>
+                            
+                            <div class="detalle-personalidad">
+                                <h3>Personalidad</h3>
+                                <div class="personalidad-tags">
+                                    ${personalidadHtml}
+                                </div>
+                            </div>
+                            
+                            <div class="detalle-salud">
+                                <h3>Salud y cuidados</h3>
+                                <p>${mascota.salud || 'No especificado'}</p>
+                            </div>
+                            
+                            <div class="detalle-acciones">
+                                <button onclick="window.location.href='adoptar.html'" class="btn-volver">
+                                    ← Volver
+                                </button>
+                                ${botonHabilitado ? 
+                                    `<button onclick="abrirModalSolicitud()" class="btn-solicitar">
+                                        Solicitar adopción
+                                    </button>` : 
+                                    `<button class="btn-solicitar" disabled>
+                                        No disponible
+                                    </button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error al cargar mascota:', error);
+                detalleContainer.innerHTML = `<div class="error">Error al cargar la mascota: ${error.message}</div>`;
+            }
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticación y actualizar navegación
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await db.collection('usuarios').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                        } else {
+                            enlacesNav.innerHTML = crearEnlacesNavegacion();
+                        }
+                    } catch (error) {
+                        console.error('Error al obtener datos del usuario:', error);
                         enlacesNav.innerHTML = crearEnlacesNavegacion();
                     }
-                } catch (error) {
-                    console.error('Error al obtener datos del usuario:', error);
+                } else {
                     enlacesNav.innerHTML = crearEnlacesNavegacion();
                 }
-            } else {
-                enlacesNav.innerHTML = crearEnlacesNavegacion();
-            }
+                
+                // Cargar detalle de la mascota
+                await cargarDetalle();
+            });
         });
-
-        // Cargar detalle al iniciar
-        cargarDetalle();
     </script>
 </body>
 </html>

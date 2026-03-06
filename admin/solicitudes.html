@@ -4,315 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestionar Solicitudes | Admin</title>
-    <link rel="stylesheet" href="../css/estilos.css" />
-    <link rel="stylesheet" href="../css/estilos-admin.css" />
+    <link rel="stylesheet" href="../css/estilos-generales.css" />
+    <link rel="stylesheet" href="css/admin-styles.css" />
 </head>
 <body>
     <div class="admin-layout">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="sidebar-logo">
                 <img src="../assets/images/logo.png" alt="Patitas Felices" />
                 <span>Admin Panel</span>
             </div>
-            
             <nav class="sidebar-nav">
-                <a href="index.html">
-                    <img src="../assets/icons/dashboard.svg" alt="Dashboard" class="icono" />
-                    Dashboard
-                </a>
-                <a href="usuarios.html">
-                    <img src="../assets/icons/users.svg" alt="Usuarios" class="icono" />
-                    Usuarios
-                </a>
-                <a href="solicitudes.html" class="activo">
-                    <img src="../assets/icons/requests.svg" alt="Solicitudes" class="icono" />
-                    Solicitudes
-                </a>
+                <a href="index.html">Dashboard</a>
+                <a href="mascotas.html">Mascotas</a>
+                <a href="solicitudes.html" class="activo">Solicitudes</a>
+                <a href="usuarios.html">Usuarios</a>
                 <hr>
-                <a href="../index.html">
-                    <img src="../assets/icons/home.svg" alt="Ver sitio" class="icono" />
-                    Ver sitio
-                </a>
+                <a href="../index.html">Ver sitio</a>
             </nav>
-            
-            <div class="sidebar-footer">
-                <div class="admin-info" id="adminInfo">
-                    <img src="../assets/icons/admin.svg" alt="Admin" class="icono" />
-                    <div>
-                        <span id="adminNombre">Cargando...</span>
-                        <small>Administrador</small>
-                    </div>
-                </div>
-                <button onclick="cerrarSesion()" class="btn-cerrar">
-                    <img src="../assets/icons/logout.svg" alt="Salir" class="icono" />
-                    Cerrar sesion
-                </button>
-            </div>
         </aside>
 
         <main class="admin-contenido">
             <div class="admin-header">
-                <h1>Gestion de Solicitudes</h1>
+                <h1>Gestión de Solicitudes</h1>
             </div>
 
-            <!-- Filtros -->
             <div class="filtros-avanzados">
-                <div class="busqueda">
-                    <input type="text" id="buscarSolicitud" placeholder="Buscar por adoptante o mascota...">
-                </div>
-                
                 <select id="filtroEstado">
-                    <option value="todos">Todas las solicitudes</option>
+                    <option value="todos">Todas</option>
                     <option value="pendiente">Pendientes</option>
                     <option value="aprobada">Aprobadas</option>
                     <option value="rechazada">Rechazadas</option>
                 </select>
-
-                <button onclick="aplicarFiltros()" class="btn-primario">Filtrar</button>
-                <button onclick="limpiarFiltros()" class="btn-outline">Limpiar</button>
+                <button onclick="cargarSolicitudes()" class="btn-accion">Filtrar</button>
             </div>
 
-            <!-- Lista de solicitudes -->
             <div id="solicitudesContainer">
                 <p class="cargando">Cargando solicitudes...</p>
             </div>
         </main>
     </div>
 
-    <!-- Modal para rechazar -->
     <div id="modalRechazar" class="modal">
         <div class="modal-contenido">
             <h3>Rechazar solicitud</h3>
-            <p>Indica el motivo del rechazo:</p>
-            <textarea id="motivoRechazo" rows="4" placeholder="Ej: No cumple con los requisitos, ya fue adoptada, etc."></textarea>
+            <p>Motivo del rechazo:</p>
+            <textarea id="motivoRechazo" rows="3"></textarea>
             <div class="modal-botones">
-                <button onclick="cerrarModalRechazar()" class="btn-outline">Cancelar</button>
-                <button onclick="confirmarRechazo()" class="btn-eliminar">Rechazar solicitud</button>
+                <button onclick="cerrarModal()" class="btn-accion">Cancelar</button>
+                <button onclick="confirmarRechazo()" class="btn-accion">Rechazar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de confirmacion -->
-    <div id="modalConfirmar" class="modal">
-        <div class="modal-contenido">
-            <h3>Confirmar aprobacion</h3>
-            <p id="mensajeConfirmacion">¿Estas seguro de aprobar esta solicitud?</p>
-            <p class="advertencia">Esta accion marcara la mascota como adoptada.</p>
-            <div class="modal-botones">
-                <button onclick="cerrarModalConfirmar()" class="btn-outline">Cancelar</button>
-                <button onclick="confirmarAprobacion()" class="btn-primario">Aprobar solicitud</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Configuracion -->
     <script src="../js/firebase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/solicitudes.js"></script>
-    
-    <script>
-        let todasLasSolicitudes = [];
-        let solicitudSeleccionada = null;
-
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = '../login/login.html';
-                return;
-            }
-
-            const userDoc = await db.collection('usuarios').doc(user.uid).get();
-            const userData = userDoc.data();
-
-            if (!userData?.esAdmin) {
-                window.location.href = '../index.html';
-                return;
-            }
-
-            document.getElementById('adminNombre').textContent = userData.nombre || 'Admin';
-            cargarSolicitudes();
-        });
-
-        async function cargarSolicitudes(filtro = 'todos') {
-            try {
-                todasLasSolicitudes = await obtenerTodasLasSolicitudes(filtro);
-                mostrarSolicitudes(todasLasSolicitudes);
-            } catch (error) {
-                console.error('Error cargando solicitudes:', error);
-                document.getElementById('solicitudesContainer').innerHTML = 
-                    '<p class="error">Error al cargar las solicitudes</p>';
-            }
-        }
-
-        function formatearFecha(fechaISO) {
-            if (!fechaISO) return 'Fecha no disponible';
-            try {
-                const fecha = new Date(fechaISO);
-                return fecha.toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch (e) {
-                return 'Fecha no disponible';
-            }
-        }
-
-        function mostrarSolicitudes(solicitudes) {
-            const container = document.getElementById('solicitudesContainer');
-            
-            if (!solicitudes || solicitudes.length === 0) {
-                container.innerHTML = '<p class="sin-resultados">No hay solicitudes</p>';
-                return;
-            }
-            
-            container.innerHTML = solicitudes.map(s => {
-                let badgeClass = '';
-                let estadoTexto = '';
-                
-                switch(s.estado) {
-                    case 'pendiente':
-                        badgeClass = 'badge-pendiente';
-                        estadoTexto = 'PENDIENTE';
-                        break;
-                    case 'aprobada':
-                        badgeClass = 'badge-aprobada';
-                        estadoTexto = 'APROBADA';
-                        break;
-                    case 'rechazada':
-                        badgeClass = 'badge-rechazada';
-                        estadoTexto = 'RECHAZADA';
-                        break;
-                }
-                
-                const fechaSolicitud = formatearFecha(s.fechaSolicitud);
-                
-                return `
-                    <div class="solicitud-card">
-                        <div class="solicitud-header">
-                            <h3>Solicitud de ${s.adoptante?.nombre || 'Desconocido'}</h3>
-                            <span class="badge ${badgeClass}">${estadoTexto}</span>
-                        </div>
-                        <div class="solicitud-body">
-                            <div class="solicitud-info">
-                                <p><strong>Mascota:</strong> ${s.mascota?.nombre || 'No especificado'} (${s.mascota?.especie || 'No especificado'})</p>
-                                <p><strong>Adoptante:</strong> ${s.adoptante?.nombre || 'No especificado'}</p>
-                                <p><strong>Email:</strong> ${s.adoptante?.email || 'No especificado'}</p>
-                                <p><strong>Telefono:</strong> ${s.adoptante?.telefono || 'No especificado'}</p>
-                                <p><strong>Direccion:</strong> ${s.adoptante?.direccion || 'No especificada'}</p>
-                                <p><strong>Fecha solicitud:</strong> ${fechaSolicitud}</p>
-                                ${s.motivoRechazo ? `<p><strong>Motivo rechazo:</strong> ${s.motivoRechazo}</p>` : ''}
-                                ${s.fechaProcesamiento ? `<p><strong>Fecha procesamiento:</strong> ${formatearFecha(s.fechaProcesamiento)}</p>` : ''}
-                            </div>
-                            <div class="solicitud-acciones">
-                                ${s.estado === 'pendiente' ? `
-                                    <button onclick="abrirConfirmacion('${s.id}')" class="btn-aprobar">
-                                        <img src="../assets/icons/check.svg" alt="Aprobar" class="icono-pequeno" />
-                                        Aprobar
-                                    </button>
-                                    <button onclick="abrirRechazo('${s.id}')" class="btn-rechazar">
-                                        <img src="../assets/icons/delete.svg" alt="Rechazar" class="icono-pequeno" />
-                                        Rechazar
-                                    </button>
-                                ` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function aplicarFiltros() {
-            const filtro = document.getElementById('filtroEstado').value;
-            const busqueda = document.getElementById('buscarSolicitud').value.toLowerCase();
-            
-            let filtradas = [...todasLasSolicitudes];
-            
-            if (filtro !== 'todos') {
-                filtradas = filtradas.filter(s => s.estado === filtro);
-            }
-            
-            if (busqueda) {
-                filtradas = filtradas.filter(s => 
-                    s.adoptante?.nombre?.toLowerCase().includes(busqueda) ||
-                    s.mascota?.nombre?.toLowerCase().includes(busqueda)
-                );
-            }
-            
-            mostrarSolicitudes(filtradas);
-        }
-
-        function limpiarFiltros() {
-            document.getElementById('filtroEstado').value = 'todos';
-            document.getElementById('buscarSolicitud').value = '';
-            mostrarSolicitudes(todasLasSolicitudes);
-        }
-
-        function abrirConfirmacion(solicitudId) {
-            solicitudSeleccionada = solicitudId;
-            document.getElementById('modalConfirmar').style.display = 'flex';
-        }
-
-        function cerrarModalConfirmar() {
-            document.getElementById('modalConfirmar').style.display = 'none';
-            solicitudSeleccionada = null;
-        }
-
-        async function confirmarAprobacion() {
-            if (!solicitudSeleccionada) return;
-            
-            const result = await aprobarSolicitud(solicitudSeleccionada);
-            cerrarModalConfirmar();
-            
-            if (result.success) {
-                alert('Solicitud aprobada correctamente');
-                cargarSolicitudes(document.getElementById('filtroEstado').value);
-            } else {
-                alert('Error: ' + (result.error || 'No se pudo aprobar la solicitud'));
-            }
-        }
-
-        function abrirRechazo(solicitudId) {
-            solicitudSeleccionada = solicitudId;
-            document.getElementById('modalRechazar').style.display = 'flex';
-        }
-
-        function cerrarModalRechazar() {
-            document.getElementById('modalRechazar').style.display = 'none';
-            document.getElementById('motivoRechazo').value = '';
-            solicitudSeleccionada = null;
-        }
-
-        async function confirmarRechazo() {
-            const motivo = document.getElementById('motivoRechazo').value;
-            if (!motivo) {
-                alert('Debes indicar un motivo de rechazo');
-                return;
-            }
-            
-            const result = await rechazarSolicitud(solicitudSeleccionada, motivo);
-            cerrarModalRechazar();
-            
-            if (result.success) {
-                alert('Solicitud rechazada');
-                cargarSolicitudes(document.getElementById('filtroEstado').value);
-            } else {
-                alert('Error: ' + (result.error || 'No se pudo rechazar la solicitud'));
-            }
-        }
-
-        function cerrarSesion() {
-            auth.signOut().then(() => {
-                window.location.href = '../index.html';
-            });
-        }
-    </script>
+    <script src="js/admin-solicitudes.js"></script>
 </body>
 </html>

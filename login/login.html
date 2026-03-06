@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesion | Patitas Felices</title>
-    <link rel="stylesheet" href="../css/estilos.css" />
-    <link rel="stylesheet" href="../css/estilos-login.css" />
+    <title>Iniciar Sesión | Patitas Felices</title>
+    <link rel="stylesheet" href="../css/estilos-generales.css" />
+    <link rel="stylesheet" href="css/login-styles.css" />
 </head>
 <body>
     <nav class="navegacion">
@@ -28,7 +28,7 @@
     <main class="contenedor-formulario">
         <div class="tarjeta-formulario">
             <div class="encabezado-formulario">
-                <h1>Iniciar Sesion</h1>
+                <h1>Iniciar Sesión</h1>
                 <p>Ingresa tus credenciales para acceder</p>
             </div>
 
@@ -36,7 +36,7 @@
 
             <form class="formulario" id="loginForm">
                 <div class="grupo-formulario">
-                    <label for="email">Correo electronico</label>
+                    <label for="email">Correo electrónico</label>
                     <input type="email" id="email" placeholder="ejemplo@email.com" required />
                 </div>
 
@@ -55,55 +55,21 @@
                 </div>
 
                 <button type="submit" class="btn btn-primario btn-bloque" id="btnLogin">
-                    Iniciar Sesion
+                    Iniciar Sesión
                 </button>
             </form>
 
             <div class="pie-formulario">
-                <p>¿No tienes cuenta? <a href="registro.html">Registrate aqui</a></p>
+                <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
             </div>
         </div>
     </main>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
     <script src="../js/firebase-config.js"></script>
-    <script src="../js/auth.js"></script>
-    
-    <script>
-        const loginForm = document.getElementById('loginForm');
-        const btnLogin = document.getElementById('btnLogin');
-        const mensajeError = document.getElementById('mensajeError');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            mensajeError.style.display = 'none';
-            btnLogin.disabled = true;
-            btnLogin.textContent = 'Iniciando sesion...';
-            
-            try {
-                const { userData } = await iniciarSesion(email, password);
-                
-                if (userData.esAdmin) {
-                    window.location.href = '../admin/index.html';
-                } else {
-                    window.location.href = '../adoptar.html';
-                }
-                
-            } catch (error) {
-                mensajeError.textContent = error.message;
-                mensajeError.style.display = 'block';
-                btnLogin.disabled = false;
-                btnLogin.textContent = 'Iniciar Sesion';
-            }
-        });
-    </script>
+    <script src="js/login.js"></script>
 </body>
 </html>

@@ -1,4 +1,21 @@
-/* ===== ESTILOS EXCLUSIVOS PARA PANEL ADMIN ===== */
+/* ===== ESTILOS EXCLUSIVOS PARA EL PANEL DE ADMINISTRACIÓN ===== */
+
+/* ===== VARIABLES (heredadas de estilos-generales.css) ===== */
+:root {
+    --color-fondo: #d7cff7;
+    --color-primario: #9b87f5;
+    --color-primario-oscuro: #7c6ac4;
+    --color-primario-claro: #e5deff;
+    --color-blanco: #ffffff;
+    --color-texto: #333333;
+    --color-texto-claro: #666666;
+    --color-borde: #bfbfbf;
+    --color-error: #dc3545;
+    --color-exito: #28a745;
+    --sombra: 0 2px 10px rgba(0,0,0,0.1);
+    --borde-redondo: 8px;
+    --transicion: all 0.3s ease;
+}
 
 /* ===== LAYOUT ADMIN ===== */
 .admin-layout {
@@ -159,7 +176,7 @@
     border: 2px solid var(--color-borde);
 }
 
-/* ===== DASHBOARD TARJETAS ===== */
+/* ===== TARJETAS DASHBOARD ===== */
 .dashboard-tarjetas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -174,7 +191,7 @@
     border: 2px solid var(--color-borde);
     display: flex;
     gap: 15px;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s;
 }
 
 .tarjeta-resumen:hover {
@@ -195,14 +212,12 @@
 .tarjeta-icono img {
     width: 30px;
     height: 30px;
-    filter: brightness(0) saturate(100%) invert(30%) sepia(50%) saturate(500%) hue-rotate(220deg);
 }
 
 .tarjeta-info h3 {
     color: var(--color-texto-claro);
     font-size: 0.9rem;
     margin-bottom: 5px;
-    font-weight: normal;
 }
 
 .numero {
@@ -210,10 +225,9 @@
     font-weight: bold;
     color: var(--color-primario-oscuro);
     display: block;
-    line-height: 1;
 }
 
-/* ===== ACCIONES RAPIDAS ===== */
+/* ===== ACCIONES RÁPIDAS ===== */
 .acciones-rapidas {
     background: white;
     padding: 20px;
@@ -244,7 +258,6 @@
     text-decoration: none;
     border-radius: 10px;
     transition: all 0.3s;
-    font-weight: 500;
 }
 
 .btn-accion:hover {
@@ -256,7 +269,7 @@
     filter: brightness(0) invert(1);
 }
 
-/* ===== FILTROS AVANZADOS ===== */
+/* ===== FILTROS ===== */
 .filtros-avanzados {
     background: white;
     padding: 20px;
@@ -269,28 +282,16 @@
     align-items: center;
 }
 
-.busqueda {
-    flex: 2;
-    min-width: 250px;
-}
-
-.busqueda input {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid var(--color-borde);
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
+.filtros-avanzados input,
 .filtros-avanzados select {
     padding: 10px;
     border: 2px solid var(--color-borde);
     border-radius: 8px;
-    min-width: 150px;
-    background: white;
+    min-width: 200px;
+    flex: 1;
 }
 
-/* ===== TABLAS ADMIN ===== */
+/* ===== TABLAS ===== */
 .tabla-admin {
     width: 100%;
     background: white;
@@ -303,19 +304,13 @@
 .tabla-admin th {
     background: var(--color-primario);
     color: white;
-    padding: 12px 15px;
+    padding: 12px;
     text-align: left;
-    font-weight: 500;
 }
 
 .tabla-admin td {
-    padding: 12px 15px;
+    padding: 12px;
     border-bottom: 1px solid var(--color-borde);
-    color: var(--color-texto);
-}
-
-.tabla-admin tr:last-child td {
-    border-bottom: none;
 }
 
 .tabla-admin tr:hover {
@@ -327,7 +322,7 @@
     gap: 8px;
 }
 
-/* ===== BOTONES ADMIN ===== */
+/* ===== BOTONES TABLA ===== */
 .btn-editar, .btn-eliminar {
     width: 35px;
     height: 35px;
@@ -337,7 +332,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
 }
 
 .btn-editar {
@@ -364,36 +358,7 @@
     filter: brightness(0) invert(1);
 }
 
-.btn-aprobar, .btn-rechazar {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn-aprobar {
-    background: #d4edda;
-    color: #155724;
-}
-
-.btn-aprobar:hover {
-    background: #c3e6cb;
-}
-
-.btn-rechazar {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.btn-rechazar:hover {
-    background: #f5c6cb;
-}
-
-/* ===== BADGES ADMIN ===== */
+/* ===== BADGES ===== */
 .badge {
     padding: 4px 12px;
     border-radius: 30px;
@@ -455,11 +420,6 @@
     border-bottom: 2px solid var(--color-borde);
 }
 
-.solicitud-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-}
-
 .solicitud-body {
     padding: 20px;
     display: grid;
@@ -469,9 +429,6 @@
 
 .solicitud-info p {
     margin: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .solicitud-acciones {
@@ -481,7 +438,106 @@
     align-items: center;
 }
 
-/* ===== MODALES ADMIN ===== */
+/* ===== BOTONES SOLICITUD ===== */
+.btn-aprobar, .btn-rechazar {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-aprobar {
+    background: #d4edda;
+    color: #155724;
+}
+
+.btn-aprobar:hover {
+    background: #c3e6cb;
+}
+
+.btn-rechazar {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-rechazar:hover {
+    background: #f5c6cb;
+}
+
+/* ===== FORMULARIOS ===== */
+.formulario-admin {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid var(--color-borde);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.form-columna h3 {
+    color: var(--color-primario-oscuro);
+    margin-bottom: 20px;
+}
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--color-borde);
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 15px;
+    background: var(--color-primario-claro);
+    border-radius: 8px;
+}
+
+.preview-imagen {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.preview-imagen img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 2px solid var(--color-borde);
+}
+
+.form-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 2px solid var(--color-borde);
+}
+
+/* ===== MODALES ===== */
 .modal {
     display: none;
     position: fixed;
@@ -501,17 +557,6 @@
     border-radius: 15px;
     max-width: 450px;
     width: 90%;
-    border: 2px solid var(--color-borde);
-}
-
-.modal-contenido h3 {
-    margin-bottom: 15px;
-    color: var(--color-primario-oscuro);
-}
-
-.modal-contenido p {
-    margin-bottom: 10px;
-    color: var(--color-texto-claro);
 }
 
 .modal-contenido textarea {
@@ -519,46 +564,36 @@
     padding: 10px;
     border: 2px solid var(--color-borde);
     border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.95rem;
     margin: 10px 0;
 }
 
 .modal-botones {
     display: flex;
-    justify-content: flex-end;
     gap: 10px;
+    justify-content: flex-end;
     margin-top: 20px;
 }
 
-.advertencia {
-    color: var(--color-error) !important;
-    font-weight: 500;
-}
-
-/* ===== CARGANDO ===== */
+/* ===== ESTADOS ===== */
 .cargando {
     text-align: center;
     padding: 40px;
     color: var(--color-texto-claro);
-    font-size: 1.1rem;
 }
 
 .sin-resultados {
     text-align: center;
     padding: 60px;
     color: var(--color-texto-claro);
-    font-size: 1.1rem;
 }
 
 .error {
     text-align: center;
     padding: 40px;
     color: var(--color-error);
-    font-size: 1.1rem;
 }
 
-/* ===== RESPONSIVE ADMIN ===== */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .admin-layout {
         flex-direction: column;
@@ -572,13 +607,9 @@
     
     .filtros-avanzados {
         flex-direction: column;
-        align-items: stretch;
     }
     
-    .busqueda {
-        width: 100%;
-    }
-    
+    .filtros-avanzados input,
     .filtros-avanzados select {
         width: 100%;
     }
@@ -587,15 +618,7 @@
         grid-template-columns: 1fr;
     }
     
-    .dashboard-tarjetas {
+    .form-grid {
         grid-template-columns: 1fr;
-    }
-    
-    .botones-accion {
-        flex-direction: column;
-    }
-    
-    .btn-accion {
-        width: 100%;
     }
 }

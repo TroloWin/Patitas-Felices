@@ -4,7 +4,282 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mis Solicitudes | Patitas Felices</title>
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilos-generales.css" />
+    <style>
+        /* Estilos específicos para mis solicitudes */
+        .solicitudes-contenedor {
+            padding: 60px 0;
+            min-height: 60vh;
+        }
+        
+        .solicitudes-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .solicitudes-header h1 {
+            color: var(--color-primario-oscuro);
+            margin-bottom: 10px;
+        }
+        
+        .solicitudes-header p {
+            color: var(--color-texto-claro);
+            font-size: 1.1rem;
+        }
+        
+        .solicitudes-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 25px;
+            background: var(--color-blanco);
+            border: 2px solid var(--color-borde);
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-texto);
+            transition: all 0.3s;
+        }
+        
+        .tab-btn:hover {
+            border-color: var(--color-primario);
+            background: var(--color-primario-claro);
+        }
+        
+        .tab-btn.activo {
+            background: var(--color-primario);
+            border-color: var(--color-primario);
+            color: white;
+        }
+        
+        .solicitudes-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .solicitud-tarjeta {
+            background-color: var(--color-blanco);
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .solicitud-tarjeta:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra);
+        }
+        
+        .solicitud-tarjeta.pendiente {
+            border-left: 6px solid #ffc107;
+        }
+        
+        .solicitud-tarjeta.aprobada {
+            border-left: 6px solid #28a745;
+        }
+        
+        .solicitud-tarjeta.rechazada {
+            border-left: 6px solid #dc3545;
+        }
+        
+        .solicitud-header {
+            padding: 15px 20px;
+            background: var(--color-primario-claro);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .solicitud-header h3 {
+            margin: 0;
+            color: var(--color-primario-oscuro);
+            font-size: 1.2rem;
+        }
+        
+        .solicitud-estado {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .solicitud-estado.pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .solicitud-estado.aprobada {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .solicitud-estado.rechazada {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .solicitud-body {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: start;
+        }
+        
+        .solicitud-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--color-texto);
+        }
+        
+        .info-row img {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+        
+        .info-row strong {
+            color: var(--color-primario-oscuro);
+            min-width: 80px;
+        }
+        
+        .info-row span {
+            color: var(--color-texto);
+        }
+        
+        .motivo-rechazo {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8d7da;
+            border-radius: var(--borde-redondo);
+            color: #721c24;
+            font-size: 0.95rem;
+        }
+        
+        .solicitud-acciones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 120px;
+        }
+        
+        .btn-ver-mascota {
+            padding: 8px 15px;
+            background-color: var(--color-primario-claro);
+            color: var(--color-primario-oscuro);
+            text-decoration: none;
+            border-radius: var(--borde-redondo);
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .btn-ver-mascota:hover {
+            background-color: var(--color-primario);
+            color: white;
+        }
+        
+        .btn-ver-mascota:hover img {
+            filter: brightness(0) invert(1);
+        }
+        
+        .sin-solicitudes {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+        }
+        
+        .sin-solicitudes img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .sin-solicitudes h3 {
+            color: var(--color-primario-oscuro);
+            margin-bottom: 10px;
+        }
+        
+        .sin-solicitudes p {
+            color: var(--color-texto-claro);
+            margin-bottom: 20px;
+        }
+        
+        .btn-adoptar {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--color-primario);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--borde-redondo);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-adoptar:hover {
+            background-color: var(--color-primario-oscuro);
+            transform: translateY(-2px);
+        }
+        
+        .cargando {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-texto-claro);
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-error);
+            font-size: 1.1rem;
+            background: white;
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+        }
+        
+        @media (max-width: 768px) {
+            .solicitud-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .solicitud-acciones {
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+            
+            .info-row {
+                flex-wrap: wrap;
+            }
+            
+            .info-row strong {
+                min-width: 70px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- navegacion principal -->
@@ -17,7 +292,9 @@
                 </a>
             </div>
             
-            <div class="enlaces-nav" id="enlacesNav"></div>
+            <div class="enlaces-nav" id="enlacesNav">
+                <!-- Se carga dinámicamente con JavaScript -->
+            </div>
             
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
@@ -27,100 +304,116 @@
 
     <main class="solicitudes-contenedor">
         <div class="contenedor">
-            <h1>Mis Solicitudes de Adopcion</h1>
-            
-            <div class="solicitudes-lista" id="solicitudesLista">
-                <p class="cargando">Cargando tus solicitudes...</p>
+            <div class="solicitudes-header">
+                <h1>Mis Solicitudes de Adopción</h1>
+                <p>Consulta el estado de todas tus solicitudes</p>
+            </div>
+
+            <!-- Tabs de filtro -->
+            <div class="solicitudes-tabs">
+                <button class="tab-btn activo" onclick="filtrarSolicitudes('todas')" id="tabTodas">Todas</button>
+                <button class="tab-btn" onclick="filtrarSolicitudes('pendiente')" id="tabPendientes">Pendientes</button>
+                <button class="tab-btn" onclick="filtrarSolicitudes('aprobada')" id="tabAprobadas">Aprobadas</button>
+                <button class="tab-btn" onclick="filtrarSolicitudes('rechazada')" id="tabRechazadas">Rechazadas</button>
+            </div>
+
+            <!-- Lista de solicitudes -->
+            <div id="solicitudesContainer">
+                <div class="cargando">Cargando tus solicitudes...</div>
             </div>
         </div>
     </main>
 
-<!-- pie de pagina -->
-<footer class="pie-pagina">
-    <div class="contenedor">
-        <div class="footer-grid">
-            <div class="footer-columna">
-                <div class="logo">
-                    <img src="assets/images/logo.png" alt="Patitas Felices" />
-                    <span class="logo-texto">Patitas Felices</span>
+    <!-- pie de pagina con tus datos -->
+    <footer class="pie-pagina">
+        <div class="contenedor">
+            <div class="footer-grid">
+                <div class="footer-columna">
+                    <div class="logo">
+                        <img src="assets/images/logo.png" alt="Patitas Felices" />
+                        <span class="logo-texto">Patitas Felices</span>
+                    </div>
+                    <p>\(^-^)/</p>
                 </div>
-                <p>\(^-^)/</p>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Enlaces rapidos</h4>
-                <a href="adoptar.html">
-                    <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
-                    Adoptar
-                </a>
-                <a href="donadores.html">
-                    <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
-                    Donadores
-                </a>
-                <a href="nosotros.html">
-                    <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
-                    Nosotros
-                </a>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Contacto</h4>
-                <p>
-                    <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
-                    patitasfelices.nz@gmail.com
-                </p>
-                <p>
-                    <img src="assets/icons/phone.svg" alt="Telefono" class="icono-footer" />
-                    618 207 4083
-                </p>
-                <p>
-                    <img src="assets/icons/location.svg" alt="Ubicacion" class="icono-footer" />
-                    Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
-                </p>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Siguenos</h4>
-                <div class="redes-sociales">
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
+                
+                <div class="footer-columna">
+                    <h4>Enlaces rápidos</h4>
+                    <a href="adoptar.html">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
+                        Adoptar
                     </a>
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
+                    <a href="donadores.html">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
+                        Donadores
                     </a>
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
+                    <a href="nosotros.html">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
+                        Nosotros
                     </a>
                 </div>
+                
+                <div class="footer-columna">
+                    <h4>Contacto</h4>
+                    <p>
+                        <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
+                        patitasfelices.nz@gmail.com
+                    </p>
+                    <p>
+                        <img src="assets/icons/phone.svg" alt="Teléfono" class="icono-footer" />
+                        618 207 4083
+                    </p>
+                    <p>
+                        <img src="assets/icons/location.svg" alt="Ubicación" class="icono-footer" />
+                        Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
+                    </p>
+                </div>
+                
+                <div class="footer-columna">
+                    <h4>Síguenos</h4>
+                    <div class="redes-sociales">
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
             </div>
         </div>
-        
-        <div class="footer-copyright">
-            <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Configuracion -->
+    <!-- Configuración y funciones -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/solicitudes.js"></script>
     
     <script>
+        // ===== VARIABLES GLOBALES =====
         const enlacesNav = document.getElementById('enlacesNav');
-        const solicitudesLista = document.getElementById('solicitudesLista');
+        const solicitudesContainer = document.getElementById('solicitudesContainer');
+        let todasLasSolicitudes = [];
+        let filtroActual = 'todas';
 
+        // ===== FUNCIONES DE NAVEGACIÓN =====
         window.cerrarSesion = async function() {
             try {
                 await auth.signOut();
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error al cerrar sesion:', error);
+                console.error('Error al cerrar sesión:', error);
             }
         };
 
@@ -163,7 +456,7 @@
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesion
+                                Cerrar Sesión
                             </a>
                         </div>
                     </div>
@@ -187,102 +480,185 @@
             }
         });
 
-        function formatearFecha(fechaISO) {
-            if (!fechaISO) return 'Fecha no disponible';
+        // ===== FUNCIONES DE SOLICITUDES =====
+        function formatearFecha(timestamp) {
+            if (!timestamp) return 'Fecha no disponible';
+            
             try {
-                const fecha = new Date(fechaISO);
-                return fecha.toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                // Si es timestamp de Firestore
+                if (timestamp.seconds) {
+                    const fecha = new Date(timestamp.seconds * 1000);
+                    return fecha.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                // Si es string ISO
+                if (typeof timestamp === 'string') {
+                    const fecha = new Date(timestamp);
+                    return fecha.toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                return 'Fecha no disponible';
             } catch (e) {
+                console.error('Error formateando fecha:', e);
                 return 'Fecha no disponible';
             }
         }
 
-        async function cargarMisSolicitudes() {
-            try {
-                const solicitudes = await obtenerMisSolicitudes();
+        function mostrarSolicitudes(solicitudes) {
+            if (solicitudes.length === 0) {
+                solicitudesContainer.innerHTML = `
+                    <div class="sin-solicitudes">
+                        <img src="assets/icons/pending.svg" alt="Sin solicitudes">
+                        <h3>No tienes solicitudes</h3>
+                        <p>Aún no has realizado ninguna solicitud de adopción.</p>
+                        <a href="adoptar.html" class="btn-adoptar">Ver mascotas disponibles</a>
+                    </div>
+                `;
+                return;
+            }
+
+            solicitudesContainer.innerHTML = solicitudes.map(s => {
+                // Determinar clases según estado
+                let estadoClase = '';
+                let estadoTexto = '';
                 
-                if (solicitudes.length === 0) {
-                    solicitudesLista.innerHTML = `
-                        <div class="sin-resultados">
-                            <p>No tienes solicitudes de adopcion aun.</p>
-                            <a href="adoptar.html" class="btn btn-primario">Ver mascotas disponibles</a>
-                        </div>
-                    `;
-                    return;
+                switch(s.estado) {
+                    case 'pendiente':
+                        estadoClase = 'pendiente';
+                        estadoTexto = 'En revisión';
+                        break;
+                    case 'aprobada':
+                        estadoClase = 'aprobada';
+                        estadoTexto = 'Aprobada';
+                        break;
+                    case 'rechazada':
+                        estadoClase = 'rechazada';
+                        estadoTexto = 'Rechazada';
+                        break;
                 }
-                
-                solicitudesLista.innerHTML = solicitudes.map(s => {
-                    let estadoTexto = '';
-                    let estadoClase = '';
-                    
-                    switch(s.estado) {
-                        case 'pendiente':
-                            estadoTexto = 'En revision';
-                            estadoClase = 'pendiente';
-                            break;
-                        case 'aprobada':
-                            estadoTexto = 'Aprobada';
-                            estadoClase = 'aprobada';
-                            break;
-                        case 'rechazada':
-                            estadoTexto = 'Rechazada';
-                            estadoClase = 'rechazada';
-                            break;
-                    }
-                    
-                    const fechaSolicitud = formatearFecha(s.fechaSolicitud);
-                    
-                    return `
-                        <div class="solicitud-tarjeta ${estadoClase}">
-                            <div class="solicitud-header">
-                                <h3>Solicitud para ${s.mascota?.nombre || 'Mascota'}</h3>
-                                <span class="solicitud-estado ${estadoClase}">${estadoTexto}</span>
-                            </div>
+
+                const fechaSolicitud = formatearFecha(s.fechaSolicitud);
+                const fechaRespuesta = s.fechaProcesamiento ? formatearFecha(s.fechaProcesamiento) : null;
+
+                return `
+                    <div class="solicitud-tarjeta ${estadoClase}">
+                        <div class="solicitud-header">
+                            <h3>Solicitud para ${s.mascota?.nombre || 'Mascota'}</h3>
+                            <span class="solicitud-estado ${estadoClase}">${estadoTexto}</span>
+                        </div>
+                        <div class="solicitud-body">
                             <div class="solicitud-info">
-                                <p><strong>Mascota:</strong> ${s.mascota?.nombre || 'No especificado'} (${s.mascota?.especie || 'No especificado'})</p>
-                                <p><strong>Fecha de solicitud:</strong> ${fechaSolicitud}</p>
-                                ${s.motivoRechazo ? `<p><strong>Motivo:</strong> ${s.motivoRechazo}</p>` : ''}
-                                ${s.fechaProcesamiento ? `<p><strong>Fecha de respuesta:</strong> ${formatearFecha(s.fechaProcesamiento)}</p>` : ''}
+                                <div class="info-row">
+                                    <img src="assets/icons/pets.svg" alt="Mascota">
+                                    <strong>Mascota:</strong>
+                                    <span>${s.mascota?.nombre || 'No especificado'} (${s.mascota?.especie || '?'})</span>
+                                </div>
+                                <div class="info-row">
+                                    <img src="assets/icons/calendar.svg" alt="Fecha">
+                                    <strong>Solicitud:</strong>
+                                    <span>${fechaSolicitud}</span>
+                                </div>
+                                ${fechaRespuesta ? `
+                                    <div class="info-row">
+                                        <img src="assets/icons/calendar.svg" alt="Respuesta">
+                                        <strong>Respuesta:</strong>
+                                        <span>${fechaRespuesta}</span>
+                                    </div>
+                                ` : ''}
+                                ${s.motivoRechazo ? `
+                                    <div class="motivo-rechazo">
+                                        <strong>Motivo del rechazo:</strong>
+                                        <p>${s.motivoRechazo}</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="solicitud-acciones">
+                                <a href="mascota-detalle.html?id=${s.mascotaId}" class="btn-ver-mascota">
+                                    <img src="assets/icons/search.svg" alt="Ver" class="icono-pequeno">
+                                    Ver mascota
+                                </a>
                             </div>
                         </div>
-                    `;
-                }).join('');
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filtrarSolicitudes(estado) {
+            filtroActual = estado;
+            
+            // Actualizar clases de los tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('activo'));
+            if (estado === 'todas') document.getElementById('tabTodas').classList.add('activo');
+            if (estado === 'pendiente') document.getElementById('tabPendientes').classList.add('activo');
+            if (estado === 'aprobada') document.getElementById('tabAprobadas').classList.add('activo');
+            if (estado === 'rechazada') document.getElementById('tabRechazadas').classList.add('activo');
+            
+            // Filtrar solicitudes
+            let filtradas = todasLasSolicitudes;
+            if (estado !== 'todas') {
+                filtradas = todasLasSolicitudes.filter(s => s.estado === estado);
+            }
+            
+            mostrarSolicitudes(filtradas);
+        }
+
+        async function cargarSolicitudes() {
+            try {
+                solicitudesContainer.innerHTML = '<div class="cargando">Cargando tus solicitudes...</div>';
+                
+                const solicitudes = await obtenerMisSolicitudes();
+                todasLasSolicitudes = solicitudes;
+                
+                filtrarSolicitudes(filtroActual);
                 
             } catch (error) {
                 console.error('Error cargando solicitudes:', error);
-                solicitudesLista.innerHTML = `
+                solicitudesContainer.innerHTML = `
                     <div class="error">
-                        <p>Error al cargar tus solicitudes</p>
-                        <button onclick="cargarMisSolicitudes()" class="btn btn-secundario">Reintentar</button>
+                        Error al cargar las solicitudes: ${error.message}
                     </div>
                 `;
             }
         }
 
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticación
+            auth.onAuthStateChanged(async (user) => {
+                if (!user) {
+                    window.location.href = 'login/login.html';
+                    return;
+                }
+
                 try {
                     const userDoc = await db.collection('usuarios').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
-                        await cargarMisSolicitudes();
-                    } else {
+                    if (!userDoc.exists) {
                         window.location.href = 'login/login.html';
+                        return;
                     }
+
+                    const userData = userDoc.data();
+                    enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                    
+                    // Cargar solicitudes
+                    await cargarSolicitudes();
+                    
                 } catch (error) {
                     console.error('Error:', error);
                     window.location.href = 'login/login.html';
                 }
-            } else {
-                window.location.href = 'login/login.html';
-            }
+            });
         });
     </script>
 </body>

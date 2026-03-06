@@ -202,8 +202,8 @@
 
 /* ===== ALERTAS ===== */
 .mensaje-error {
-    background-color: var(--color-error-claro, #f8d7da);
-    color: var(--color-error-oscuro, #721c24);
+    background-color: #f8d7da;
+    color: #721c24;
     padding: 12px 15px;
     border-radius: var(--borde-redondo);
     margin-bottom: 20px;
@@ -212,8 +212,8 @@
 }
 
 .mensaje-exito {
-    background-color: var(--color-exito-claro, #d4edda);
-    color: var(--color-exito-oscuro, #155724);
+    background-color: #d4edda;
+    color: #155724;
     padding: 12px 15px;
     border-radius: var(--borde-redondo);
     margin-bottom: 20px;
@@ -222,41 +222,10 @@
 }
 
 .mensaje-error-campo {
-    color: var(--color-error);
+    color: #dc3545;
     font-size: 0.85rem;
     margin-top: 5px;
     padding-left: 5px;
-}
-
-/* ===== REQUISITOS DE CONTRASEÑA ===== */
-.requisitos-contraseña {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: var(--borde-redondo);
-    border: 1px solid var(--color-borde);
-}
-
-.requisito {
-    font-size: 0.85rem;
-    color: var(--color-texto-claro);
-    margin: 5px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.requisito.valido {
-    color: var(--color-exito);
-}
-
-.requisito-icono {
-    font-size: 1rem;
-    width: 16px;
-    height: 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }
 
 /* ===== PANTALLA DE ÉXITO ===== */
@@ -274,23 +243,23 @@
     height: 80px;
 }
 
-.circulo-exito {
-    stroke: var(--color-primario);
-    stroke-width: 2;
-    fill: none;
-}
-
-.check-exito {
-    stroke: var(--color-primario);
-    stroke-width: 2;
-    stroke-linecap: round;
-    fill: none;
-}
-
 .pantalla-exito h2 {
     color: var(--color-primario-oscuro);
     margin-bottom: 15px;
     font-size: 2rem;
+}
+
+.mensaje-exito-block {
+    background-color: var(--color-primario-claro);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 25px 0;
+}
+
+.mensaje-exito-block p {
+    color: var(--color-texto);
+    font-size: 1.1rem;
+    margin: 8px 0;
 }
 
 .email-registrado {
@@ -338,11 +307,6 @@
     animation: slideIn 0.3s;
 }
 
-@keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
 .modal-header {
     padding: 20px 25px;
     border-bottom: 2px solid var(--color-borde);
@@ -383,7 +347,7 @@
 
 .modal-body h3 {
     color: var(--color-primario-oscuro);
-    margin: 25px 0 10px;
+    margin: 20px 0 10px;
     font-size: 1.2rem;
 }
 
@@ -400,32 +364,6 @@
     text-align: right;
     background-color: #f8f9fa;
     border-radius: 0 0 20px 20px;
-}
-
-/* ===== ESTADOS DE CARGA ===== */
-.cargando-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--color-primario-claro);
-    border-top: 2px solid var(--color-primario);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 8px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.btn-cargando {
-    pointer-events: none;
-    opacity: 0.7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
 /* ===== RESPONSIVE ===== */

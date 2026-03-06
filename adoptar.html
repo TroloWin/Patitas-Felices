@@ -4,7 +4,207 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Adoptar | Patitas Felices</title>
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilos-generales.css" />
+    <style>
+
+        /* Estilos específicos para adoptar */
+        .filtros-seccion {
+            background-color: var(--color-blanco);
+            padding: 30px 0;
+            border-bottom: 1px solid var(--color-borde);
+        }
+        
+        .filtros-contenedor {
+            background-color: var(--color-primario-claro);
+            padding: 20px;
+            border-radius: var(--borde-redondo);
+        }
+        
+        .filtros-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filtros-header h3 {
+            margin-bottom: 0;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .filtros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .filtro-grupo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .filtro-grupo select,
+        .filtro-grupo input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--color-borde);
+            border-radius: var(--borde-redondo);
+            background-color: var(--color-blanco);
+            font-size: 0.95rem;
+        }
+        
+        .filtro-grupo select:focus,
+        .filtro-grupo input:focus {
+            outline: none;
+            border-color: var(--color-primario);
+        }
+        
+        .filtro-grupo.botones {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .resultados-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .resultados-count {
+            background-color: var(--color-primario-claro);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .mascotas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .mascota-tarjeta {
+            background-color: var(--color-blanco);
+            border-radius: var(--borde-redondo);
+            overflow: hidden;
+            border: 2px solid var(--color-borde);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .mascota-tarjeta:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra);
+            border-color: var(--color-primario);
+        }
+        
+        .mascota-imagen {
+            position: relative;
+            height: 200px;
+            background-color: #f0f0f0;
+            border-bottom: 2px solid var(--color-borde);
+            overflow: hidden;
+        }
+        
+        .mascota-imagen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .mascota-etiqueta {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+        
+        .mascota-etiqueta.disponible {
+            background-color: var(--color-disponible);
+            color: white;
+        }
+        
+        .mascota-info {
+            padding: 20px;
+        }
+        
+        .mascota-nombre {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .mascota-detalles {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .detalle {
+            background-color: var(--color-primario-claro);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: var(--color-primario-oscuro);
+        }
+        
+        .mascota-descripcion {
+            color: var(--color-texto-claro);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .sin-resultados {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-texto-claro);
+            font-size: 1.2rem;
+            background: white;
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+            grid-column: 1 / -1;
+        }
+        
+        .cargando {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-texto-claro);
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 768px) {
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filtro-grupo.botones {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- navegacion principal -->
@@ -17,7 +217,9 @@
                 </a>
             </div>
             
-            <div class="enlaces-nav" id="enlacesNav"></div>
+            <div class="enlaces-nav" id="enlacesNav">
+    
+            </div>
             
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
@@ -30,7 +232,7 @@
         <section class="encabezado-pagina">
             <div class="contenedor">
                 <h1>Encuentra tu compañero ideal</h1>
-                <p>Conoce a nuestras mascotas disponibles para adopcion</p>
+                <p>Conoce a nuestras mascotas disponibles para adopción</p>
             </div>
         </section>
 
@@ -40,7 +242,7 @@
                 <div class="filtros-contenedor">
                     <div class="filtros-header">
                         <img src="assets/icons/filter.svg" alt="Filtros" class="icono" />
-                        <h3>Filtros de busqueda</h3>
+                        <h3>Filtros de búsqueda</h3>
                     </div>
                     
                     <div class="filtros-grid">
@@ -50,6 +252,9 @@
                                 <option value="todos">Todas</option>
                                 <option value="perro">Perros</option>
                                 <option value="gato">Gatos</option>
+                                <option value="conejo">Conejos</option>
+                                <option value="ave">Aves</option>
+                                <option value="otro">Otros</option>
                             </select>
                         </div>
 
@@ -64,12 +269,12 @@
                         </div>
 
                         <div class="filtro-grupo">
-                            <label for="busqueda">Buscar</label>
-                            <input type="text" id="busqueda" placeholder="Nombre o raza...">
+                            <label for="busqueda">Buscar por nombre</label>
+                            <input type="text" id="busqueda" placeholder="Ej: Luna, Max...">
                         </div>
 
                         <div class="filtro-grupo botones">
-                            <button class="btn btn-primario" onclick="aplicarFiltros()">Aplicar</button>
+                            <button class="btn btn-primario" onclick="aplicarFiltros()">Aplicar filtros</button>
                             <button class="btn btn-outline" onclick="limpiarFiltros()">Limpiar</button>
                         </div>
                     </div>
@@ -82,103 +287,104 @@
             <div class="contenedor">
                 <div class="resultados-header">
                     <h2>Mascotas disponibles</h2>
-                    <span class="resultados-count" id="resultadosCount">11 resultados</span>
+                    <span class="resultados-count" id="resultadosCount">0 resultados</span>
                 </div>
 
                 <div class="mascotas-grid" id="mascotasGrid">
-                    <!-- Se llena con JavaScript -->
+                    <div class="cargando">Cargando mascotas...</div>
                 </div>
             </div>
         </section>
     </main>
 
-<!-- pie de pagina -->
-<footer class="pie-pagina">
-    <div class="contenedor">
-        <div class="footer-grid">
-            <div class="footer-columna">
-                <div class="logo">
-                    <img src="assets/images/logo.png" alt="Patitas Felices" />
-                    <span class="logo-texto">Patitas Felices</span>
+    <!-- pie de pagina con tus datos -->
+    <footer class="pie-pagina">
+        <div class="contenedor">
+            <div class="footer-grid">
+                <div class="footer-columna">
+                    <div class="logo">
+                        <img src="assets/images/logo.png" alt="Patitas Felices" />
+                        <span class="logo-texto">Patitas Felices</span>
+                    </div>
+                    <p>\(^-^)/</p>
                 </div>
-                <p>\(^-^)/</p>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Enlaces rapidos</h4>
-                <a href="adoptar.html">
-                    <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
-                    Adoptar
-                </a>
-                <a href="donadores.html">
-                    <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
-                    Donadores
-                </a>
-                <a href="nosotros.html">
-                    <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
-                    Nosotros
-                </a>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Contacto</h4>
-                <p>
-                    <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
-                    patitasfelices.nz@gmail.com
-                </p>
-                <p>
-                    <img src="assets/icons/phone.svg" alt="Telefono" class="icono-footer" />
-                    618 207 4083
-                </p>
-                <p>
-                    <img src="assets/icons/location.svg" alt="Ubicacion" class="icono-footer" />
-                    Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
-                </p>
-            </div>
-            
-            <div class="footer-columna">
-                <h4>Siguenos</h4>
-                <div class="redes-sociales">
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
+                
+                <div class="footer-columna">
+                    <h4>Enlaces rápidos</h4>
+                    <a href="adoptar.html">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
+                        Adoptar
                     </a>
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
+                    <a href="donadores.html">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
+                        Donadores
                     </a>
-                    <a href="#" class="red-social">
-                        <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
+                    <a href="nosotros.html">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
+                        Nosotros
                     </a>
                 </div>
+                
+                <div class="footer-columna">
+                    <h4>Contacto</h4>
+                    <p>
+                        <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
+                        patitasfelices.nz@gmail.com
+                    </p>
+                    <p>
+                        <img src="assets/icons/phone.svg" alt="Teléfono" class="icono-footer" />
+                        618 207 4083
+                    </p>
+                    <p>
+                        <img src="assets/icons/location.svg" alt="Ubicación" class="icono-footer" />
+                        Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
+                    </p>
+                </div>
+                
+                <div class="footer-columna">
+                    <h4>Síguenos</h4>
+                    <div class="redes-sociales">
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
+                        </a>
+                        <a href="#" class="red-social">
+                            <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
             </div>
         </div>
-        
-        <div class="footer-copyright">
-            <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- Configuracion -->
+    <!-- Configuración y funciones -->
     <script src="js/firebase-config.js"></script>
-    <script src="js/auth.js"></script>
     <script src="js/mascotas.js"></script>
     
     <script>
+        // ===== VARIABLES GLOBALES =====
         const enlacesNav = document.getElementById('enlacesNav');
         const mascotasGrid = document.getElementById('mascotasGrid');
         const resultadosCount = document.getElementById('resultadosCount');
 
+        // ===== FUNCIONES DE NAVEGACIÓN =====
         window.cerrarSesion = async function() {
             try {
                 await auth.signOut();
                 window.location.href = 'index.html';
             } catch (error) {
-                console.error('Error al cerrar sesion:', error);
+                console.error('Error al cerrar sesión:', error);
             }
         };
 
@@ -221,7 +427,7 @@
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesion
+                                Cerrar Sesión
                             </a>
                         </div>
                     </div>
@@ -246,7 +452,7 @@
                     </a>
                     <a href="login/login.html" class="btn btn-outline">
                         <img src="assets/icons/user.svg" alt="Login" class="icono" />
-                        Iniciar Sesion
+                        Iniciar Sesión
                     </a>
                     <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
                 `;
@@ -266,34 +472,38 @@
             }
         });
 
-        function cargarMascotas(filtros = {}) {
-            const mascotasFiltradas = filtrarMascotas(filtros);
-            
-            resultadosCount.textContent = `${mascotasFiltradas.length} resultados`;
-            
-            if (mascotasFiltradas.length === 0) {
-                mascotasGrid.innerHTML = '<p class="sin-resultados">No hay mascotas que coincidan con los filtros</p>';
+        // ===== FUNCIONES DE MASCOTAS =====
+        
+        /**
+         * Mostrar mascotas en el grid
+         */
+        function mostrarMascotas(mascotas) {
+            if (mascotas.length === 0) {
+                mascotasGrid.innerHTML = '<p class="sin-resultados">No hay mascotas disponibles en este momento</p>';
+                resultadosCount.textContent = '0 resultados';
                 return;
             }
             
-            mascotasGrid.innerHTML = mascotasFiltradas.map(m => {
-                const estadoTexto = m.estado === 'disponible' ? 'Disponible' : 
-                                   (m.estado === 'proceso' ? 'En proceso' : 'Adoptado');
+            resultadosCount.textContent = `${mascotas.length} ${mascotas.length === 1 ? 'resultado' : 'resultados'}`;
+            
+            mascotasGrid.innerHTML = mascotas.map(m => {
+                // Determinar la ruta de la imagen
+                const imagenSrc = m.imagen || 'assets/images/default-pet.png';
                 
                 return `
                     <div class="mascota-tarjeta">
                         <div class="mascota-imagen">
-                            <img src="${m.imagen}" alt="${m.nombre}" />
-                            <span class="mascota-etiqueta ${m.estado}">${estadoTexto}</span>
+                            <img src="${imagenSrc}" alt="${m.nombre}" />
+                            <span class="mascota-etiqueta disponible">Disponible</span>
                         </div>
                         <div class="mascota-info">
                             <h3 class="mascota-nombre">${m.nombre}</h3>
                             <div class="mascota-detalles">
                                 <img src="assets/icons/${m.especie}.svg" alt="${m.especie}" class="icono-detalle" />
                                 <span class="detalle">${m.edad} años</span>
-                                <span class="detalle">${m.tamano}</span>
+                                <span class="detalle">${m.tamano || 'No especificado'}</span>
                             </div>
-                            <p class="mascota-descripcion">${m.descripcion.substring(0, 100)}...</p>
+                            <p class="mascota-descripcion">${m.descripcion ? m.descripcion.substring(0, 100) + '...' : 'Sin descripción'}</p>
                             <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario btn-bloque">Ver detalles</a>
                         </div>
                     </div>
@@ -301,6 +511,22 @@
             }).join('');
         }
 
+        /**
+         * Cargar mascotas con filtros
+         */
+        async function cargarMascotas(filtros = {}) {
+            mascotasGrid.innerHTML = '<div class="cargando">Cargando mascotas...</div>';
+            
+            try {
+                const mascotas = await obtenerMascotas(filtros);
+                mostrarMascotas(mascotas);
+            } catch (error) {
+                console.error('Error al cargar mascotas:', error);
+                mascotasGrid.innerHTML = `<p class="sin-resultados">Error al cargar mascotas: ${error.message}</p>`;
+            }
+        }
+
+        // ===== FUNCIONES DE FILTROS =====
         window.aplicarFiltros = function() {
             const filtros = {
                 especie: document.getElementById('especie').value,
@@ -317,26 +543,31 @@
             cargarMascotas();
         };
 
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userDoc = await db.collection('usuarios').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
-                    } else {
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticación y actualizar navegación
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await db.collection('usuarios').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                        } else {
+                            enlacesNav.innerHTML = crearEnlacesNavegacion();
+                        }
+                    } catch (error) {
+                        console.error('Error al obtener datos del usuario:', error);
                         enlacesNav.innerHTML = crearEnlacesNavegacion();
                     }
-                } catch (error) {
-                    console.error('Error:', error);
+                } else {
                     enlacesNav.innerHTML = crearEnlacesNavegacion();
                 }
-            } else {
-                enlacesNav.innerHTML = crearEnlacesNavegacion();
-            }
+                
+                // Cargar mascotas después de actualizar la navegación
+                await cargarMascotas();
+            });
         });
-
-        cargarMascotas();
     </script>
 </body>
 </html>

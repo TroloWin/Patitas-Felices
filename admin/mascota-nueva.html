@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nueva Mascota | Admin</title>
+    <link rel="stylesheet" href="../css/estilos-generales.css" />
+    <link rel="stylesheet" href="css/admin-styles.css" />
+    <style>
+        /* Estilos adicionales para la previsualización */
+        .preview-container {
+            margin-top: 15px;
+            text-align: center;
+            padding: 15px;
+            border: 2px dashed var(--color-borde);
+            border-radius: 8px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-container img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--color-primario);
+        }
+        
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--color-texto-claro);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/images/logo.png" alt="Patitas Felices" />
+                <span>Admin Panel</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html">Dashboard</a>
+                <a href="mascotas.html" class="activo">Mascotas</a>
+                <a href="solicitudes.html">Solicitudes</a>
+                <a href="usuarios.html">Usuarios</a>
+                <hr>
+                <a href="../index.html">Ver sitio</a>
+            </nav>
+        </aside>
+
+        <main class="admin-contenido">
+            <div class="admin-header">
+                <h1>Registrar Nueva Mascota</h1>
+                <a href="mascotas.html" class="btn-secundario">Volver</a>
+            </div>
+
+            <form id="formMascota" class="formulario-admin">
+                <div class="form-grid">
+                    <!-- Columna izquierda -->
+                    <div class="form-columna">
+                        <h3>Información básica</h3>
+                        
+                        <div class="campo">
+                            <label>Nombre *</label>
+                            <input type="text" id="nombre" required>
+                        </div>
+
+                        <div class="campo">
+                            <label>Especie *</label>
+                            <select id="especie" required>
+                                <option value="">Seleccionar</option>
+                                <option value="perro">Perro</option>
+                                <option value="gato">Gato</option>
+                                <option value="conejo">Conejo</option>
+                                <option value="ave">Ave</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Raza</label>
+                            <input type="text" id="raza">
+                        </div>
+
+                        <div class="campo">
+                            <label>Edad (años) *</label>
+                            <input type="number" id="edad" min="0" step="0.5" required>
+                        </div>
+
+                        <div class="campo">
+                            <label>Tamaño *</label>
+                            <select id="tamano" required>
+                                <option value="">Seleccionar</option>
+                                <option value="pequeno">Pequeño</option>
+                                <option value="mediano">Mediano</option>
+                                <option value="grande">Grande</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Sexo *</label>
+                            <select id="sexo" required>
+                                <option value="">Seleccionar</option>
+                                <option value="macho">Macho</option>
+                                <option value="hembra">Hembra</option>
+                            </select>
+                        </div>
+
+                        <div class="campo">
+                            <label>Color</label>
+                            <input type="text" id="color">
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="form-columna">
+                        <h3>Características</h3>
+
+                        <div class="campo">
+                            <label>Personalidad</label>
+                            <div class="checkbox-grid">
+                                <label><input type="checkbox" value="jugueton"> Juguetón</label>
+                                <label><input type="checkbox" value="tranquilo"> Tranquilo</label>
+                                <label><input type="checkbox" value="cariñoso"> Cariñoso</label>
+                                <label><input type="checkbox" value="energico"> Enérgico</label>
+                                <label><input type="checkbox" value="timido"> Tímido</label>
+                                <label><input type="checkbox" value="sociable"> Sociable</label>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label>Salud</label>
+                            <textarea id="salud" rows="2" placeholder="Vacunas, esterilización, condiciones especiales..."></textarea>
+                        </div>
+
+                        <div class="campo">
+                            <label>Descripción *</label>
+                            <textarea id="descripcion" rows="4" required></textarea>
+                        </div>
+
+                        <h3>Imagen</h3>
+                        
+                        <div class="campo">
+                            <label>Seleccionar imagen de la carpeta</label>
+                            <input type="file" id="imagenFile" accept="image/png, image/jpeg, image/jpg, image/gif">
+                            <small>Selecciona una imagen de tu computadora. Se guardará en la carpeta del proyecto.</small>
+                        </div>
+                        
+                        <div class="preview-container" id="previewContainer">
+                            <p class="sin-imagen">No hay imagen seleccionada</p>
+                        </div>
+                        
+                        <div class="file-info" id="fileInfo"></div>
+                        
+                        <!-- Campo oculto para guardar la ruta -->
+                        <input type="hidden" id="imagenRuta" name="imagenRuta">
+                    </div>
+                </div>
+
+                <div class="form-acciones">
+                    <button type="button" onclick="window.location.href='mascotas.html'" class="btn-secundario">Cancelar</button>
+                    <button type="submit" class="btn-primario">Guardar mascota</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Referencias a elementos
+        const imagenFile = document.getElementById('imagenFile');
+        const previewContainer = document.getElementById('previewContainer');
+        const fileInfo = document.getElementById('fileInfo');
+        const imagenRuta = document.getElementById('imagenRuta');
+
+        // Mapa de archivos seleccionados (para simular la "copia" a la carpeta del proyecto)
+        // En un entorno real, necesitarías un backend para mover el archivo
+        const archivosSeleccionados = {};
+
+        // Vista previa de imagen al seleccionar archivo
+        imagenFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validar tipo de archivo
+                const tipoValido = file.type.startsWith('image/');
+                if (!tipoValido) {
+                    alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, GIF)');
+                    imagenFile.value = '';
+                    return;
+                }
+                
+                // Validar tamaño (máximo 5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('La imagen no debe superar los 5MB');
+                    imagenFile.value = '';
+                    return;
+                }
+
+                // Crear nombre único para el archivo
+                const timestamp = Date.now();
+                const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+                const nuevoNombre = `${timestamp}_${nombreLimpio}`;
+                
+                // En un entorno real, aquí necesitarías subir el archivo al servidor
+                // Como es solo frontend, simulamos que se guarda en la carpeta mascotas
+                const rutaSimulada = `assets/images/mascotas/${nuevoNombre}`;
+                
+                // Guardar la referencia del archivo (simulado)
+                archivosSeleccionados[nuevoNombre] = file;
+                imagenRuta.value = rutaSimulada;
+                
+                // Mostrar vista previa
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewContainer.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
+                };
+                reader.readAsDataURL(file);
+                
+                // Mostrar información del archivo
+                fileInfo.innerHTML = `
+                    <strong>Archivo seleccionado:</strong> ${file.name}<br>
+                    <strong>Tamaño:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+                    <strong>Se guardará como:</strong> ${rutaSimulada}
+                `;
+            } else {
+                previewContainer.innerHTML = '<p class="sin-imagen">No hay imagen seleccionada</p>';
+                fileInfo.innerHTML = '';
+                imagenRuta.value = '';
+            }
+        });
+
+        // Guardar mascota
+        const form = document.getElementById('formMascota');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Validar que se haya seleccionado una imagen
+            if (!imagenRuta.value) {
+                alert('Debes seleccionar una imagen para la mascota');
+                return;
+            }
+            
+            // Obtener personalidad seleccionada
+            const personalidad = [];
+            document.querySelectorAll('.checkbox-grid input:checked').forEach(cb => {
+                personalidad.push(cb.value);
+            });
+            
+            // Crear objeto con datos
+            const datosMascota = {
+                nombre: document.getElementById('nombre').value,
+                especie: document.getElementById('especie').value,
+                raza: document.getElementById('raza').value || '',
+                edad: parseFloat(document.getElementById('edad').value),
+                tamano: document.getElementById('tamano').value,
+                sexo: document.getElementById('sexo').value,
+                color: document.getElementById('color').value || '',
+                personalidad: personalidad,
+                salud: document.getElementById('salud').value || '',
+                descripcion: document.getElementById('descripcion').value,
+                imagen: imagenRuta.value, // Guardamos la ruta donde "estará" la imagen
+                estado: 'disponible',
+                fechaRegistro: firebase.firestore.FieldValue.serverTimestamp(),
+                registradoPor: auth.currentUser ? auth.currentUser.uid : null
+            };
+            
+            try {
+        
+                
+                // Guardamos la referencia en Firestore
+                await db.collection('mascotas').add(datosMascota);
+                
+                alert('Mascota registrada correctamente');
+                
+                // Opcional: Mostrar instrucciones para mover el archivo manualmente
+                if (imagenFile.files[0]) {
+                    alert(`"Usa el nombre"${imagenRuta.value.split('/').pop()}"" en la carpeta mascotas"`);
+                }
+                
+                window.location.href = 'mascotas.html';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // Verificar autenticación
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = '../login/login.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,93 +1,74 @@
-// ===== SOLICITUDES - VERSIÓN DE PRUEBA (sin Firebase) =====
-
-const STORAGE_KEY = 'patitas_solicitudes';
+// ===== SOLICITUDES - FUNCIONES PARA FIRESTORE =====
+// VERSIÓN TEMPORAL - SIN ORDERBY EN LA CONSULTA
 
 /**
- * Enviar una nueva solicitud de adopcion (guarda en localStorage)
+ * Enviar una nueva solicitud de adopción
  * @param {string} mascotaId - ID de la mascota
  * @param {Object} mascotaData - Datos de la mascota
- * @returns {Promise<Object>} Resultado de la operacion
+ * @returns {Promise<Object>} Resultado de la operación
  */
 async function enviarSolicitud(mascotaId, mascotaData) {
-    console.log('=== ENVIAR SOLICITUD (PRUEBA) ===');
-    console.log('mascotaId:', mascotaId);
-    console.log('mascotaData:', mascotaData);
-    
     try {
-        // Simular un pequeño retraso como si fuera una operación real
-        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('🔍 Enviando solicitud para mascota:', mascotaId);
         
         const user = auth.currentUser;
-        console.log('Usuario actual:', user ? user.uid : 'No hay usuario');
-        
         if (!user) {
-            throw new Error('Debes iniciar sesion para adoptar');
+            throw new Error('Debes iniciar sesión para adoptar');
         }
+        console.log('Usuario:', user.uid);
 
-        // Obtener datos del usuario desde localStorage (simulado)
-        // En una app real, estos vendrían de Firestore
-        const userData = {
-            nombre: user.displayName || 'Usuario',
-            email: user.email,
-            telefono: 'No proporcionado',
-            direccion: 'No proporcionada'
-        };
-
-        // Obtener solicitudes existentes de localStorage
-        const solicitudesExistentes = obtenerTodasLasSolicitudesStorage();
+        // Obtener datos del usuario
+        const userDoc = await db.collection('usuarios').doc(user.uid).get();
+        if (!userDoc.exists) {
+            throw new Error('Usuario no encontrado en la base de datos');
+        }
         
-        // Verificar si ya tiene una solicitud pendiente para esta mascota
-        const solicitudExistente = solicitudesExistentes.find(s => 
-            s.usuarioId === user.uid && 
-            s.mascotaId === mascotaId && 
-            (s.estado === 'pendiente' || s.estado === 'aprobada')
-        );
+        const userData = userDoc.data();
+        console.log('Datos del usuario:', userData);
 
-        if (solicitudExistente) {
+        // Verificar si ya tiene una solicitud pendiente para esta mascota
+        const solicitudesExistentes = await db.collection('solicitudes')
+            .where('usuarioId', '==', user.uid)
+            .where('mascotaId', '==', mascotaId)
+            .where('estado', 'in', ['pendiente', 'aprobada'])
+            .get();
+
+        if (!solicitudesExistentes.empty) {
+            console.log('⚠️ Ya existe una solicitud activa');
             throw new Error('Ya tienes una solicitud activa para esta mascota');
         }
 
-        // Crear la nueva solicitud
-        const nuevaSolicitud = {
-            id: generarIdUnico(),
+        // Crear la solicitud
+        const solicitud = {
             usuarioId: user.uid,
             mascotaId: mascotaId,
-            fechaSolicitud: new Date().toISOString(),
+            fechaSolicitud: firebase.firestore.FieldValue.serverTimestamp(),
             estado: 'pendiente',
             adoptante: {
-                nombre: userData.nombre,
+                nombre: userData.nombre || 'Sin nombre',
                 email: user.email,
-                telefono: userData.telefono,
-                direccion: userData.direccion
+                telefono: userData.telefono || 'No proporcionado'
             },
             mascota: {
                 nombre: mascotaData.nombre,
                 especie: mascotaData.especie,
-                imagen: mascotaData.imagen || '',
-                edad: mascotaData.edad || 0,
-                tamano: mascotaData.tamano || 'No especificado'
-            },
-            notificado: false
+                imagen: mascotaData.imagen || ''
+            }
         };
 
-        console.log('Nueva solicitud:', nuevaSolicitud);
+        console.log('📦 Guardando solicitud:', solicitud);
 
-        // Guardar en localStorage
-        solicitudesExistentes.push(nuevaSolicitud);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(solicitudesExistentes));
-        
-        console.log('Solicitud guardada en localStorage');
-        console.log('=== FIN ENVIAR SOLICITUD (EXITO) ===');
+        const docRef = await db.collection('solicitudes').add(solicitud);
+        console.log('✅ Solicitud creada con ID:', docRef.id);
         
         return { 
             success: true, 
-            id: nuevaSolicitud.id,
+            id: docRef.id,
             message: 'Solicitud enviada correctamente'
         };
 
     } catch (error) {
-        console.error('Error al enviar solicitud:', error);
-        console.log('=== FIN ENVIAR SOLICITUD (ERROR) ===');
+        console.error('❌ Error al enviar solicitud:', error);
         return { 
             success: false, 
             error: error.message 
@@ -96,227 +77,143 @@ async function enviarSolicitud(mascotaId, mascotaData) {
 }
 
 /**
- * Obtener solicitudes del usuario actual desde localStorage
+ * Obtener solicitudes del usuario actual (SIN ÍNDICE)
  * @returns {Promise<Array>} Lista de solicitudes
  */
 async function obtenerMisSolicitudes() {
-    console.log('=== OBTENER MIS SOLICITUDES (PRUEBA) ===');
-    
     try {
         const user = auth.currentUser;
-        console.log('Usuario actual:', user ? user.uid : 'No hay usuario');
-        
         if (!user) {
-            console.log('No hay usuario autenticado');
+            console.log('⚠️ Usuario no autenticado');
             return [];
         }
 
-        // Obtener todas las solicitudes de localStorage
-        const todasLasSolicitudes = obtenerTodasLasSolicitudesStorage();
+        console.log('🔍 Obteniendo solicitudes para usuario:', user.uid);
         
-        // Filtrar por usuario actual
-        const misSolicitudes = todasLasSolicitudes.filter(s => s.usuarioId === user.uid);
+        // ⚠️ SOLUCIÓN TEMPORAL: Solo filtramos por usuarioId, sin orderBy
+        const snapshot = await db.collection('solicitudes')
+            .where('usuarioId', '==', user.uid)
+            .get();
+
+        const solicitudes = [];
+        snapshot.forEach(doc => {
+            solicitudes.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
         
-        // Ordenar por fecha (más reciente primero)
-        misSolicitudes.sort((a, b) => new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud));
+        // 🔧 Ordenar manualmente en JavaScript
+        solicitudes.sort((a, b) => {
+            // Si no hay fecha, poner al final
+            if (!a.fechaSolicitud) return 1;
+            if (!b.fechaSolicitud) return -1;
+            
+            // Comparar timestamps de Firestore
+            const tiempoA = a.fechaSolicitud?.seconds || 0;
+            const tiempoB = b.fechaSolicitud?.seconds || 0;
+            
+            return tiempoB - tiempoA; // Más reciente primero
+        });
         
-        console.log('Solicitudes encontradas: ' + misSolicitudes.length);
-        console.log('Datos:', misSolicitudes);
-        console.log('=== FIN OBTENER MIS SOLICITUDES ===');
-        
-        return misSolicitudes;
+        console.log('✅ Solicitudes encontradas (ordenadas manualmente):', solicitudes.length);
+        return solicitudes;
 
     } catch (error) {
-        console.error('Error al obtener solicitudes:', error);
-        console.log('=== FIN OBTENER MIS SOLICITUDES (ERROR) ===');
+        console.error('❌ Error al obtener solicitudes:', error);
         return [];
     }
 }
 
 /**
- * Obtener todas las solicitudes (para admin) desde localStorage
+ * Obtener todas las solicitudes (para admin) - VERSIÓN SIN ÍNDICE
  * @param {string} filtroEstado - Filtrar por estado
  * @returns {Promise<Array>} Lista de solicitudes
  */
 async function obtenerTodasLasSolicitudes(filtroEstado = 'todos') {
-    console.log('=== OBTENER TODAS LAS SOLICITUDES (PRUEBA) ===');
-    console.log('filtroEstado:', filtroEstado);
-    
     try {
-        // Simular un pequeño retraso
-        await new Promise(resolve => setTimeout(resolve, 300));
+        console.log('🔍 Obteniendo todas las solicitudes, filtro:', filtroEstado);
         
-        let solicitudes = obtenerTodasLasSolicitudesStorage();
-
+        let query = db.collection('solicitudes');
+        
         if (filtroEstado && filtroEstado !== 'todos') {
-            solicitudes = solicitudes.filter(s => s.estado === filtroEstado);
+            query = query.where('estado', '==', filtroEstado);
         }
         
-        // Ordenar por fecha (más reciente primero)
-        solicitudes.sort((a, b) => new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud));
+        // ⚠️ SOLUCIÓN TEMPORAL: Sin orderBy
+        const snapshot = await query.get();
         
-        console.log('Solicitudes encontradas: ' + solicitudes.length);
-        console.log('=== FIN OBTENER TODAS LAS SOLICITUDES ===');
+        let solicitudes = [];
+        snapshot.forEach(doc => {
+            solicitudes.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
         
+        // 🔧 Ordenar manualmente
+        solicitudes.sort((a, b) => {
+            if (!a.fechaSolicitud) return 1;
+            if (!b.fechaSolicitud) return -1;
+            const tiempoA = a.fechaSolicitud?.seconds || 0;
+            const tiempoB = b.fechaSolicitud?.seconds || 0;
+            return tiempoB - tiempoA;
+        });
+        
+        console.log('✅ Solicitudes obtenidas:', solicitudes.length);
         return solicitudes;
 
     } catch (error) {
-        console.error('Error al obtener solicitudes:', error);
-        console.log('=== FIN OBTENER TODAS LAS SOLICITUDES (ERROR) ===');
+        console.error('❌ Error al obtener solicitudes:', error);
         return [];
     }
 }
 
 /**
- * Obtener todas las solicitudes del localStorage
- * @returns {Array} Lista de solicitudes
- */
-function obtenerTodasLasSolicitudesStorage() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-}
-
-/**
- * Generar un ID único para las solicitudes
- * @returns {string} ID único
- */
-function generarIdUnico() {
-    return 'sol_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-/**
  * Aprobar una solicitud (solo admin)
- * @param {string} solicitudId - ID de la solicitud
- * @returns {Promise<Object>} Resultado de la operacion
  */
-async function aprobarSolicitud(solicitudId) {
-    console.log('=== APROBAR SOLICITUD (PRUEBA) ===');
-    console.log('solicitudId:', solicitudId);
-    
+async function aprobarSolicitud(solicitudId, mascotaId) {
     try {
-        // Simular retraso
-        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('🔍 Aprobando solicitud:', solicitudId);
         
-        const solicitudes = obtenerTodasLasSolicitudesStorage();
-        const index = solicitudes.findIndex(s => s.id === solicitudId);
+        await db.collection('solicitudes').doc(solicitudId).update({
+            estado: 'aprobada',
+            fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
-        if (index === -1) {
-            throw new Error('La solicitud no existe');
+        if (mascotaId) {
+            await db.collection('mascotas').doc(mascotaId).update({
+                estado: 'adoptado'
+            });
         }
-
-        // Actualizar la solicitud
-        solicitudes[index].estado = 'aprobada';
-        solicitudes[index].fechaProcesamiento = new Date().toISOString();
-        solicitudes[index].notificado = false;
-
-        // Guardar en localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(solicitudes));
-
-        console.log('Solicitud aprobada');
-        console.log('=== FIN APROBAR SOLICITUD ===');
         
+        console.log('✅ Solicitud aprobada');
         return { success: true };
-
+        
     } catch (error) {
-        console.error('Error al aprobar solicitud:', error);
+        console.error('❌ Error al aprobar solicitud:', error);
         return { success: false, error: error.message };
     }
 }
 
 /**
  * Rechazar una solicitud (solo admin)
- * @param {string} solicitudId - ID de la solicitud
- * @param {string} motivo - Motivo del rechazo
- * @returns {Promise<Object>} Resultado de la operacion
  */
 async function rechazarSolicitud(solicitudId, motivo) {
-    console.log('=== RECHAZAR SOLICITUD (PRUEBA) ===');
-    console.log('solicitudId:', solicitudId);
-    console.log('motivo:', motivo);
-    
     try {
-        // Simular retraso
-        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log('🔍 Rechazando solicitud:', solicitudId, 'Motivo:', motivo);
         
-        const solicitudes = obtenerTodasLasSolicitudesStorage();
-        const index = solicitudes.findIndex(s => s.id === solicitudId);
+        await db.collection('solicitudes').doc(solicitudId).update({
+            estado: 'rechazada',
+            motivoRechazo: motivo,
+            fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
+        });
         
-        if (index === -1) {
-            throw new Error('La solicitud no existe');
-        }
-
-        // Actualizar la solicitud
-        solicitudes[index].estado = 'rechazada';
-        solicitudes[index].motivoRechazo = motivo;
-        solicitudes[index].fechaProcesamiento = new Date().toISOString();
-        solicitudes[index].notificado = false;
-
-        // Guardar en localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(solicitudes));
-
-        console.log('Solicitud rechazada');
-        console.log('=== FIN RECHAZAR SOLICITUD ===');
-        
+        console.log('✅ Solicitud rechazada');
         return { success: true };
-
+        
     } catch (error) {
-        console.error('Error al rechazar solicitud:', error);
+        console.error('❌ Error al rechazar solicitud:', error);
         return { success: false, error: error.message };
     }
-}
-
-// Función para limpiar todas las solicitudes (útil para pruebas)
-function limpiarTodasLasSolicitudes() {
-    localStorage.removeItem(STORAGE_KEY);
-    console.log('Todas las solicitudes eliminadas');
-}
-
-// Función para crear solicitudes de prueba
-function crearSolicitudesDePrueba() {
-    const solicitudesEjemplo = [
-        {
-            id: generarIdUnico(),
-            usuarioId: 'usuario1',
-            mascotaId: 'perro1',
-            fechaSolicitud: new Date(2024, 0, 15, 10, 30).toISOString(),
-            estado: 'pendiente',
-            adoptante: {
-                nombre: 'Ana García',
-                email: 'ana@email.com',
-                telefono: '555-1234',
-                direccion: 'Calle Principal 123'
-            },
-            mascota: {
-                nombre: 'Luna',
-                especie: 'perro',
-                imagen: 'assets/images/mascotas/perro-luna.png',
-                edad: 2,
-                tamano: 'mediano'
-            }
-        },
-        {
-            id: generarIdUnico(),
-            usuarioId: 'usuario2',
-            mascotaId: 'gato1',
-            fechaSolicitud: new Date(2024, 0, 10, 15, 45).toISOString(),
-            estado: 'aprobada',
-            fechaProcesamiento: new Date(2024, 0, 12, 9, 0).toISOString(),
-            adoptante: {
-                nombre: 'Carlos Ruiz',
-                email: 'carlos@email.com',
-                telefono: '555-5678',
-                direccion: 'Av. Reforma 456'
-            },
-            mascota: {
-                nombre: 'Simba',
-                especie: 'gato',
-                imagen: 'assets/images/mascotas/gato-simba.png',
-                edad: 1,
-                tamano: 'pequeño'
-            }
-        }
-    ];
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(solicitudesEjemplo));
-    console.log('Solicitudes de prueba creadas');
 }
