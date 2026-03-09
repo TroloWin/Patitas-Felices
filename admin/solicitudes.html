@@ -6,6 +6,130 @@
     <title>Gestionar Solicitudes | Admin</title>
     <link rel="stylesheet" href="../css/estilos-generales.css" />
     <link rel="stylesheet" href="css/admin-styles.css" />
+    <style>
+        /* Solo estilos necesarios para agrupar por mascota */
+        .mascota-grupo {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .mascota-header {
+            background: #ff9900;
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .mascota-header .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .solicitud-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .solicitud-item:last-child {
+            border-bottom: none;
+        }
+        
+        .solicitud-info {
+            flex: 1;
+        }
+        
+        .solicitud-info strong {
+            color: #333;
+        }
+        
+        .solicitud-info small {
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .estado {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .estado.pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .estado.aprobada {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .estado.rechazada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .acciones button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn-aprobar {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-rechazar {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-contenido {
+            background: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+        
+        .modal-botones {
+            margin-top: 15px;
+            text-align: right;
+        }
+        
+        .modal-botones button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -49,10 +173,10 @@
         <div class="modal-contenido">
             <h3>Rechazar solicitud</h3>
             <p>Motivo del rechazo:</p>
-            <textarea id="motivoRechazo" rows="3"></textarea>
+            <textarea id="motivoRechazo" rows="3" style="width:100%"></textarea>
             <div class="modal-botones">
-                <button onclick="cerrarModal()" class="btn-accion">Cancelar</button>
-                <button onclick="confirmarRechazo()" class="btn-accion">Rechazar</button>
+                <button onclick="cerrarModal()" style="background:#6c757d; color:white">Cancelar</button>
+                <button onclick="confirmarRechazo()" style="background:#dc3545; color:white">Rechazar</button>
             </div>
         </div>
     </div>
@@ -63,6 +187,185 @@
     <script src="../js/firebase-config.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/solicitudes.js"></script>
-    <script src="js/admin-solicitudes.js"></script>
+    <script>
+        // ===== ADMIN SOLICITUDES - VERSIÓN SIMPLE =====
+        let solicitudActual = null;
+
+        // Cargar solicitudes al iniciar
+        document.addEventListener('DOMContentLoaded', async function() {
+            await cargarSolicitudes();
+        });
+
+        // Función principal para cargar solicitudes
+        window.cargarSolicitudes = async function() {
+            const container = document.getElementById('solicitudesContainer');
+            container.innerHTML = '<p class="cargando">Cargando...</p>';
+            
+            try {
+                // Obtener todas las solicitudes
+                const snapshot = await db.collection('solicitudes').get();
+                const solicitudes = [];
+                snapshot.forEach(doc => {
+                    solicitudes.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Aplicar filtro de estado
+                const filtroEstado = document.getElementById('filtroEstado').value;
+                let solicitudesFiltradas = solicitudes;
+                if (filtroEstado !== 'todos') {
+                    solicitudesFiltradas = solicitudes.filter(s => s.estado === filtroEstado);
+                }
+
+                // Agrupar por mascota
+                const grupos = {};
+                solicitudesFiltradas.forEach(s => {
+                    const mascotaId = s.mascotaId;
+                    if (!grupos[mascotaId]) {
+                        grupos[mascotaId] = {
+                            nombre: s.mascota?.nombre || 'Mascota',
+                            solicitudes: []
+                        };
+                    }
+                    grupos[mascotaId].solicitudes.push(s);
+                });
+
+                // Mostrar resultados
+                if (Object.keys(grupos).length === 0) {
+                    container.innerHTML = '<p class="sin-resultados">No hay solicitudes</p>';
+                    return;
+                }
+
+                let html = '';
+                for (const [mascotaId, grupo] of Object.entries(grupos)) {
+                    html += `
+                        <div class="mascota-grupo">
+                            <div class="mascota-header" onclick="toggleGrupo('${mascotaId}')">
+                                <span>${grupo.nombre}</span>
+                                <span class="badge">${grupo.solicitudes.length} solicitudes</span>
+                            </div>
+                            <div id="grupo-${mascotaId}" style="display:block">
+                    `;
+                    
+                    grupo.solicitudes.forEach(s => {
+                        const fecha = s.fechaSolicitud?.seconds 
+                            ? new Date(s.fechaSolicitud.seconds * 1000).toLocaleDateString()
+                            : 'Fecha no disponible';
+                        
+                        html += `
+                            <div class="solicitud-item">
+                                <div class="solicitud-info">
+                                    <strong>${s.adoptante?.nombre || 'Sin nombre'}</strong><br>
+                                    <small>${s.adoptante?.email || ''} | ${fecha}</small>
+                                </div>
+                                <div>
+                                    <span class="estado ${s.estado}">${s.estado}</span>
+                                </div>
+                                <div class="acciones">
+                                    ${s.estado === 'pendiente' ? `
+                                        <button onclick="aprobarSolicitud('${s.id}', '${mascotaId}')" class="btn-aprobar">✓</button>
+                                        <button onclick="abrirModal('${s.id}')" class="btn-rechazar">✗</button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div></div>`;
+                }
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<p class="sin-resultados">Error al cargar</p>';
+            }
+        };
+
+        // Toggle grupo
+        window.toggleGrupo = function(mascotaId) {
+            const grupo = document.getElementById(`grupo-${mascotaId}`);
+            grupo.style.display = grupo.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // Aprobar solicitud
+        window.aprobarSolicitud = async function(solicitudId, mascotaId) {
+            if (!confirm('¿Aprobar esta solicitud? Las demás serán rechazadas.')) return;
+            
+            try {
+                await db.collection('solicitudes').doc(solicitudId).update({
+                    estado: 'aprobada',
+                    fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Rechazar las demás
+                const otras = await db.collection('solicitudes')
+                    .where('mascotaId', '==', mascotaId)
+                    .where('estado', '==', 'pendiente')
+                    .get();
+
+                const batch = db.batch();
+                otras.forEach(doc => {
+                    if (doc.id !== solicitudId) {
+                        batch.update(doc.ref, {
+                            estado: 'rechazada',
+                            motivoRechazo: 'Otra solicitud fue aprobada'
+                        });
+                    }
+                });
+                
+                await batch.commit();
+                alert('Solicitud aprobada');
+                cargarSolicitudes();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al aprobar');
+            }
+        };
+
+        // Modal rechazo
+        window.abrirModal = function(solicitudId) {
+            solicitudActual = solicitudId;
+            document.getElementById('modalRechazar').style.display = 'block';
+        };
+
+        window.cerrarModal = function() {
+            document.getElementById('modalRechazar').style.display = 'none';
+            document.getElementById('motivoRechazo').value = '';
+            solicitudActual = null;
+        };
+
+        window.confirmarRechazo = async function() {
+            if (!solicitudActual) return;
+            
+            const motivo = document.getElementById('motivoRechazo').value;
+            if (!motivo) {
+                alert('Ingresa un motivo');
+                return;
+            }
+
+            try {
+                await db.collection('solicitudes').doc(solicitudActual).update({
+                    estado: 'rechazada',
+                    motivoRechazo: motivo,
+                    fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                alert('Solicitud rechazada');
+                cerrarModal();
+                cargarSolicitudes();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al rechazar');
+            }
+        };
+
+        // Cerrar sesión
+        window.cerrarSesion = async function() {
+            await auth.signOut();
+            window.location.href = '../login/login.html';
+        };
+    </script>
 </body>
 </html>
