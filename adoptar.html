@@ -200,6 +200,115 @@
                 width: 100%;
             }
         }
+
+        /* Estilos para la navegación */
+        .navegacion-principal {
+            background-color: var(--color-blanco);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navegacion-principal .contenedor {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .logo-texto {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--color-primario-oscuro);
+        }
+
+        .enlaces-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .enlaces-nav a {
+            text-decoration: none;
+            color: var(--color-texto);
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: var(--borde-redondo);
+            transition: all 0.3s;
+        }
+
+        .enlaces-nav a:hover {
+            color: var(--color-primario);
+        }
+
+        .enlaces-nav a.activo {
+            color: var(--color-primario);
+            font-weight: 600;
+        }
+
+        .btn-dropdown {
+            background: none;
+            border: none;
+            color: var(--color-texto);
+            font-weight: 500;
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-contenido {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: var(--borde-redondo);
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-contenido {
+            display: block;
+        }
+
+        .dropdown-contenido a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            color: var(--color-texto);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .dropdown-contenido a:hover {
+            background: var(--color-primario-claro);
+        }
+
+        .dropdown-contenido hr {
+            margin: 5px 0;
+            border: none;
+            border-top: 1px solid var(--color-borde);
+        }
     </style>
 </head>
 <body>
@@ -214,7 +323,7 @@
             </div>
             
             <div class="enlaces-nav" id="enlacesNav">
-    
+                <!-- Se llena con JavaScript -->
             </div>
             
             <button class="menu-movil" id="menuMovil">
@@ -403,9 +512,9 @@
                 const nombreUsuario = userData?.nombre || user.email?.split('@')[0] || 'Usuario';
                 
                 return `
+                    <a href="index.html">Inicio</a>
                     <a href="adoptar.html" class="activo">Adoptar</a>
                     <a href="donadores.html">Donadores</a>
-                    <a href="mis-solicitudes.html">Mis Solicitudes</a>
                     <a href="nosotros.html">Nosotros</a>
                     <div class="dropdown">
                         <button class="btn-dropdown">
@@ -414,8 +523,16 @@
                             <img src="assets/icons/dropdown.svg" alt="▼" class="icono-pequeno" />
                         </button>
                         <div class="dropdown-contenido">
-                            ${userData?.rol === 'admin' ? '<a href="admin/index.html"><img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" /> Panel Admin</a>' : ''}
-                            <a href="perfil.html"><img src="assets/icons/profile.svg" alt="Perfil" class="icono-pequeno" /> Mi Perfil</a>
+                            <a href="mis-solicitudes.html">
+                                <img src="assets/icons/requests.svg" alt="Solicitudes" class="icono-pequeno" />
+                                Mis Solicitudes
+                            </a>
+                            ${userData?.rol === 'admin' ? `
+                                <a href="admin/index.html">
+                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
+                                    Panel Admin
+                                </a>
+                            ` : ''}
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
@@ -426,6 +543,7 @@
                 `;
             } else {
                 return `
+                    <a href="index.html">Inicio</a>
                     <a href="adoptar.html" class="activo">Adoptar</a>
                     <a href="donadores.html">Donadores</a>
                     <a href="nosotros.html">Nosotros</a>
@@ -472,7 +590,7 @@
                     
                     // Si no hay solicitudes
                     if (solicitudesMascota.length === 0) {
-                        estadoElement.textContent = '✅ Disponible';
+                        estadoElement.textContent = 'Disponible';
                         estadoElement.style.backgroundColor = '#28a745';
                         estadoElement.style.color = 'white';
                         estadoElement.className = 'mascota-etiqueta';
@@ -483,7 +601,7 @@
                     const solicitudAprobada = solicitudesMascota.find(s => s.estado === 'aprobada');
                     if (solicitudAprobada) {
                         // Si está aprobada, para todos es "Ya tiene un hogar"
-                        estadoElement.textContent = '🐾 Ya tiene un hogar';
+                        estadoElement.textContent = 'Ya tiene un hogar';
                         estadoElement.style.backgroundColor = '#6c757d';
                         estadoElement.style.color = 'white';
                         estadoElement.className = 'mascota-etiqueta';
@@ -499,7 +617,7 @@
                         
                         if (miSolicitud) {
                             // YO ya solicité esta mascota
-                            estadoElement.textContent = '🔄 En proceso de adopción';
+                            estadoElement.textContent = 'En proceso de adopción';
                             estadoElement.style.backgroundColor = '#17a2b8';
                             estadoElement.style.color = 'white';
                             estadoElement.className = 'mascota-etiqueta';
@@ -509,11 +627,11 @@
                     
                     // Si llegamos aquí: otro usuario ya solicitó
                     if (solicitudesMascota.some(s => s.estado === 'en_proceso')) {
-                        estadoElement.textContent = '🔄 En proceso de adopción';
+                        estadoElement.textContent = 'En proceso de adopción';
                         estadoElement.style.backgroundColor = '#17a2b8';
                         estadoElement.style.color = 'white';
                     } else {
-                        estadoElement.textContent = '⏳ En revisión';
+                        estadoElement.textContent = 'En revisión';
                         estadoElement.style.backgroundColor = '#ffc107';
                         estadoElement.style.color = '#333';
                     }
