@@ -168,7 +168,7 @@
                         </div>
 
                         <div class="campo">
-                            <label>Descripción *</label>
+                            <label>Descripción</label>
                             <textarea id="descripcion" rows="4" required></textarea>
                         </div>
 
@@ -382,9 +382,6 @@
                 let mensajeExito = '✅ Mascota actualizada correctamente';
                 
                 // Si hay nueva imagen, dar instrucciones
-                if (archivoSeleccionado) {
-                    mensajeExito += `\n\nIMPORTANTE: Debes copiar manualmente el archivo "${archivoSeleccionado.name}" a la carpeta "assets/images/mascotas/" con el nombre "${imagenRuta.value.split('/').pop()}"`;
-                }
                 
                 alert(mensajeExito);
                 window.location.href = 'mascotas.html';
