@@ -470,15 +470,16 @@ p {
 
 .mascota-imagen {
     position: relative;
-    height: 500px;
+    height: 140px;  /* Altura más baja */
     background-color: #f0f0f0;
     border-bottom: 2px solid var(--color-borde);
+    overflow: hidden; /* Asegura que la imagen no se desborde */
 }
 
 .mascota-imagen img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* La imagen se adapta sin deformarse */
 }
 
 .mascota-etiqueta {

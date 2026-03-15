@@ -270,7 +270,7 @@
                                     <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
                                     Panel Admin
                                 </a>
-                            ` : ''}
+                            ` : ' '}
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
@@ -319,30 +319,46 @@
             }
         });
 
-        function cargarMascotasDestacadas() {
-            const todas = obtenerTodasLasMascotas();
-            const destacadas = todas.filter(m => m.estado === 'Disponible').slice(0, 3);
-            
-            mascotasDestacadas.innerHTML = destacadas.map(m => `
-                <div class="mascota-tarjeta">
-                    <div class="mascota-imagen">
-                        <img src="${m.imagen}" alt="${m.nombre}" />
-                        <span class="mascota-etiqueta disponible">Disponible</span>
-                    </div>
-                    <div class="mascota-info">
-                        <h3 class="mascota-nombre">${m.nombre}</h3>
-                        <div class="mascota-detalles">
-                            <img src="assets/icons/${m.especie}.svg" alt="${m.especie}" class="icono-detalle" />
-                            <span class="detalle">${m.edad} años</span>
-                            <span class="detalle">${m.tamano}</span>
-                        </div>
-                        <p class="mascota-descripcion">${m.descripcion.substring(0, 80)}...</p>
-                        <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario btn-bloque">Ver más</a>
-                    </div>
-                </div>
-            `).join('');
-        }
+    async function cargarMascotasDestacadas() {
+    const destacadas = await obtenerMascotasDestacadas(3);
 
+    if (!destacadas.length) {
+        mascotasDestacadas.innerHTML = "<p>No hay mascotas disponibles</p>";
+        return;
+    }
+
+    mascotasDestacadas.innerHTML = destacadas.map(m => `
+        <div class="mascota-tarjeta">
+            <div class="mascota-imagen">
+                <img src="${m.imagenUrl}" 
+                     alt="${m.nombre}" 
+                     onerror="this.src='/assets/images/mascotas/default.jpg'" />
+                <span class="mascota-etiqueta disponible">Disponible</span>
+            </div>
+
+            <div class="mascota-info">
+                <h3 class="mascota-nombre">${m.nombre}</h3>
+
+                <div class="mascota-detalles">
+                    <img src="assets/icons/${m.especie || 'mascota'}.svg" 
+                         class="icono-detalle" 
+                         onerror="this.src='assets/icons/pets.svg'" />
+                    <span class="detalle">${m.edad || '?'} años</span>
+                    <span class="detalle">${m.tamano || '?'}</span>
+                </div>
+
+                <p class="mascota-descripcion">
+                    ${m.descripcion ? m.descripcion.substring(0,80) + '...' : 'Sin descripción'}
+                </p>
+
+                <a href="mascota-detalle.html?id=${m.id}" 
+                   class="btn btn-secundario btn-bloque">
+                   Ver más
+                </a>
+            </div>
+        </div>
+    `).join('');
+}        
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
