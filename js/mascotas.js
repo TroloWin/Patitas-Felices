@@ -1,5 +1,33 @@
-// ===== MASCOTAS - FUNCIONES PARA FIRESTORE =====
-// VERSIÓN TEMPORAL - SIN ORDERBY EN LA CONSULTA
+/**
+ * Obtiene la ruta correcta de la imagen para cualquier mascota
+ * @param {Object} mascota - Datos de la mascota desde Firebase
+ * @returns {string} Ruta completa de la imagen
+ */
+function obtenerRutaImagen(mascota) {
+    // Si no hay imagen en Firebase
+    if (!mascota.imagen) {
+        return '/assets/images/mascotas/default.jpg';
+    }
+    
+    // Extraer solo el nombre del archivo (por si viene con ruta completa)
+    const nombreArchivo = mascota.imagen.split('/').pop();
+    
+    // Lista de extensiones válidas
+    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+    
+    // Verificar si el archivo tiene extensión válida
+    const tieneExtension = extensionesValidas.some(ext => 
+        nombreArchivo.toLowerCase().endsWith(ext)
+    );
+    
+    if (!tieneExtension) {
+        console.warn(`⚠️ Extensión no válida para: ${nombreArchivo}`);
+        return '/assets/images/mascotas/default.jpg';
+    }
+    
+    // Devolver la ruta completa
+    return `/assets/images/mascotas/${nombreArchivo}`;
+}
 
 /**
  * Obtener todas las mascotas disponibles desde Firestore
@@ -36,10 +64,18 @@ async function obtenerMascotas(filtros = {}) {
         let mascotas = [];
         snapshot.forEach(doc => {
             console.log('Documento:', doc.id, doc.data());
-            mascotas.push({
+            const data = doc.data();
+            
+            // Crear objeto mascota con la imagen procesada
+            const mascota = {
                 id: doc.id,
-                ...doc.data()
-            });
+                ...data
+            };
+            
+            // Asignar la ruta correcta de la imagen
+            mascota.imagenUrl = obtenerRutaImagen(mascota);
+            
+            mascotas.push(mascota);
         });
         
         // 🔧 Ordenar manualmente en JavaScript (solución temporal)
@@ -89,10 +125,17 @@ async function obtenerMascotaPorId(id) {
         
         if (doc.exists) {
             console.log('✅ Mascota encontrada:', doc.data());
-            return {
+            const data = doc.data();
+            
+            const mascota = {
                 id: doc.id,
-                ...doc.data()
+                ...data
             };
+            
+            // Asignar la ruta correcta de la imagen
+            mascota.imagenUrl = obtenerRutaImagen(mascota);
+            
+            return mascota;
         } else {
             console.log('❌ Mascota no encontrada');
             return null;
@@ -121,10 +164,17 @@ async function obtenerMascotasDestacadas(limite = 3) {
         
         let mascotas = [];
         snapshot.forEach(doc => {
-            mascotas.push({
+            const data = doc.data();
+            
+            const mascota = {
                 id: doc.id,
-                ...doc.data()
-            });
+                ...data
+            };
+            
+            // Asignar la ruta correcta de la imagen
+            mascota.imagenUrl = obtenerRutaImagen(mascota);
+            
+            mascotas.push(mascota);
         });
         
         // Ordenar manualmente
