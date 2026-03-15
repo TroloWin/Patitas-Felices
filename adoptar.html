@@ -574,7 +574,7 @@
             }
         }
 
-        // ===== FUNCIÓN CORREGIDA - DISTINGUE ENTRE USUARIO ACTUAL Y OTROS =====
+        // ===== FUNCIÓN MODIFICADA - SOLO "EN REVISIÓN DE ADOPCIÓN" =====
         async function cargarEstadosParaMascotas(mascotas) {
             // Obtener usuario actual
             const usuarioActual = auth.currentUser;
@@ -608,34 +608,19 @@
                         continue;
                     }
                     
-                    // Verificar si el usuario actual tiene una solicitud
-                    if (usuarioActual) {
-                        const miSolicitud = solicitudesMascota.find(s => 
-                            s.usuarioId === usuarioActual.uid && 
-                            (s.estado === 'pendiente' || s.estado === 'en_proceso')
-                        );
-                        
-                        if (miSolicitud) {
-                            // YO ya solicité esta mascota
-                            estadoElement.textContent = 'En proceso de adopción';
-                            estadoElement.style.backgroundColor = '#17a2b8';
-                            estadoElement.style.color = 'white';
-                            estadoElement.className = 'mascota-etiqueta';
-                            continue;
-                        }
-                    }
+                    // Para CUALQUIER solicitud activa (pendiente o en_proceso), mostrar "En revisión de adopción"
+                    // Sin importar si es el usuario actual u otro
+                    const solicitudesActivas = solicitudesMascota.filter(s => 
+                        s.estado === 'pendiente' || s.estado === 'en_proceso'
+                    );
                     
-                    // Si llegamos aquí: otro usuario ya solicitó
-                    if (solicitudesMascota.some(s => s.estado === 'en_proceso')) {
-                        estadoElement.textContent = 'En proceso de adopción';
-                        estadoElement.style.backgroundColor = '#17a2b8';
-                        estadoElement.style.color = 'white';
-                    } else {
-                        estadoElement.textContent = 'En revisión';
+                    if (solicitudesActivas.length > 0) {
+                        estadoElement.textContent = 'En revisión de adopción';
                         estadoElement.style.backgroundColor = '#ffc107';
                         estadoElement.style.color = '#333';
+                        estadoElement.className = 'mascota-etiqueta';
+                        continue;
                     }
-                    estadoElement.className = 'mascota-etiqueta';
                     
                 } catch (error) {
                     console.error(`Error al cargar estado para mascota ${mascota.id}:`, error);

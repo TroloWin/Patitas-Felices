@@ -17,7 +17,7 @@
         }
         
         .mascota-header {
-            background: #ff9900;
+            background: #0cdabf;
             color: white;
             padding: 12px 15px;
             font-weight: bold;
@@ -106,6 +106,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
+            z-index: 1000;
         }
         
         .modal-contenido {
@@ -128,6 +129,15 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .nota-info {
+            background-color: #e7f3ff;
+            border-left: 4px solid #2196f3;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #0d47a1;
         }
     </style>
 </head>
@@ -169,11 +179,32 @@
         </main>
     </div>
 
+    <!-- Modal para aprobar con motivo de rechazo automático -->
+    <div id="modalAprobar" class="modal">
+        <div class="modal-contenido">
+            <h3>Aprobar solicitud</h3>
+            <p>Vas a aprobar esta solicitud. Las demás solicitudes para esta mascota serán rechazadas automáticamente.</p>
+            
+            <div class="nota-info">
+                <strong>Motivo para los rechazados:</strong> Este mensaje se enviará a todos los usuarios cuyas solicitudes sean rechazadas.
+            </div>
+            
+            <p>Motivo del rechazo (para las demás solicitudes):</p>
+            <textarea id="motivoRechazoMasivo" rows="3" style="width:100%" placeholder="Ej: Otra solicitud fue aprobada...">Otra solicitud fue aprobada</textarea>
+            
+            <div class="modal-botones">
+                <button onclick="cerrarModalAprobar()" style="background:#6c757d; color:white">Cancelar</button>
+                <button onclick="confirmarAprobacionConMotivo()" style="background:#28a745; color:white">Aprobar y rechazar demás</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para rechazar individual -->
     <div id="modalRechazar" class="modal">
         <div class="modal-contenido">
             <h3>Rechazar solicitud</h3>
             <p>Motivo del rechazo:</p>
-            <textarea id="motivoRechazo" rows="3" style="width:100%"></textarea>
+            <textarea id="motivoRechazo" rows="3" style="width:100%" placeholder="Ej: No cumple con los requisitos..."></textarea>
             <div class="modal-botones">
                 <button onclick="cerrarModal()" style="background:#6c757d; color:white">Cancelar</button>
                 <button onclick="confirmarRechazo()" style="background:#dc3545; color:white">Rechazar</button>
@@ -188,8 +219,10 @@
     <script src="../js/auth.js"></script>
     <script src="../js/solicitudes.js"></script>
     <script>
-        // ===== ADMIN SOLICITUDES - VERSIÓN SIMPLE =====
+        // ===== ADMIN SOLICITUDES - VERSIÓN CON MOTIVO PARA RECHAZOS AUTOMÁTICOS =====
         let solicitudActual = null;
+        let solicitudAprobadaId = null;
+        let mascotaAprobadaId = null;
 
         // Cargar solicitudes al iniciar
         document.addEventListener('DOMContentLoaded', async function() {
@@ -262,8 +295,8 @@
                                 </div>
                                 <div class="acciones">
                                     ${s.estado === 'pendiente' ? `
-                                        <button onclick="aprobarSolicitud('${s.id}', '${mascotaId}')" class="btn-aprobar">✓</button>
-                                        <button onclick="abrirModal('${s.id}')" class="btn-rechazar">✗</button>
+                                        <button onclick="abrirModalAprobar('${s.id}', '${mascotaId}')" class="btn-aprobar">✓</button>
+                                        <button onclick="abrirModalRechazar('${s.id}')" class="btn-rechazar">✗</button>
                                     ` : ''}
                                 </div>
                             </div>
@@ -287,34 +320,57 @@
             grupo.style.display = grupo.style.display === 'none' ? 'block' : 'none';
         };
 
-        // Aprobar solicitud
-        window.aprobarSolicitud = async function(solicitudId, mascotaId) {
-            if (!confirm('¿Aprobar esta solicitud? Las demás serán rechazadas.')) return;
+        // ===== NUEVAS FUNCIONES PARA APROBAR CON MOTIVO =====
+        window.abrirModalAprobar = function(solicitudId, mascotaId) {
+            solicitudAprobadaId = solicitudId;
+            mascotaAprobadaId = mascotaId;
+            document.getElementById('motivoRechazoMasivo').value = 'Otra solicitud fue aprobada';
+            document.getElementById('modalAprobar').style.display = 'block';
+        };
+
+        window.cerrarModalAprobar = function() {
+            document.getElementById('modalAprobar').style.display = 'none';
+            solicitudAprobadaId = null;
+            mascotaAprobadaId = null;
+        };
+
+        window.confirmarAprobacionConMotivo = async function() {
+            if (!solicitudAprobadaId || !mascotaAprobadaId) return;
+            
+            const motivoMasivo = document.getElementById('motivoRechazoMasivo').value.trim();
+            if (!motivoMasivo) {
+                alert('Ingresa un motivo para los rechazados');
+                return;
+            }
             
             try {
-                await db.collection('solicitudes').doc(solicitudId).update({
+                // 1. Aprobar la solicitud seleccionada
+                await db.collection('solicitudes').doc(solicitudAprobadaId).update({
                     estado: 'aprobada',
                     fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Rechazar las demás
+                // 2. Rechazar las demás solicitudes de la misma mascota
                 const otras = await db.collection('solicitudes')
-                    .where('mascotaId', '==', mascotaId)
+                    .where('mascotaId', '==', mascotaAprobadaId)
                     .where('estado', '==', 'pendiente')
                     .get();
 
                 const batch = db.batch();
                 otras.forEach(doc => {
-                    if (doc.id !== solicitudId) {
+                    if (doc.id !== solicitudAprobadaId) {
                         batch.update(doc.ref, {
                             estado: 'rechazada',
-                            motivoRechazo: 'Otra solicitud fue aprobada'
+                            motivoRechazo: motivoMasivo, // Usar el motivo ingresado
+                            fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
                         });
                     }
                 });
                 
                 await batch.commit();
-                alert('Solicitud aprobada');
+                
+                alert('Solicitud aprobada. Las demás fueron rechazadas con el motivo: "' + motivoMasivo + '"');
+                cerrarModalAprobar();
                 cargarSolicitudes();
 
             } catch (error) {
@@ -323,8 +379,8 @@
             }
         };
 
-        // Modal rechazo
-        window.abrirModal = function(solicitudId) {
+        // ===== FUNCIONES PARA RECHAZO INDIVIDUAL =====
+        window.abrirModalRechazar = function(solicitudId) {
             solicitudActual = solicitudId;
             document.getElementById('modalRechazar').style.display = 'block';
         };
@@ -338,7 +394,7 @@
         window.confirmarRechazo = async function() {
             if (!solicitudActual) return;
             
-            const motivo = document.getElementById('motivoRechazo').value;
+            const motivo = document.getElementById('motivoRechazo').value.trim();
             if (!motivo) {
                 alert('Ingresa un motivo');
                 return;
