@@ -458,9 +458,11 @@ p {
 .mascota-tarjeta {
     background-color: var(--color-blanco);
     border-radius: var(--borde-redondo);
-    overflow: hidden;
+    overflow: cover;
     border: 2px solid var(--color-borde);
     transition: transform 0.3s;
+    max-width: 200px;  /* Ancho máximo */
+    margin: 0 auto;
 }
 
 .mascota-tarjeta:hover {
@@ -470,16 +472,15 @@ p {
 
 .mascota-imagen {
     position: relative;
-    height: 140px;  /* Altura más baja */
+    height: 140px;
     background-color: #f0f0f0;
     border-bottom: 2px solid var(--color-borde);
-    overflow: hidden; /* Asegura que la imagen no se desborde */
 }
 
 .mascota-imagen img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* La imagen se adapta sin deformarse */
+    object-fit: cover;
 }
 
 .mascota-etiqueta {
