@@ -21,27 +21,27 @@ function obtenerRutaImagen(mascota) {
     );
     
     if (!tieneExtension) {
-        console.warn(`⚠️ Extensión no válida para: ${nombreArchivo}`);
+        console.warn('Extension no valida para: ' + nombreArchivo);
         return '/assets/images/mascotas/default.jpg';
     }
     
     // Devolver la ruta completa
-    return `/assets/images/mascotas/${nombreArchivo}`;
+    return '/assets/images/mascotas/' + nombreArchivo;
 }
 
 /**
- * Obtener todas las mascotas disponibles desde Firestore
+ * Obtener todas las mascotas desde Firestore (SIN FILTRO DE ESTADO)
  * @param {Object} filtros - Filtros a aplicar (especie, tamano, busqueda)
  * @returns {Promise<Array>} Lista de mascotas
  */
 async function obtenerMascotas(filtros = {}) {
     try {
-        console.log('🔍 Obteniendo mascotas con filtros:', filtros);
+        console.log('Obteniendo mascotas con filtros:', filtros);
         
         let query = db.collection('mascotas');
         
-        // Por defecto, mostrar solo disponibles
-        query = query.where('estado', '==', 'disponible');
+        // ELIMINADO: query.where('estado', '==', 'disponible')
+        // El estado se maneja en adoptar.html con la logica de solicitudes
         
         // Aplicar filtro de especie
         if (filtros.especie && filtros.especie !== 'todos') {
@@ -55,11 +55,11 @@ async function obtenerMascotas(filtros = {}) {
             query = query.where('tamano', '==', filtros.tamano);
         }
         
-        // ⚠️ SOLUCIÓN TEMPORAL: Comentamos el orderBy hasta que se cree el índice
+        // SOLUCION TEMPORAL: Comentamos el orderBy hasta que se cree el indice
         // query = query.orderBy('fechaRegistro', 'desc');
         
         const snapshot = await query.get();
-        console.log('📦 Documentos encontrados:', snapshot.size);
+        console.log('Documentos encontrados:', snapshot.size);
         
         let mascotas = [];
         snapshot.forEach(doc => {
@@ -78,7 +78,7 @@ async function obtenerMascotas(filtros = {}) {
             mascotas.push(mascota);
         });
         
-        // 🔧 Ordenar manualmente en JavaScript (solución temporal)
+        // Ordenar manualmente en JavaScript (solucion temporal)
         mascotas.sort((a, b) => {
             // Si no hay fecha, poner al final
             if (!a.fechaRegistro) return 1;
@@ -88,26 +88,26 @@ async function obtenerMascotas(filtros = {}) {
             const tiempoA = a.fechaRegistro.seconds || 0;
             const tiempoB = b.fechaRegistro.seconds || 0;
             
-            return tiempoB - tiempoA; // Más reciente primero
+            return tiempoB - tiempoA; // Mas reciente primero
         });
         
-        console.log('✅ Mascotas ordenadas manualmente:', mascotas.length);
+        console.log('Mascotas ordenadas manualmente:', mascotas.length);
         
-        // Filtrar por búsqueda de texto (Firestore no soporta búsqueda parcial)
+        // Filtrar por busqueda de texto (Firestore no soporta busqueda parcial)
         if (filtros.busqueda && filtros.busqueda.trim() !== '') {
             const busqueda = filtros.busqueda.toLowerCase().trim();
-            console.log('Filtrando por búsqueda:', busqueda);
+            console.log('Filtrando por busqueda:', busqueda);
             mascotas = mascotas.filter(m => 
                 m.nombre.toLowerCase().includes(busqueda) ||
                 (m.raza && m.raza.toLowerCase().includes(busqueda))
             );
         }
         
-        console.log('✅ Mascotas obtenidas:', mascotas.length);
+        console.log('Mascotas obtenidas:', mascotas.length);
         return mascotas;
         
     } catch (error) {
-        console.error('❌ Error al obtener mascotas:', error);
+        console.error('Error al obtener mascotas:', error);
         return [];
     }
 }
@@ -119,12 +119,12 @@ async function obtenerMascotas(filtros = {}) {
  */
 async function obtenerMascotaPorId(id) {
     try {
-        console.log('🔍 Obteniendo mascota con ID:', id);
+        console.log('Obteniendo mascota con ID:', id);
         
         const doc = await db.collection('mascotas').doc(id).get();
         
         if (doc.exists) {
-            console.log('✅ Mascota encontrada:', doc.data());
+            console.log('Mascota encontrada:', doc.data());
             const data = doc.data();
             
             const mascota = {
@@ -137,29 +137,29 @@ async function obtenerMascotaPorId(id) {
             
             return mascota;
         } else {
-            console.log('❌ Mascota no encontrada');
+            console.log('Mascota no encontrada');
             return null;
         }
     } catch (error) {
-        console.error('❌ Error al obtener mascota:', error);
+        console.error('Error al obtener mascota:', error);
         return null;
     }
 }
 
 /**
  * Obtener mascotas destacadas para el home
- * @param {number} limite - Número de mascotas a mostrar
+ * @param {number} limite - Numero de mascotas a mostrar
  * @returns {Promise<Array>} Lista de mascotas destacadas
  */
 async function obtenerMascotasDestacadas(limite = 3) {
     try {
-        console.log('🔍 Obteniendo mascotas destacadas, límite:', limite);
+        console.log('Obteniendo mascotas destacadas, limite:', limite);
         
-        // ⚠️ SOLUCIÓN TEMPORAL: Sin orderBy en la consulta
+        // SOLUCION TEMPORAL: Sin orderBy en la consulta
         const snapshot = await db.collection('mascotas')
             .where('estado', '==', 'disponible')
             // .orderBy('fechaRegistro', 'desc') // Comentado temporalmente
-            // .limit(limite) // El límite también requiere orden, lo aplicamos después
+            // .limit(limite) // El limite tambien requiere orden, lo aplicamos despues
             .get();
         
         let mascotas = [];
@@ -186,14 +186,14 @@ async function obtenerMascotasDestacadas(limite = 3) {
             return tiempoB - tiempoA;
         });
         
-        // Aplicar límite después de ordenar
+        // Aplicar limite despues de ordenar
         mascotas = mascotas.slice(0, limite);
         
-        console.log('✅ Mascotas destacadas:', mascotas.length);
+        console.log('Mascotas destacadas:', mascotas.length);
         return mascotas;
         
     } catch (error) {
-        console.error('❌ Error al obtener mascotas destacadas:', error);
+        console.error('Error al obtener mascotas destacadas:', error);
         return [];
     }
 }
