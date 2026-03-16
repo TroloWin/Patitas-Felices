@@ -650,7 +650,7 @@
             mascotasGrid.innerHTML = mascotas.map(m => {
                 const imagenSrc = m.imagen || 'assets/images/default-pet.png';
                 
-                return 
+                return `
                     <div class="mascota-tarjeta" data-mascota-id="${m.id}">
                         <div class="mascota-imagen">
                             <img src="${imagenSrc}" alt="${m.nombre}" />
@@ -666,7 +666,7 @@
                             <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario btn-bloque">Ver detalles</a>
                         </div>
                     </div>
-                ;
+                `;
             }).join('');
             
             // AHORA: Cargar el estado real de cada mascota
