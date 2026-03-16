@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="hero-imagen">
-                    <img src="assets/images/hero-image.png" alt="Mascotas felices" />
+                    <img src="assets/images/refugio.jpg" alt="Mascotas felices" />
                 </div>
             </div>
         </section>
@@ -49,32 +49,32 @@
             <div class="contenedor">
                 <div class="encabezado-seccion">
                     <h2>Pasos para registrarse</h2>
-                    <p>Tres pasos simples para crear tu cuenta</p>
+                    <p>Tres simples pasos para registrarse</p>
                 </div>
                 
                 <div class="pasos-grid">
                     <div class="paso-tarjeta">
                         <div class="paso-imagen">
-                            <img src="assets/images/paso-registro-1.png" alt="Paso 1" />
+                            <img src="assets/images/WhatsApp Image 2026-03-14 at 9.22.03 PM.jpeg" alt="Paso 1" />
                         </div>
                         <h3>1. Crea tu cuenta</h3>
-                        <p>Regístrate con tu correo electrónico y una contraseña segura.</p>
+                        <p>En la esquina del lado derecho, darle click al botón de "Registrarse".</p>
                     </div>
                     
                     <div class="paso-tarjeta">
                         <div class="paso-imagen">
-                            <img src="assets/images/paso-registro-2.png" alt="Paso 2" />
+                            <img src="assets/images/WhatsApp Image 2026-03-14 at 9.30.54 PM.jpeg" alt="Paso 2" />
                         </div>
-                        <h3>2. Verifica tu email</h3>
-                        <p>Revisa tu bandeja de entrada y confirma tu dirección de correo.</p>
+                        <h3>2. Llenar los datos</h3>
+                        <p>Registrate con tu nombre, correo y contraseña donde te identificará el administrador</p>
                     </div>
                     
                     <div class="paso-tarjeta">
                         <div class="paso-imagen">
-                            <img src="assets/images/paso-registro-3.png" alt="Paso 3" />
+                            <img src="assets/images/WhatsApp Image 2026-03-14 at 9.49.36 PM.jpeg" alt="Paso 3" />
                         </div>
-                        <h3>3. Completa tu perfil</h3>
-                        <p>Añade tu información personal para comenzar.</p>
+                        <h3>3. Acepta los términos y condiciones</h3>
+                        <p>No rechaces los términos y condiciones para mayor seguridad para ti y dar click en el botón de "Registrarse"</p>
                     </div>
                 </div>
             </div>
@@ -152,7 +152,7 @@
             <div class="footer-grid">
                 <div class="footer-columna">
                     <div class="logo">
-                        <img src="assets/images/logo.png" alt="Patitas Felices" />
+                        <img src="assets/images/Logo patitas felices (11).png" alt="Patitas Felices" />
                         <span class="logo-texto">Patitas Felices</span>
                     </div>
                     <p>\(^-^)/</p>
@@ -270,7 +270,7 @@
                                     <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
                                     Panel Admin
                                 </a>
-                            ` : ''}
+                            ` : ' '}
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
@@ -319,30 +319,46 @@
             }
         });
 
-        function cargarMascotasDestacadas() {
-            const todas = obtenerTodasLasMascotas();
-            const destacadas = todas.filter(m => m.estado === 'disponible').slice(0, 3);
-            
-            mascotasDestacadas.innerHTML = destacadas.map(m => `
-                <div class="mascota-tarjeta">
-                    <div class="mascota-imagen">
-                        <img src="${m.imagen}" alt="${m.nombre}" />
-                        <span class="mascota-etiqueta disponible">Disponible</span>
-                    </div>
-                    <div class="mascota-info">
-                        <h3 class="mascota-nombre">${m.nombre}</h3>
-                        <div class="mascota-detalles">
-                            <img src="assets/icons/${m.especie}.svg" alt="${m.especie}" class="icono-detalle" />
-                            <span class="detalle">${m.edad} años</span>
-                            <span class="detalle">${m.tamano}</span>
-                        </div>
-                        <p class="mascota-descripcion">${m.descripcion.substring(0, 80)}...</p>
-                        <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario btn-bloque">Ver más</a>
-                    </div>
-                </div>
-            `).join('');
-        }
+    async function cargarMascotasDestacadas() {
+    const destacadas = await obtenerMascotasDestacadas(3);
 
+    if (!destacadas.length) {
+        mascotasDestacadas.innerHTML = "<p>No hay mascotas disponibles</p>";
+        return;
+    }
+
+    mascotasDestacadas.innerHTML = destacadas.map(m => `
+        <div class="mascota-tarjeta">
+            <div class="mascota-imagen">
+                <img src="${m.imagenUrl}" 
+                     alt="${m.nombre}" 
+                     onerror="this.src='/assets/images/mascotas/default.jpg'" />
+                <span class="mascota-etiqueta disponible">Disponible</span>
+            </div>
+
+            <div class="mascota-info">
+                <h3 class="mascota-nombre">${m.nombre}</h3>
+
+                <div class="mascota-detalles">
+                    <img src="assets/icons/${m.especie || 'mascota'}.svg" 
+                         class="icono-detalle" 
+                         onerror="this.src='assets/icons/pets.svg'" />
+                    <span class="detalle">${m.edad || '?'} años</span>
+                    <span class="detalle">${m.tamano || '?'}</span>
+                </div>
+
+                <p class="mascota-descripcion">
+                    ${m.descripcion ? m.descripcion.substring(0,80) + '...' : 'Sin descripción'}
+                </p>
+
+                <a href="mascota-detalle.html?id=${m.id}" 
+                   class="btn btn-secundario btn-bloque">
+                   Ver más
+                </a>
+            </div>
+        </div>
+    `).join('');
+}        
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
