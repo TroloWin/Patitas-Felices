@@ -322,7 +322,7 @@
     async function cargarMascotasDestacadas() {
     const destacadas = await obtenerMascotasDestacadas(3);
 
-    if (!destacadas.length) {
+    if (!destacadas || destacadas.length === 0) {
         mascotasDestacadas.innerHTML = "<p>No hay mascotas disponibles</p>";
         return;
     }
