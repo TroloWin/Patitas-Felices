@@ -16,9 +16,7 @@
                     <span class="logo-texto">Patitas Felices</span>
                 </a>
             </div>
-
             <div class="enlaces-nav" id="enlacesNav"></div>
-            
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
             </button>
@@ -186,161 +184,335 @@
 
     <script>
 
-function crearNav(user = null, userData = null) {
+// ===== VARIABLES GLOBALES =====
+const enlacesNav = document.getElementById('enlacesNav');
+const mascotasGrid = document.getElementById('mascotasGrid');
+const resultadosCount = document.getElementById('resultadosCount');
 
-    if (user && userData) {
-        return `
-            <a href="index.html" class="enlace">
-                <img src="assets/icons/home.svg" class="icono">
-                Inicio
-            </a>
-
-            <a href="adoptar.html" class="enlace activo">
-                <img src="assets/icons/search.svg" class="icono">
-                Adoptar
-            </a>
-
-            <a href="donadores.html" class="enlace">
-                <img src="assets/icons/donadores.svg" class="icono">
-                Donadores
-            </a>
-
-            <a href="nosotros.html" class="enlace">
-                <img src="assets/icons/nosotros.svg" class="icono">
-                Nosotros
-            </a>
-
-            <div class="usuario-menu" onclick="toggleDropdown(event)">
-                <img src="assets/icons/user.svg" class="icono">
-                ${userData.nombre}
-            </div>
-
-            <div class="usuario-dropdown" id="usuarioDropdown">
-                <a href="mis-solicitudes.html">
-                    <img src="assets/icons/pending.svg" class="icono-pequeno">
-                    Mis solicitudes
-                </a>
-
-                ${userData.esAdmin ? `
-                    <a href="admin/index.html">
-                        <img src="assets/icons/admin.svg" class="icono-pequeno">
-                        Panel admin
-                    </a>
-                ` : ""}
-
-                <a href="#" onclick="cerrarSesion()">
-                    <img src="assets/icons/logout.svg" class="icono-pequeno">
-                    Cerrar sesión
-                </a>
-            </div>
-        `;
+// ===== FUNCIONES DE NAVEGACIÓN =====
+window.cerrarSesion = async function () {
+    try {
+        await auth.signOut();
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Error al cerrar sesión:', error);
     }
+};
 
-    return `
-        <a href="index.html" class="enlace">
-            <img src="assets/icons/home.svg" class="icono">
-            Inicio
-        </a>
+ function crearEnlacesNavegacion(usuario = null, userData = null) {
+            if (usuario && userData) {
+                return `
+                    <a href="index.html" class="enlace activo">
+                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                        Inicio
+                    </a>
+                    <a href="adoptar.html" class="enlace">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
+                        Adoptar
+                    </a>
+                    <a href="donadores.html" class="enlace">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                        Donadores
+                    </a>
+                    <a href="nosotros.html" class="enlace">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                        Nosotros
+                    </a>
+                   <div class="usuario-menu-container">
+                        <div class="usuario-menu" onclick="toggleDropdown(event)">
+                            <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
+                            <span class="usuario-nombre">${userData.nombre || 'Usuario'}</span>
+                            <img src="assets/icons/arrow-down.svg" alt="▼" class="icono-pequeno" />
+                        </div>
+                        <div class="usuario-dropdown" id="usuarioDropdown">
+                            <a href="mis-solicitudes.html">
+                                <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
+                                Mis Solicitudes
+                            </a>
+                            ${userData.esAdmin ? `
+                                <a href="admin/index.html">
+                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
+                                    Panel Admin
+                                </a>
+                            ` : ' '}
+                            <hr>
+                            <a href="#" onclick="cerrarSesion(); return false;">
+                                <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
+                                Cerrar Sesión
+                            </a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <a href="index.html" class="enlace activo">
+                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                        Inicio
+                    </a>
+                    <a href="adoptar.html" class="enlace">
+                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
+                        Adoptar
+                    </a>
+                    <a href="donadores.html" class="enlace">
+                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                        Donadores
+                    </a>
+                    <a href="nosotros.html" class="enlace">
+                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                        Nosotros
+                    </a>
+                    <a href="login/login.html" class="btn btn-outline">
+                        <img src="assets/icons/user.svg" alt="Login" class="icono" />
+                        Iniciar Sesión
+                    </a>
+                    <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
+                `;
+            }
+        }
 
-        <a href="adoptar.html" class="enlace activo">
-            <img src="assets/icons/search.svg" class="icono">
-            Adoptar
-        </a>
+         window.toggleDropdown = function(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('usuarioDropdown');
+            dropdown.classList.toggle('show');
+        };
 
-        <a href="donadores.html" class="enlace">
-            <img src="assets/icons/donadores.svg" class="icono">
-            Donadores
-        </a>
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('usuarioDropdown');
+            if (dropdown && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+     
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await db.collection('usuarios').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                    } else {
+                        enlacesNav.innerHTML = crearEnlacesNavegacion();
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    enlacesNav.innerHTML = crearEnlacesNavegacion();
+                }
+            } else {
+                enlacesNav.innerHTML = crearEnlacesNavegacion();
+            }
+        });
 
-        <a href="nosotros.html" class="enlace">
-            <img src="assets/icons/nosotros.svg" class="icono">
-            Nosotros
-        </a>
+// ===== FUNCIÓN PARA OBTENER TODAS LAS SOLICITUDES =====
+async function obtenerTodasLasSolicitudes() {
 
-        <a href="login/login.html" class="btn btn-outline">
-            <img src="assets/icons/user.svg" class="icono">
-            Iniciar sesión
-        </a>
+    try {
+        const snapshot = await db.collection('solicitudes').get();
 
-        <a href="login/registro.html" class="btn btn-primario">
-            Registrarse
-        </a>
-    `;
+        let solicitudes = [];
+
+        snapshot.forEach(doc => {
+            solicitudes.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        return solicitudes;
+
+    } catch (error) {
+        console.error('Error al obtener solicitudes:', error);
+        return [];
+    }
+}
+// ===== ESTADOS DE MASCOTAS =====
+async function cargarEstadosParaMascotas(mascotas) {
+
+    for (const mascota of mascotas) {
+
+        try {
+
+            const estadoElement =
+                document.getElementById(`estado-${mascota.id}`);
+
+            if (!estadoElement) continue;
+
+            const todasLasSolicitudes =
+                await obtenerTodasLasSolicitudes();
+
+            const solicitudesMascota =
+                todasLasSolicitudes.filter(
+                    s => s.mascotaId === mascota.id
+                );
+
+            if (solicitudesMascota.length === 0) {
+
+                estadoElement.textContent = 'Disponible';
+                estadoElement.style.backgroundColor = '#28a745';
+                continue;
+            }
+
+            const aprobada =
+                solicitudesMascota.find(
+                    s => s.estado === 'aprobada'
+                );
+
+            if (aprobada) {
+
+                estadoElement.textContent = 'Ya tiene un hogar';
+                estadoElement.style.backgroundColor = '#6c757d';
+                continue;
+            }
+
+            const activa =
+                solicitudesMascota.find(
+                    s => s.estado === 'pendiente' ||
+                         s.estado === 'en_proceso'
+                );
+
+            if (activa) {
+
+                estadoElement.textContent = 'En revisión de adopción';
+                estadoElement.style.backgroundColor = '#ffc107';
+            }
+
+        } catch (error) {
+
+            console.error(
+                `Error al cargar estado para mascota ${mascota.id}:`,
+                error
+            );
+        }
+    }
 }
 
 
-/* ⭐ ESTA ES LA FUNCION QUE PINTA TARJETAS ⭐ */
-async function cargarMascotas() {
+
+// ===== MOSTRAR MASCOTAS =====
+function mostrarMascotas(mascotas) {
 
     const grid = document.getElementById("mascotasGrid");
 
     if (!grid) return;
 
-    grid.innerHTML = "Cargando mascotas...";
+    if (mascotas.length === 0) {
 
-    const mascotas = await obtenerMascotas();
+        grid.innerHTML =
+            '<p class="sin-resultados">No hay mascotas disponibles</p>';
 
-    if (!mascotas.length) {
-        grid.innerHTML = "No hay mascotas disponibles";
+        resultadosCount.textContent = '0 resultados';
         return;
     }
 
-    grid.innerHTML = mascotas.map(m => `
-        <div class="mascota-tarjeta">
+    resultadosCount.textContent =
+        `${mascotas.length} resultados`;
 
-            <div class="mascota-imagen">
-                <img src="${m.imagenUrl}">
-                <span class="mascota-etiqueta disponible">Disponible</span>
-            </div>
+    grid.innerHTML =
+        mascotas.map(m => `
 
-            <div class="mascota-info">
-                <h3>${m.nombre}</h3>
+            <div class="mascota-tarjeta">
 
-                <div class="mascota-detalles">
-                    <span>${m.edad || "?"} años</span>
-                    <span>${m.tamano || "?"}</span>
+                <div class="mascota-imagen">
+                    <img src="${m.imagenUrl || 'assets/images/default-pet.png'}">
+                    <span class="mascota-etiqueta" id="estado-${m.id}">
+                        Disponible
+                    </span>
                 </div>
 
-                <p>
-                    ${m.descripcion ? m.descripcion.substring(0,70) + "..." : ""}
-                </p>
+                <div class="mascota-info">
 
-                <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario">
-                    Ver más
-                </a>
+                    <h3>${m.nombre}</h3>
+
+                    <div class="mascota-detalles">
+                        <span>${m.edad || "?"} años</span>
+                        <span>${m.tamano || "?"}</span>
+                    </div>
+
+                    <p>
+                        ${m.descripcion
+                            ? m.descripcion.substring(0,70) + "..."
+                            : ""}
+                    </p>
+
+                    <a href="mascota-detalle.html?id=${m.id}"
+                       class="btn btn-secundario">
+                        Ver más
+                    </a>
+
+                </div>
 
             </div>
 
-        </div>
-    `).join("");
+        `).join('');
 
+    cargarEstadosParaMascotas(mascotas);
+}
+
+// ===== CARGAR MASCOTAS =====
+async function cargarMascotas(filtros = {}) {
+
+    mascotasGrid.innerHTML = 'Cargando mascotas...';
+
+    try {
+
+        const mascotas =
+            await obtenerMascotas(filtros);
+
+        mostrarMascotas(mascotas);
+
+    } catch (error) {
+
+        console.error(error);
+        mascotasGrid.innerHTML = 'Error al cargar mascotas';
+    }
 }
 
 
-/* ⭐ AUTH + NAV + CARGAR TARJETAS ⭐ */
-auth.onAuthStateChanged(async user => {
+// ===== FILTROS =====
+window.aplicarFiltros = function () {
 
-    if (user) {
+    cargarMascotas({
+        especie: especie.value,
+        edad: edad.value,
+        tamano: tamano.value,
+        busqueda: busqueda.value
+    });
+};
 
-        const doc = await db.collection("usuarios").doc(user.uid).get();
 
-        if (doc.exists) {
-            enlacesNav.innerHTML = crearNav(user, doc.data());
+window.limpiarFiltros = function () {
+
+    especie.value = 'todos';
+    edad.value = 'todos';
+    tamano.value = 'todos';
+    busqueda.value = '';
+
+    cargarMascotas();
+};
+
+
+// ===== INICIALIZACIÓN =====
+document.addEventListener('DOMContentLoaded', function () {
+
+    auth.onAuthStateChanged(async (user) => {
+
+        if (user) {
+
+            const userDoc =
+                await db.collection('usuarios')
+                .doc(user.uid).get();
+
+            enlacesNav.innerHTML =
+                crearEnlacesNavegacion(user, userDoc.data());
+
         } else {
-            enlacesNav.innerHTML = crearNav();
+
+            enlacesNav.innerHTML =
+                crearEnlacesNavegacion();
         }
 
-        /* 🔥 AQUI SE CARGAN LAS TARJETAS */
-        cargarMascotas();
+        await cargarMascotas();
 
-    } else {
-
-        enlacesNav.innerHTML = crearNav();
-
-        /* TAMBIEN SI NO HAY SESION */
-        cargarMascotas();
-
-    }
+    });
 
 });
 

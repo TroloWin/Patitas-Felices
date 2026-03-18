@@ -31,12 +31,12 @@
                     <h1 class="hero-titulo">Encuentra un amigo <span class="texto-destacado">para toda la vida</span></h1>
                     <p class="hero-descripcion">Mascotas esperan por un hogar lleno de amor. Adopta y cambia una vida.</p>
                     <div class="hero-botones">
-                        <a href="adoptar.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
+                        <a href="/login/login.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
                         <a href="login/registro.html" class="btn btn-outline btn-grande">Registrarme</a>
                     </div>
                 </div>
                 <div class="hero-imagen">
-                    <img src="assets/images/refugio.jpg" alt="Mascotas felices" />
+                    <img src="assets/images/UWCUD6LJS5FQXLQTAASALWYALA.avif" alt="Mascotas felices" />
                 </div>
             </div>
         </section>
@@ -120,24 +120,8 @@
                 </div>
             </div>
         </section>
-
-        <!-- seccion mascotas destacadas -->
-        <section class="seccion">
-            <div class="contenedor">
-                <div class="encabezado-seccion">
-                    <h2>Mascotas disponibles</h2>
-                    <p>Conoce a algunas de nuestras mascotas que esperan por ti</p>
-                    <a href="adoptar.html" class="btn btn-link">Ver todas →</a>
-                </div>
-                <div class="mascotas-grid" id="mascotasDestacadas">
-                    <!-- Se llena con JavaScript -->
-                </div>
-            </div>
-        </section>
-    </main>
-
     <!-- boton flotante adoptar -->
-    <a href="adoptar.html" class="boton-flotante">
+    <a href="login/login.html" class="boton-flotante">
         <img src="assets/icons/heart.svg" alt="Adoptar" />
         <span>Adoptar</span>
     </a>
@@ -314,47 +298,7 @@
                 dropdown.classList.remove('show');
             }
         });
-
-    async function cargarMascotasDestacadas() {
-    const destacadas = await obtenerMascotasDestacadas(3);
-
-    if (!destacadas || destacadas.length === 0) {
-        mascotasDestacadas.innerHTML = "<p>No hay mascotas disponibles</p>";
-        return;
-    }
-
-    mascotasDestacadas.innerHTML = destacadas.map(m => `
-        <div class="mascota-tarjeta">
-            <div class="mascota-imagen">
-                <img src="${m.imagenUrl}" 
-                     alt="${m.nombre}" 
-                     onerror="this.src='/assets/images/mascotas/default.jpg'" />
-                <span class="mascota-etiqueta disponible">Disponible</span>
-            </div>
-
-            <div class="mascota-info">
-                <h3 class="mascota-nombre">${m.nombre}</h3>
-
-                <div class="mascota-detalles">
-                    <img src="assets/icons/${m.especie || 'mascota'}.svg" 
-                         class="icono-detalle" 
-                         onerror="this.src='assets/icons/pets.svg'" />
-                    <span class="detalle">${m.edad || '?'} años</span>
-                    <span class="detalle">${m.tamano || '?'}</span>
-                </div>
-
-                <p class="mascota-descripcion">
-                    ${m.descripcion ? m.descripcion.substring(0,80) + '...' : 'Sin descripción'}
-                </p>
-
-                <a href="mascota-detalle.html?id=${m.id}" 
-                   class="btn btn-secundario btn-bloque">
-                   Ver más
-                </a>
-            </div>
-        </div>
-    `).join('');
-}        
+     
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
@@ -374,7 +318,6 @@
             }
         });
 
-        cargarMascotasDestacadas();
     </script>
 </body>
 </html>

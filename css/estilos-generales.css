@@ -447,98 +447,134 @@ p {
     color: var(--color-texto-claro);
     font-size: 0.95rem;
 }
-
-/* ===== TARJETAS DE MASCOTAS ===== */
 .mascotas-grid {
+
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(340px, 1fr));   /* 🔥 AQUI ESTA LA MAGIA */
+
     gap: 30px;
 }
 
+/* ===== TARJETAS DE MASCOTAS ===== */
+
 .mascota-tarjeta {
+
     background-color: var(--color-blanco);
     border-radius: var(--borde-redondo);
-    overflow: cover;
+    overflow: hidden;
     border: 2px solid var(--color-borde);
-    transition: transform 0.3s;
-    max-width: 200px;  /* Ancho máximo */
+
+    transition: 
+        transform .5s ease,
+        box-shadow .5s ease;
+
+    max-width: 360px;
+    width: 100%;
     margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .mascota-tarjeta:hover {
-    transform: translateY(-5px);
-    border-color: var(--color-primario);
+
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.18);
 }
 
+
+/* ===== IMAGEN ===== */
+
 .mascota-imagen {
+
     position: relative;
-    height: 140px;
-    background-color: #f0f0f0;
+    height: 170px;
+    background-color: #eee;
     border-bottom: 2px solid var(--color-borde);
+    overflow: hidden;
 }
 
 .mascota-imagen img {
+
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
+
+
+/* ===== ETIQUETA ===== */
 
 .mascota-etiqueta {
+
     position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 15px;
+    top: 12px;
+    right: 12px;
+
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+
+    font-size: .8rem;
+    font-weight: 600;
 }
 
-.mascota-etiqueta.disponible {
-    background-color: var(--color-disponible);
-    color: white;
-}
 
-.mascota-etiqueta.proceso {
-    background-color: var(--color-proceso);
-    color: var(--color-texto);
-}
-
-.mascota-etiqueta.adoptado {
-    background-color: var(--color-adoptado);
-    color: var(--color-texto);
-}
+/* ===== INFO ===== */
 
 .mascota-info {
-    padding: 20px;
+
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    flex-grow: 1;
 }
 
 .mascota-nombre {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
+
+    font-size: 1.25rem;
+    margin: 0;
     color: var(--color-primario-oscuro);
 }
 
+
+/* ===== DETALLES ===== */
+
 .mascota-detalles {
+
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .detalle {
+
     background-color: var(--color-primario-claro);
-    padding: 3px 10px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    color: var(--color-primario-oscuro);
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-size: .85rem;
 }
 
+
+/* ===== DESCRIPCIÓN ===== */
+
 .mascota-descripcion {
+
+    font-size: .9rem;
     color: var(--color-texto-claro);
-    margin-bottom: 15px;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.4;
+}
+
+
+/* ===== BOTÓN ===== */
+
+.mascota-info .btn {
+
+    margin-top: auto;
 }
 
 /* ===== FILTROS ===== */
