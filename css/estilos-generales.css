@@ -9,8 +9,8 @@
     --color-texto-claro: #666666;
     --color-borde: #bfbfbf;
     --color-disponible: #9b87f5;
-    --color-proceso: #b8a9f5;
-    --color-adoptado: #d7cff7;
+    --color-proceso: #efba0d;
+    --color-adoptado: #2809a3;
     --color-error: #dc3545;
     --color-exito: #28a745;
     --color-pendiente: #ffc107;
@@ -133,7 +133,7 @@ p {
 
 .enlace:hover,
 .enlace.activo {
-    background-color: var(--color-primario-claro);
+    background-color: var(--color-blanco);
     color: var(--color-primario-oscuro);
 }
 
@@ -143,7 +143,7 @@ p {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--color-primario);
+    color: var(--color-blanco);
 }
 
 /* ===== ICONOS ===== */
@@ -1317,4 +1317,28 @@ p {
     .mensaje-construccion p {
         font-size: 1rem;
     }
+}
+
+/* ===== NAVBAR IGUALADO ===== */
+
+.enlaces-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.enlace {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;          /* MISMA ALTURA */
+    padding: 0 15px;
+}
+
+.btn-outline,
+.btn-primario {
+    height: 40px;          /* BOTONES MISMA ALTURA */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

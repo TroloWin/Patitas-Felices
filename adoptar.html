@@ -4,334 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Adoptar | Patitas Felices</title>
-    <link rel="stylesheet" href="css/estilos.css" />
     <link rel="stylesheet" href="css/estilos-generales.css" />
-    <style>
-        /* Estilos específicos para adoptar */
-        .filtros-seccion {
-            background-color: var(--color-blanco);
-            padding: 30px 0;
-            border-bottom: 1px solid var(--color-borde);
-        }
-        
-        .filtros-contenedor {
-            background-color: var(--color-primario-claro);
-            padding: 20px;
-            border-radius: var(--borde-redondo);
-        }
-        
-        .filtros-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .filtros-header h3 {
-            margin-bottom: 0;
-            color: var(--color-primario-oscuro);
-        }
-        
-        .filtros-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .filtro-grupo label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: var(--color-primario-oscuro);
-        }
-        
-        .filtro-grupo select,
-        .filtro-grupo input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid var(--color-borde);
-            border-radius: var(--borde-redondo);
-            background-color: var(--color-blanco);
-            font-size: 0.95rem;
-        }
-        
-        .filtro-grupo select:focus,
-        .filtro-grupo input:focus {
-            outline: none;
-            border-color: var(--color-primario);
-        }
-        
-        .filtro-grupo.botones {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
-        
-        .resultados-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .resultados-count {
-            background-color: var(--color-primario-claro);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 500;
-            color: var(--color-primario-oscuro);
-        }
-        
-        .mascotas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .mascota-tarjeta {
-            background-color: var(--color-blanco);
-            border-radius: var(--borde-redondo);
-            overflow: hidden;
-            border: 2px solid var(--color-borde);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .mascota-tarjeta:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--sombra);
-            border-color: var(--color-primario);
-        }
-        
-        .mascota-imagen {
-            position: relative;
-            height: 200px;
-            background-color: #f0f0f0;
-            border-bottom: 2px solid var(--color-borde);
-            overflow: hidden;
-        }
-        
-        .mascota-imagen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .mascota-etiqueta {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            z-index: 1;
-            color: white;
-        }
-        
-        .mascota-info {
-            padding: 20px;
-        }
-        
-        .mascota-nombre {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: var(--color-primario-oscuro);
-        }
-        
-        .mascota-detalles {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .detalle {
-            background-color: var(--color-primario-claro);
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            color: var(--color-primario-oscuro);
-        }
-        
-        .mascota-descripcion {
-            color: var(--color-texto-claro);
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .sin-resultados {
-            text-align: center;
-            padding: 60px;
-            color: var(--color-texto-claro);
-            font-size: 1.2rem;
-            background: white;
-            border-radius: var(--borde-redondo);
-            border: 2px solid var(--color-borde);
-            grid-column: 1 / -1;
-        }
-        
-        .cargando {
-            text-align: center;
-            padding: 60px;
-            color: var(--color-texto-claro);
-            font-size: 1.2rem;
-            grid-column: 1 / -1;
-        }
-        
-        @media (max-width: 768px) {
-            .filtros-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .filtro-grupo.botones {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-        }
-
-        /* Estilos para la navegación */
-        .navegacion-principal {
-            background-color: var(--color-blanco);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navegacion-principal .contenedor {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-        }
-
-        .logo a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 40px;
-        }
-
-        .logo-texto {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--color-primario-oscuro);
-        }
-
-        .enlaces-nav {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .enlaces-nav a {
-            text-decoration: none;
-            color: var(--color-texto);
-            font-weight: 500;
-            padding: 5px 10px;
-            border-radius: var(--borde-redondo);
-            transition: all 0.3s;
-        }
-
-        .enlaces-nav a:hover {
-            color: var(--color-primario);
-        }
-
-        .enlaces-nav a.activo {
-            color: var(--color-primario);
-            font-weight: 600;
-        }
-
-        .btn-dropdown {
-            background: none;
-            border: none;
-            color: var(--color-texto);
-            font-weight: 500;
-            padding: 5px 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-contenido {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            min-width: 200px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            border-radius: var(--borde-redondo);
-            z-index: 1000;
-        }
-
-        .dropdown:hover .dropdown-contenido {
-            display: block;
-        }
-
-        .dropdown-contenido a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            color: var(--color-texto);
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .dropdown-contenido a:hover {
-            background: var(--color-primario-claro);
-        }
-
-        .dropdown-contenido hr {
-            margin: 5px 0;
-            border: none;
-            border-top: 1px solid var(--color-borde);
-        }
-    </style>
 </head>
 <body>
     <!-- navegacion principal -->
-    <nav class="navegacion-principal">
+    <nav class="navegacion">
         <div class="contenedor">
             <div class="logo">
                 <a href="index.html">
-                    <img src="assets/images/Logo patitas felices (3).png" alt="Patitas Felices" />
+                    <img src="assets/images/Logos/Logo patitas felices (2).png" alt="Patitas Felices" />
                     <span class="logo-texto">Patitas Felices</span>
                 </a>
             </div>
-            
-            <div class="enlaces-nav" id="enlacesNav">
-                <!-- Se llena con JavaScript -->
-            </div>
+
+            <div class="enlaces-nav" id="enlacesNav"></div>
             
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
             </button>
         </div>
     </nav>
-
+    <!--Contenido principal-->
     <main>
         <!-- Encabezado -->
         <section class="encabezado-pagina">
@@ -414,16 +107,16 @@
         </section>
     </main>
 
-    <!-- pie de pagina con tus datos -->
+    <!-- pie de pagina -->
     <footer class="pie-pagina">
         <div class="contenedor">
             <div class="footer-grid">
                 <div class="footer-columna">
                     <div class="logo">
-                        <img src="assets/images/logo.png" alt="Patitas Felices" />
+                        <img src="assets/images/Logos/PatitasFelices (2).png" alt="Patitas Felices" />
                         <span class="logo-texto">Patitas Felices</span>
                     </div>
-                    <p>\(^-^)/</p>
+                    <p></p>
                 </div>
                 
                 <div class="footer-columna">
@@ -490,247 +183,105 @@
     <script src="js/auth.js"></script>
     <script src="js/mascotas.js"></script>
     <script src="js/solicitudes.js"></script>
-    
+
     <script>
-        // ===== VARIABLES GLOBALES =====
-        const enlacesNav = document.getElementById('enlacesNav');
-        const mascotasGrid = document.getElementById('mascotasGrid');
-        const resultadosCount = document.getElementById('resultadosCount');
+function crearNav(user = null, userData = null) {
 
-        // ===== FUNCIONES DE NAVEGACIÓN =====
-        window.cerrarSesion = async function() {
-            try {
-                await auth.signOut();
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Error al cerrar sesión:', error);
-            }
-        };
+    if (user && userData) {
+        return `
+            <a href="index.html" class="enlace">
+                <img src="assets/icons/home.svg" class="icono">
+                Inicio
+            </a>
 
-        function crearEnlacesNavegacion(user, userData = null) {
-            if (user) {
-                const nombreUsuario = userData?.nombre || user.email?.split('@')[0] || 'Usuario';
-                
-                return `
-                    <a href="index.html">Inicio</a>
-                    <a href="adoptar.html" class="activo">Adoptar</a>
-                    <a href="donadores.html">Donadores</a>
-                    <a href="nosotros.html">Nosotros</a>
-                    <div class="dropdown">
-                        <button class="btn-dropdown">
-                            <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
-                            ${nombreUsuario}
-                            <img src="assets/icons/dropdown.svg" alt="▼" class="icono-pequeno" />
-                        </button>
-                        <div class="dropdown-contenido">
-                            <a href="mis-solicitudes.html">
-                                <img src="assets/icons/requests.svg" alt="Solicitudes" class="icono-pequeno" />
-                                Mis Solicitudes
-                            </a>
-                            ${userData?.rol === 'admin' ? `
-                                <a href="admin/index.html">
-                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
-                                    Panel Admin
-                                </a>
-                            ` : ''}
-                            <hr>
-                            <a href="#" onclick="cerrarSesion(); return false;">
-                                <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesión
-                            </a>
-                        </div>
-                    </div>
-                `;
-            } else {
-                return `
-                    <a href="index.html">Inicio</a>
-                    <a href="adoptar.html" class="activo">Adoptar</a>
-                    <a href="donadores.html">Donadores</a>
-                    <a href="nosotros.html">Nosotros</a>
-                    <a href="login/login.html" class="btn btn-outline">
-                        <img src="assets/icons/user.svg" alt="Login" class="icono" />
-                        Iniciar Sesión
+            <a href="adoptar.html" class="enlace activo">
+                <img src="assets/icons/search.svg" class="icono">
+                Adoptar
+            </a>
+
+            <a href="donadores.html" class="enlace">
+                <img src="assets/icons/donadores.svg" class="icono">
+                Donadores
+            </a>
+
+            <a href="nosotros.html" class="enlace">
+                <img src="assets/icons/nosotros.svg" class="icono">
+                Nosotros
+            </a>
+
+            <div class="usuario-menu" onclick="toggleDropdown(event)">
+                <img src="assets/icons/user.svg" class="icono">
+                ${userData.nombre}
+            </div>
+
+            <div class="usuario-dropdown" id="usuarioDropdown">
+                <a href="mis-solicitudes.html">
+                    <img src="assets/icons/pending.svg" class="icono-pequeno">
+                    Mis solicitudes
+                </a>
+
+                ${userData.esAdmin ? `
+                    <a href="admin/index.html">
+                        <img src="assets/icons/admin.svg" class="icono-pequeno">
+                        Panel admin
                     </a>
-                    <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
-                `;
-            }
+                ` : ""}
+
+                <a href="#" onclick="cerrarSesion()">
+                    <img src="assets/icons/logout.svg" class="icono-pequeno">
+                    Cerrar sesión
+                </a>
+            </div>
+        `;
+    }
+
+    return `
+        <a href="index.html" class="enlace">
+            <img src="assets/icons/home.svg" class="icono">
+            Inicio
+        </a>
+
+        <a href="adoptar.html" class="enlace activo">
+            <img src="assets/icons/search.svg" class="icono">
+            Adoptar
+        </a>
+
+        <a href="donadores.html" class="enlace">
+            <img src="assets/icons/donadores.svg" class="icono">
+            Donadores
+        </a>
+
+        <a href="nosotros.html" class="enlace">
+            <img src="assets/icons/nosotros.svg" class="icono">
+            Nosotros
+        </a>
+
+        <a href="login/login.html" class="btn btn-outline">
+            <img src="assets/icons/user.svg" class="icono">
+            Iniciar sesión
+        </a>
+
+        <a href="login/registro.html" class="btn btn-primario">
+            Registrarse
+        </a>
+    `;
+}
+auth.onAuthStateChanged(async user => {
+
+    if (user) {
+        const doc = await db.collection("usuarios").doc(user.uid).get();
+
+        if (doc.exists) {
+            enlacesNav.innerHTML = crearNav(user, doc.data());
+        } else {
+            enlacesNav.innerHTML = crearNav();
         }
 
-        // ===== FUNCIÓN PARA OBTENER TODAS LAS SOLICITUDES =====
-        async function obtenerTodasLasSolicitudes() {
-            try {
-                const snapshot = await db.collection('solicitudes').get();
-                let solicitudes = [];
-                snapshot.forEach(doc => {
-                    solicitudes.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                return solicitudes;
-            } catch (error) {
-                console.error('Error al obtener solicitudes:', error);
-                return [];
-            }
-        }
+    } else {
+        enlacesNav.innerHTML = crearNav();
+    }
 
-        // ===== FUNCIÓN MODIFICADA - SOLO "EN REVISIÓN DE ADOPCIÓN" =====
-        async function cargarEstadosParaMascotas(mascotas) {
-            // Obtener usuario actual
-            const usuarioActual = auth.currentUser;
-            
-            for (const mascota of mascotas) {
-                try {
-                    const estadoElement = document.getElementById(`estado-${mascota.id}`);
-                    if (!estadoElement) continue;
-                    
-                    // Obtener todas las solicitudes de esta mascota
-                    const todasLasSolicitudes = await obtenerTodasLasSolicitudes();
-                    const solicitudesMascota = todasLasSolicitudes.filter(s => s.mascotaId === mascota.id);
-                    
-                    // Si no hay solicitudes
-                    if (solicitudesMascota.length === 0) {
-                        estadoElement.textContent = 'Disponible';
-                        estadoElement.style.backgroundColor = '#28a745';
-                        estadoElement.style.color = 'white';
-                        estadoElement.className = 'mascota-etiqueta';
-                        continue;
-                    }
-                    
-                    // Verificar si hay una solicitud APROBADA
-                    const solicitudAprobada = solicitudesMascota.find(s => s.estado === 'aprobada');
-                    if (solicitudAprobada) {
-                        // Si está aprobada, para todos es "Ya tiene un hogar"
-                        estadoElement.textContent = 'Ya tiene un hogar';
-                        estadoElement.style.backgroundColor = '#6c757d';
-                        estadoElement.style.color = 'white';
-                        estadoElement.className = 'mascota-etiqueta';
-                        continue;
-                    }
-                    
-                    // Para CUALQUIER solicitud activa (pendiente o en_proceso), mostrar "En revisión de adopción"
-                    // Sin importar si es el usuario actual u otro
-                    const solicitudesActivas = solicitudesMascota.filter(s => 
-                        s.estado === 'pendiente' || s.estado === 'en_proceso'
-                    );
-                    
-                    if (solicitudesActivas.length > 0) {
-                        estadoElement.textContent = 'En revisión de adopción';
-                        estadoElement.style.backgroundColor = '#ffc107';
-                        estadoElement.style.color = '#333';
-                        estadoElement.className = 'mascota-etiqueta';
-                        continue;
-                    }
-                    
-                } catch (error) {
-                    console.error(`Error al cargar estado para mascota ${mascota.id}:`, error);
-                    const estadoElement = document.getElementById(`estado-${mascota.id}`);
-                    if (estadoElement) {
-                        estadoElement.textContent = 'Error';
-                        estadoElement.style.backgroundColor = '#dc3545';
-                        estadoElement.style.color = 'white';
-                    }
-                }
-            }
-        }
-
-        /**
-         * Mostrar mascotas en el grid (CORREGIDO)
-         */
-        function mostrarMascotas(mascotas) {
-            if (mascotas.length === 0) {
-                mascotasGrid.innerHTML = '<p class="sin-resultados">No hay mascotas disponibles en este momento</p>';
-                resultadosCount.textContent = '0 resultados';
-                return;
-            }
-            
-            resultadosCount.textContent = `${mascotas.length} ${mascotas.length === 1 ? 'resultado' : 'resultados'}`;
-            
-            // Crear las tarjetas sin estados (luego se llenan)
-            mascotasGrid.innerHTML = mascotas.map(m => {
-                const imagenSrc = m.imagen || 'assets/images/default-pet.png';
-                
-                return `
-                    <div class="mascota-tarjeta" data-mascota-id="${m.id}">
-                        <div class="mascota-imagen">
-                            <img src="${imagenSrc}" alt="${m.nombre}" />
-                            <span class="mascota-etiqueta" id="estado-${m.id}">Cargando...</span>
-                        </div>
-                        <div class="mascota-info">
-                            <h3 class="mascota-nombre">${m.nombre}</h3>
-                            <div class="mascota-detalles">
-                                <span class="detalle">${m.edad || '?'} años</span>
-                                <span class="detalle">${m.tamano || 'No especificado'}</span>
-                            </div>
-                            <p class="mascota-descripcion">${m.descripcion ? m.descripcion.substring(0, 100) + '...' : 'Sin descripción'}</p>
-                            <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario btn-bloque">Ver detalles</a>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // AHORA: Cargar el estado real de cada mascota
-            cargarEstadosParaMascotas(mascotas);
-        }
-        /**
-         * Cargar mascotas con filtros
-         */
-        async function cargarMascotas(filtros = {}) {
-            mascotasGrid.innerHTML = '<div class="cargando">Cargando mascotas...</div>';
-            
-            try {
-                const mascotas = await obtenerMascotas(filtros);
-                mostrarMascotas(mascotas);
-            } catch (error) {
-                console.error('Error al cargar mascotas:', error);
-                mascotasGrid.innerHTML = `<p class="sin-resultados">Error al cargar mascotas: ${error.message}</p>`;
-            }
-        }
-
-        // ===== FUNCIONES DE FILTROS =====
-        window.aplicarFiltros = function() {
-            const filtros = {
-                especie: document.getElementById('especie').value,
-                edad: document.getElementById('edad').value,
-                tamano: document.getElementById('tamano').value,
-                busqueda: document.getElementById('busqueda').value
-            };
-            cargarMascotas(filtros);
-        };
-
-        window.limpiarFiltros = function() {
-            document.getElementById('especie').value = 'todos';
-            document.getElementById('edad').value = 'todos';
-            document.getElementById('tamano').value = 'todos';
-            document.getElementById('busqueda').value = '';
-            cargarMascotas();
-        };
-
-        // ===== INICIALIZACIÓN =====
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar autenticación y actualizar navegación
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    try {
-                        const userDoc = await db.collection('usuarios').doc(user.uid).get();
-                        if (userDoc.exists) {
-                            const userData = userDoc.data();
-                            enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
-                        } else {
-                            enlacesNav.innerHTML = crearEnlacesNavegacion();
-                        }
-                    } catch (error) {
-                        console.error('Error al obtener datos del usuario:', error);
-                        enlacesNav.innerHTML = crearEnlacesNavegacion();
-                    }
-                } else {
-                    enlacesNav.innerHTML = crearEnlacesNavegacion();
-                }
-                
-                // Cargar mascotas después de actualizar la navegación
-                await cargarMascotas();
-            });
-        });
-    </script>
+});
+</script>
 </body>
 </html>

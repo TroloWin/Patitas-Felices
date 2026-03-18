@@ -6,7 +6,7 @@
 function obtenerRutaImagen(mascota) {
     // Si no hay imagen en Firebase
     if (!mascota.imagen) {
-        return '/assets/images/mascotas/default.jpg';
+        return 'assets/images/mascotas/default.jpg';
     }
     
     // Extraer solo el nombre del archivo (por si viene con ruta completa)
@@ -22,11 +22,11 @@ function obtenerRutaImagen(mascota) {
     
     if (!tieneExtension) {
         console.warn('Extension no valida para: ' + nombreArchivo);
-        return '/assets/images/mascotas/default.jpg';
+        return 'assets/images/mascotas/default.jpg';
     }
     
     // Devolver la ruta completa
-    return '/assets/images/mascotas/' + nombreArchivo;
+    return 'assets/images/mascotas/' + nombreArchivo;
 }
 
 /**
