@@ -185,6 +185,7 @@
     <script src="js/solicitudes.js"></script>
 
     <script>
+
 function crearNav(user = null, userData = null) {
 
     if (user && userData) {
@@ -266,9 +267,61 @@ function crearNav(user = null, userData = null) {
         </a>
     `;
 }
+
+
+/* ⭐ ESTA ES LA FUNCION QUE PINTA TARJETAS ⭐ */
+async function cargarMascotas() {
+
+    const grid = document.getElementById("mascotasGrid");
+
+    if (!grid) return;
+
+    grid.innerHTML = "Cargando mascotas...";
+
+    const mascotas = await obtenerMascotas();
+
+    if (!mascotas.length) {
+        grid.innerHTML = "No hay mascotas disponibles";
+        return;
+    }
+
+    grid.innerHTML = mascotas.map(m => `
+        <div class="mascota-tarjeta">
+
+            <div class="mascota-imagen">
+                <img src="${m.imagenUrl}">
+                <span class="mascota-etiqueta disponible">Disponible</span>
+            </div>
+
+            <div class="mascota-info">
+                <h3>${m.nombre}</h3>
+
+                <div class="mascota-detalles">
+                    <span>${m.edad || "?"} años</span>
+                    <span>${m.tamano || "?"}</span>
+                </div>
+
+                <p>
+                    ${m.descripcion ? m.descripcion.substring(0,70) + "..." : ""}
+                </p>
+
+                <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario">
+                    Ver más
+                </a>
+
+            </div>
+
+        </div>
+    `).join("");
+
+}
+
+
+/* ⭐ AUTH + NAV + CARGAR TARJETAS ⭐ */
 auth.onAuthStateChanged(async user => {
 
     if (user) {
+
         const doc = await db.collection("usuarios").doc(user.uid).get();
 
         if (doc.exists) {
@@ -277,11 +330,20 @@ auth.onAuthStateChanged(async user => {
             enlacesNav.innerHTML = crearNav();
         }
 
+        /* 🔥 AQUI SE CARGAN LAS TARJETAS */
+        cargarMascotas();
+
     } else {
+
         enlacesNav.innerHTML = crearNav();
+
+        /* TAMBIEN SI NO HAY SESION */
+        cargarMascotas();
+
     }
 
 });
+
 </script>
 </body>
 </html>
