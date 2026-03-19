@@ -1103,7 +1103,7 @@ p {
     display: flex;
     align-items: center;
     gap: 5px;
-    color: var(--color-primario-claro);
+    color: var(--color-blanco);
     text-decoration: none;
     margin-bottom: 10px;
     transition: color 0.3s;
