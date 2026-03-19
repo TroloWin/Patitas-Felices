@@ -6,6 +6,31 @@
     <title>Gestionar Usuarios | Admin</title>
     <link rel="stylesheet" href="../css/estilos-generales.css" />
     <link rel="stylesheet" href="css/admin-styles.css" />
+    <style>
+        /* Estilo para el botón regresar (igual al de filtrar) */
+        .btn-regresar {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-right: 15px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-regresar:hover {
+            background-color: #5a6268;
+        }
+        
+        .admin-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -26,9 +51,7 @@
 
         <main class="admin-contenido">
             <div class="admin-header">
-                <a href="solicitudes.html" class="btn-regresar">
-    ← Regresar
-</a>
+                <a href="solicitudes.html" class="btn-regresar">← Regresar</a>
                 <h1>Gestión de Usuarios</h1>
             </div>
 
