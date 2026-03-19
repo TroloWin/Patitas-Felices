@@ -622,3 +622,34 @@
         grid-template-columns: 1fr;
     }
 }
+.btn-regresar-icono{
+    background:transparent;
+    border:none;
+    padding:4px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width: 10px;
+    height: 10px;
+}
+
+.btn-regresar-icono{
+    width:22px !important;
+    height:22px !important;
+    min-width:22px;
+    min-height:22px;
+    padding:0;
+    margin:0;
+    background:transparent;
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.btn-regresar-icono img{
+    width:10px !important;
+    height:10px !important;
+    display:block;
+}
