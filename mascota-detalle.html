@@ -5,248 +5,538 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalle de Mascota | Patitas Felices</title>
     <link rel="stylesheet" href="css/estilos-generales.css" />
+    <!-- Fuente moderna -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos específicos para detalle de mascota */
-        .detalle-mascota {
-            padding: 60px 0;
+        /* ===== RESET Y VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        :root {
+            --color-fondo: #d7cff7;
+            --color-primario: #9b87f5;
+            --color-primario-oscuro: #7c6ac4;
+            --color-primario-claro: #e5deff;
+            --color-blanco: #ffffff;
+            --color-blanco-tarjeta: #ffffff;
+            --color-texto: #333333;
+            --color-texto-claro: #666666;
+            --color-borde: #bfbfbf;
+            --color-error: #b91c1c;
+            --color-exito-bg: #e3f2fd;
+            --color-exito-border: #2196f3;
+            --color-exito-texto: #0d47a1;
+            --color-adoptado-bg: #f1f5f9;
+            --color-adoptado-border: #94a3b8;
+            --color-adoptado-texto: #475569;
+            --sombra: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --borde-redondo: 1.5rem;
+            --borde-redondo-sm: 0.75rem;
+            --fuente-principal: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--fuente-principal);
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.5;
+        }
+
+        .contenedor {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== NAVEGACIÓN ===== */
+        .navegacion {
+            background-color: var(--color-blanco);
+            border-bottom: 2px solid var(--color-borde);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .navegacion .contenedor {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--color-primario-oscuro);
+        }
+
+        .logo img {
+            height: 48px;
+            width: auto;
+        }
+
+        .enlaces-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .enlace {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            color: var(--color-texto);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .enlace:hover {
+            background-color: var(--color-primario-claro);
+            color: var(--color-primario-oscuro);
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            background-color: transparent;
+            color: var(--color-texto);
+            border: 2px solid transparent;
+        }
+
+        .btn-outline {
+            border-color: var(--color-borde);
+        }
+        .btn-outline:hover {
+            border-color: var(--color-primario);
+            background-color: var(--color-primario-claro);
+        }
+
+        .btn-primario {
+            background-color: var(--color-primario);
+            color: white;
+            border: 2px solid var(--color-primario);
+        }
+        .btn-primario:hover {
+            background-color: var(--color-primario-oscuro);
+            border-color: var(--color-primario-oscuro);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra);
+        }
+
+        /* Menú usuario */
+        .usuario-menu-container {
+            position: relative;
+        }
+        .usuario-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--color-primario-claro);
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 500;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .usuario-menu:hover {
+            border-color: var(--color-primario);
+        }
+        .usuario-dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background-color: var(--color-blanco);
+            border-radius: var(--borde-redondo-sm);
+            border: 2px solid var(--color-borde);
+            box-shadow: var(--sombra);
+            min-width: 200px;
+            z-index: 10;
+        }
+        .usuario-dropdown.show {
+            display: block;
+        }
+        .usuario-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--color-texto);
+            transition: background-color 0.2s;
+        }
+        .usuario-dropdown a:hover {
+            background-color: var(--color-primario-claro);
+        }
+        .usuario-dropdown hr {
+            margin: 0.5rem 0;
+            border: none;
+            border-top: 1px solid var(--color-borde);
+        }
+
+        /* ===== DETALLE MASCOTA ===== */
+        .detalle-mascota {
+            padding: 4rem 0;
+        }
+
+        /* Contenedor principal con efecto de tarjeta */
         .detalle-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2.5rem;
+            background-color: var(--color-blanco-tarjeta);
+            border-radius: var(--borde-redondo);
+            border: 2px solid var(--color-borde);
+            box-shadow: var(--sombra);
+            overflow: hidden;
+            padding: 2rem;
         }
-        
+
+        /* Columna de imagen */
         .detalle-imagenes {
             width: 100%;
         }
-        
+
         .imagen-principal {
             width: 100%;
-            height: 400px;
-            background-color: #f0f0f0;
-            border-radius: var(--borde-redondo);
+            height: 500px;
+            background-color: var(--color-primario-claro);
+            border-radius: var(--borde-redondo-sm);
             overflow: hidden;
-            border: 2px solid var(--color-borde);
+            border: 3px solid var(--color-borde);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        
+
         .imagen-principal img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
         }
-        
+        .imagen-principal:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Columna de información */
+        .detalle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
         .detalle-encabezado {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 1rem;
+            border-bottom: 2px solid var(--color-borde);
+            padding-bottom: 1.5rem;
         }
-        
+
         .detalle-encabezado h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 700;
             color: var(--color-primario-oscuro);
-            margin-bottom: 0;
+            letter-spacing: -0.02em;
+            margin: 0;
         }
-        
+
+        /* Etiqueta de estado */
         .mascota-etiqueta.grande {
             font-size: 1rem;
-            padding: 8px 20px;
+            font-weight: 600;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            background-color: var(--color-primario-claro);
+            color: var(--color-primario-oscuro);
+            border: 2px solid var(--color-primario);
         }
-        
+        .mascota-etiqueta.grande.revision {
+            background-color: #fff3e0;
+            color: #b85e00;
+            border-color: #ffb74d;
+        }
+        .mascota-etiqueta.grande.adoptada {
+            background-color: #eceff1;
+            color: #546e7a;
+            border-color: #b0bec5;
+        }
+
+        /* Tarjeta de características */
         .detalle-caracteristicas {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 1.5rem;
             background-color: var(--color-primario-claro);
-            border-radius: var(--borde-redondo);
+            border-radius: var(--borde-redondo-sm);
+            border: 2px solid var(--color-primario);
         }
-        
+
         .caracteristica {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 0.25rem;
         }
-        
+
         .caracteristica .label {
-            font-size: 0.85rem;
-            color: var(--color-texto-claro);
+            font-size: 0.8rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            color: var(--color-primario-oscuro);
+            opacity: 0.8;
         }
-        
+
         .caracteristica .valor {
-            font-size: 1.1rem;
-            font-weight: 500;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--color-primario-oscuro);
         }
-        
+
+        /* Secciones de texto - SIN EMOJIS */
         .detalle-descripcion,
         .detalle-personalidad,
         .detalle-salud {
-            margin-bottom: 30px;
-            padding: 20px;
+            padding: 1.5rem;
             background-color: var(--color-blanco);
-            border-radius: var(--borde-redondo);
+            border-radius: var(--borde-redondo-sm);
             border: 2px solid var(--color-borde);
         }
-        
+
         .detalle-descripcion h3,
         .detalle-personalidad h3,
         .detalle-salud h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
             color: var(--color-primario-oscuro);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--color-primario-claro);
+            margin-bottom: 1rem;
         }
-        
+
         .detalle-descripcion p {
-            line-height: 1.8;
+            line-height: 1.7;
             color: var(--color-texto);
         }
-        
+
+        /* Tags de personalidad */
         .personalidad-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 0.6rem;
         }
-        
+
         .tag {
-            background-color: var(--color-primario-claro);
+            background-color: var(--color-blanco);
             color: var(--color-primario-oscuro);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.95rem;
             font-weight: 500;
+            border: 2px solid var(--color-primario);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        
+
+        /* Acciones */
         .detalle-acciones {
-            margin-top: 30px;
+            margin-top: 1rem;
             display: flex;
-            gap: 15px;
-            justify-content: center;
+            gap: 1rem;
+            justify-content: stretch;
         }
-        
+
         .btn-solicitar {
             background-color: var(--color-primario);
             color: white;
-            padding: 15px 30px;
-            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
             border: none;
-            border-radius: var(--borde-redondo);
+            border-radius: 3rem;
             cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-            max-width: 300px;
+            transition: all 0.2s ease;
+            flex: 2;
+            box-shadow: 0 4px 6px rgba(155, 135, 245, 0.3);
         }
-        
         .btn-solicitar:hover:not(:disabled) {
             background-color: var(--color-primario-oscuro);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(124, 106, 196, 0.4);
         }
-        
         .btn-solicitar:disabled {
             background-color: var(--color-texto-claro);
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.5;
         }
-        
-        /* Estilo para mensaje de solicitud enviada */
-        .mensaje-solicitud-enviada {
-            background-color: #e3f2fd;
-            border: 2px solid #2196f3;
-            border-radius: 10px;
-            padding: 15px 20px;
-            text-align: center;
-            flex: 1;
-            max-width: 300px;
-        }
-        
-        .mensaje-solicitud-enviada p {
-            margin: 5px 0;
-            color: #0d47a1;
-        }
-        
-        .mensaje-solicitud-enviada p:first-child {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .mensaje-solicitud-enviada .estado {
-            background-color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 0.9rem;
-            color: #1976d2;
-        }
-        
-        /* Estilo para mensaje de mascota adoptada */
-        .mensaje-adoptada {
-            background-color: #f5f5f5;
-            border: 2px solid #9e9e9e;
-            border-radius: 10px;
-            padding: 15px 20px;
-            text-align: center;
-            flex: 1;
-            max-width: 300px;
-        }
-        
-        .mensaje-adoptada p {
-            margin: 5px 0;
-            color: #616161;
-        }
-        
-        .mensaje-adoptada p:first-child {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
+
         .btn-volver {
             background-color: var(--color-blanco);
             color: var(--color-texto);
-            padding: 15px 30px;
+            padding: 1rem 2rem;
             font-size: 1.1rem;
+            font-weight: 500;
             border: 2px solid var(--color-borde);
-            border-radius: var(--borde-redondo);
+            border-radius: 3rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            flex: 1;
         }
-        
         .btn-volver:hover {
             background-color: var(--color-primario-claro);
             border-color: var(--color-primario);
+            color: var(--color-primario-oscuro);
+        }
+
+        /* Mensajes de estado */
+        .mensaje-solicitud-enviada,
+        .mensaje-adoptada {
+            border-radius: 3rem;
+            padding: 1rem 2rem;
+            text-align: center;
+            flex: 2;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .mensaje-solicitud-enviada {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            color: #0d47a1;
+        }
+        .mensaje-adoptada {
+            background-color: #f1f5f9;
+            border: 2px solid #94a3b8;
+            color: #475569;
+        }
+
+        /* ===== PIE DE PÁGINA ACTUALIZADO ===== */
+        .pie-pagina {
+            background-color: #7c6ac4;
+            border-top: none;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            color: white;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-columna h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-columna a,
+        .footer-columna p {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-bottom: 0.75rem;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .footer-columna a:hover {
+            color: white;
+        }
+
+        /* Estilos específicos para el logo en el footer - SIN FILTRO BLANCO */
+        .pie-pagina .logo {
+            margin-bottom: 1rem;
         }
         
-        .cargando {
-            text-align: center;
-            padding: 60px;
-            color: var(--color-texto-claro);
+        .pie-pagina .logo img {
+            height: 48px;
+            width: auto;
+            /* SIN filter: brightness(0) invert(1) - el logo mantiene sus colores originales */
+        }
+        
+        .pie-pagina .logo .logo-texto {
+            color: white;
+            font-weight: 700;
             font-size: 1.2rem;
         }
-        
-        .error {
-            text-align: center;
-            padding: 60px;
-            color: var(--color-error);
-            font-size: 1.2rem;
+
+        .icono-footer, .icono-red-social {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
+            opacity: 0.9;
         }
-        
-        /* Modales */
+
+        .redes-sociales {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .red-social {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: inline-flex;
+            transition: background-color 0.2s;
+        }
+
+        .red-social:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .red-social:hover .icono-red-social {
+            filter: brightness(0) invert(1);
+            opacity: 1;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        /* ===== MODALES ===== */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
+            z-index: 2000;
             left: 0;
             top: 0;
             width: 100%;
@@ -254,107 +544,90 @@
             background-color: rgba(0, 0, 0, 0.5);
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(5px);
         }
-        
         .modal-contenido {
             background-color: var(--color-blanco);
-            border-radius: 15px;
+            border-radius: 2rem;
             max-width: 450px;
             width: 90%;
-            border: 2px solid var(--color-borde);
+            border: 3px solid var(--color-borde);
             box-shadow: var(--sombra);
-            animation: slideIn 0.3s;
+            animation: slideIn 0.3s ease;
         }
-        
         .modal-header {
-            padding: 20px 25px;
+            padding: 1.5rem 2rem;
             border-bottom: 2px solid var(--color-borde);
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--color-primario-claro);
-            border-radius: 15px 15px 0 0;
+            border-radius: 2rem 2rem 0 0;
         }
-        
         .modal-header h2 {
             margin: 0;
             color: var(--color-primario-oscuro);
             font-size: 1.5rem;
         }
-        
         .cerrar-modal {
             background: none;
             border: none;
-            font-size: 2rem;
+            font-size: 2.5rem;
             cursor: pointer;
             color: var(--color-texto-claro);
             line-height: 1;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
-        
         .cerrar-modal:hover {
             color: var(--color-error);
+            transform: scale(1.1);
         }
-        
-        .modal-body {
-            padding: 25px;
-        }
-        
-        .modal-body p {
-            margin-bottom: 15px;
-            color: var(--color-texto);
-            line-height: 1.6;
-        }
-        
+        .modal-body { padding: 2rem; }
         .modal-footer {
-            padding: 20px 25px;
+            padding: 1.5rem 2rem;
             border-top: 2px solid var(--color-borde);
             display: flex;
-            gap: 10px;
+            gap: 0.75rem;
             justify-content: flex-end;
         }
-        
+
         @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        
-        @media (max-width: 768px) {
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
             .detalle-grid {
                 grid-template-columns: 1fr;
-                gap: 30px;
             }
-            
             .imagen-principal {
-                height: 300px;
+                height: 400px;
             }
-            
-            .detalle-encabezado h1 {
-                font-size: 2rem;
-            }
-            
-            .detalle-acciones {
-                flex-direction: column;
-            }
-            
-            .btn-solicitar,
-            .btn-volver,
-            .mensaje-solicitud-enviada,
-            .mensaje-adoptada {
-                max-width: none;
+        }
+        @media (max-width: 768px) {
+            .detalle-encabezado h1 { font-size: 2.2rem; }
+            .detalle-caracteristicas { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+            .detalle-acciones { flex-direction: column; }
+            .btn-solicitar, .btn-volver, .mensaje-solicitud-enviada, .mensaje-adoptada {
                 width: 100%;
             }
         }
+        @media (max-width: 480px) {
+            .enlaces-nav { gap: 0.5rem; }
+            .detalle-caracteristicas { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Utilidades */
+        .icono-pequeno { width: 18px; height: 18px; }
+        .cargando, .error { text-align: center; padding: 4rem; font-size: 1.2rem; }
+        .error { color: var(--color-error); }
     </style>
 </head>
 <body>
-    <!-- navegacion principal -->
+    <!-- Navegación principal -->
     <nav class="navegacion">
         <div class="contenedor">
             <div class="logo">
@@ -363,11 +636,7 @@
                     <span class="logo-texto">Patitas Felices</span>
                 </a>
             </div>
-            
-            <div class="enlaces-nav" id="enlacesNav">
-                <!-- Se carga dinámicamente con JavaScript -->
-            </div>
-            
+            <div class="enlaces-nav" id="enlacesNav"></div>
             <button class="menu-movil" id="menuMovil">
                 <img src="assets/icons/menu.svg" alt="Menu" class="icono" />
             </button>
@@ -382,7 +651,7 @@
         </div>
     </main>
 
-    <!-- Modal de confirmación de solicitud -->
+    <!-- Modales -->
     <div id="modalSolicitud" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -400,7 +669,6 @@
         </div>
     </div>
 
-    <!-- Modal de éxito -->
     <div id="modalExito" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -418,7 +686,6 @@
         </div>
     </div>
 
-    <!-- Modal de error -->
     <div id="modalError" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -434,7 +701,6 @@
         </div>
     </div>
 
-    <!-- Modal de inicio de sesión requerido -->
     <div id="modalLogin" class="modal">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -452,7 +718,7 @@
         </div>
     </div>
 
-    <!-- pie de pagina con tus datos -->
+    <!-- Pie de página con logo visible (sin filtro blanco) -->
     <footer class="pie-pagina">
         <div class="contenedor">
             <div class="footer-grid">
@@ -463,67 +729,37 @@
                     </div>
                     <p></p>
                 </div>
-                
                 <div class="footer-columna">
                     <h4>Enlaces rápidos</h4>
-                    <a href="adoptar.html">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
-                        Adoptar
-                    </a>
-                    <a href="donadores.html">
-                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
-                        Donadores
-                    </a>
-                    <a href="nosotros.html">
-                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" />
-                        Nosotros
-                    </a>
+                    <a href="adoptar.html"><img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" /> Adoptar</a>
+                    <a href="donadores.html"><img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" /> Donadores</a>
+                    <a href="nosotros.html"><img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono-footer" /> Nosotros</a>
                 </div>
-                
                 <div class="footer-columna">
                     <h4>Contacto</h4>
-                    <p>
-                        <img src="assets/icons/email.svg" alt="Email" class="icono-footer" />
-                        patitasfelices.nz@gmail.com
-                    </p>
-                    <p>
-                        <img src="assets/icons/phone.svg" alt="Teléfono" class="icono-footer" />
-                        618 207 4083
-                    </p>
-                    <p>
-                        <img src="assets/icons/location.svg" alt="Ubicación" class="icono-footer" />
-                        Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico
-                    </p>
+                    <p><img src="assets/icons/email.svg" alt="Email" class="icono-footer" /> patitasfelices.nz@gmail.com</p>
+                    <p><img src="assets/icons/phone.svg" alt="Teléfono" class="icono-footer" /> 618 207 4083</p>
+                    <p><img src="assets/icons/location.svg" alt="Ubicación" class="icono-footer" /> Veracruz 410, Col. Morga, C.P. 34010, Durango, Mexico</p>
                 </div>
-                
                 <div class="footer-columna">
                     <h4>Síguenos</h4>
                     <div class="redes-sociales">
-                        <a href="#" class="red-social">
-                            <img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" />
-                        </a>
-                        <a href="#" class="red-social">
-                            <img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" />
-                        </a>
-                        <a href="#" class="red-social">
-                            <img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" />
-                        </a>
+                        <a href="#" class="red-social"><img src="assets/icons/facebook.svg" alt="Facebook" class="icono-red-social" /></a>
+                        <a href="#" class="red-social"><img src="assets/icons/instagram.svg" alt="Instagram" class="icono-red-social" /></a>
+                        <a href="#" class="red-social"><img src="assets/icons/twitter.svg" alt="Twitter" class="icono-red-social" /></a>
                     </div>
                 </div>
             </div>
-            
             <div class="footer-copyright">
                 <p>&copy; 2026 Patitas Felices. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs y scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Configuración y funciones -->
     <script src="js/firebase-config.js"></script>
     <script src="js/mascotas.js"></script>
     <script src="js/solicitudes.js"></script>
@@ -539,10 +775,8 @@
         const mascotaNombreModal = document.getElementById('mascotaNombreModal');
         const mensajeError = document.getElementById('mensajeError');
         
-        // Obtener ID de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const mascotaId = urlParams.get('id');
-        
         let mascotaActual = null;
 
         // ===== FUNCIONES DE NAVEGACIÓN =====
@@ -558,22 +792,10 @@
         function crearEnlacesNavegacion(usuario = null, userData = null) {
             if (usuario && userData) {
                 return `
-                    <a href="index.html" class="enlace">
-                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
-                        Inicio
-                    </a>
-                    <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
-                    </a>
-                    <a href="donadores.html" class="enlace">
-                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
-                        Donadores
-                    </a>
-                    <a href="nosotros.html" class="enlace">
-                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
-                        Nosotros
-                    </a>
+                    <a href="index.html" class="enlace"><img src="assets/icons/home.svg" alt="Inicio" class="icono" /> Inicio</a>
+                    <a href="adoptar.html" class="enlace"><img src="assets/icons/search.svg" alt="Adoptar" class="icono" /> Adoptar</a>
+                    <a href="donadores.html" class="enlace"><img src="assets/icons/donadores.svg" alt="Donadores" class="icono" /> Donadores</a>
+                    <a href="nosotros.html" class="enlace"><img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" /> Nosotros</a>
                     <div class="usuario-menu-container">
                         <div class="usuario-menu" onclick="toggleDropdown(event)">
                             <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
@@ -581,46 +803,20 @@
                             <img src="assets/icons/arrow-down.svg" alt="▼" class="icono-pequeno" />
                         </div>
                         <div class="usuario-dropdown" id="usuarioDropdown">
-                            <a href="mis-solicitudes.html">
-                                <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
-                                Mis Solicitudes
-                            </a>
-                            ${userData.esAdmin ? `
-                                <a href="admin/index.html">
-                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
-                                    Panel Admin
-                                </a>
-                            ` : ''}
+                            <a href="mis-solicitudes.html"><img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" /> Mis Solicitudes</a>
+                            ${userData.esAdmin ? `<a href="admin/index.html"><img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" /> Panel Admin</a>` : ''}
                             <hr>
-                            <a href="#" onclick="cerrarSesion(); return false;">
-                                <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesión
-                            </a>
+                            <a href="#" onclick="cerrarSesion(); return false;"><img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" /> Cerrar Sesión</a>
                         </div>
                     </div>
                 `;
             } else {
                 return `
-                    <a href="index.html" class="enlace">
-                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
-                        Inicio
-                    </a>
-                    <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
-                    </a>
-                    <a href="donadores.html" class="enlace">
-                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
-                        Donadores
-                    </a>
-                    <a href="nosotros.html" class="enlace">
-                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
-                        Nosotros
-                    </a>
-                    <a href="login/login.html" class="btn btn-outline">
-                        <img src="assets/icons/user.svg" alt="Login" class="icono" />
-                        Iniciar Sesión
-                    </a>
+                    <a href="index.html" class="enlace"><img src="assets/icons/home.svg" alt="Inicio" class="icono" /> Inicio</a>
+                    <a href="adoptar.html" class="enlace"><img src="assets/icons/search.svg" alt="Adoptar" class="icono" /> Adoptar</a>
+                    <a href="donadores.html" class="enlace"><img src="assets/icons/donadores.svg" alt="Donadores" class="icono" /> Donadores</a>
+                    <a href="nosotros.html" class="enlace"><img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" /> Nosotros</a>
+                    <a href="login/login.html" class="btn btn-outline"><img src="assets/icons/user.svg" alt="Login" class="icono" /> Iniciar Sesión</a>
                     <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
                 `;
             }
@@ -640,21 +836,10 @@
         });
 
         // ===== FUNCIONES DE MODALES =====
-        window.cerrarModal = function() {
-            modalSolicitud.style.display = 'none';
-        };
-
-        window.cerrarModalExito = function() {
-            modalExito.style.display = 'none';
-        };
-
-        window.cerrarModalError = function() {
-            modalError.style.display = 'none';
-        };
-
-        window.cerrarModalLogin = function() {
-            modalLogin.style.display = 'none';
-        };
+        window.cerrarModal = function() { modalSolicitud.style.display = 'none'; };
+        window.cerrarModalExito = function() { modalExito.style.display = 'none'; };
+        window.cerrarModalError = function() { modalError.style.display = 'none'; };
+        window.cerrarModalLogin = function() { modalLogin.style.display = 'none'; };
 
         function mostrarError(mensaje) {
             mensajeError.textContent = mensaje;
@@ -663,34 +848,20 @@
 
         window.abrirModalSolicitud = function() {
             const user = auth.currentUser;
-            if (!user) {
-                modalLogin.style.display = 'flex';
-                return;
-            }
+            if (!user) { modalLogin.style.display = 'flex'; return; }
             mascotaNombreModal.textContent = mascotaActual.nombre;
             modalSolicitud.style.display = 'flex';
         };
 
         window.confirmarSolicitud = async function() {
             const user = auth.currentUser;
-            
-            if (!user) {
-                cerrarModal();
-                modalLogin.style.display = 'flex';
-                return;
-            }
-            
+            if (!user) { cerrarModal(); modalLogin.style.display = 'flex'; return; }
             cerrarModal();
-            
             try {
                 const result = await enviarSolicitud(mascotaActual.id, mascotaActual);
-                
                 if (result.success) {
                     modalExito.style.display = 'flex';
-                    // Recargar la página para mostrar el nuevo estado
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                    setTimeout(() => window.location.reload(), 2000);
                 } else {
                     mostrarError(result.error || 'Error al enviar la solicitud');
                 }
@@ -700,18 +871,16 @@
             }
         };
 
-        // ===== NUEVA FUNCIÓN: VERIFICAR SI EL USUARIO YA SOLICITÓ =====
+        // ===== FUNCIONES DE VERIFICACIÓN =====
         async function verificarSolicitudExistente(mascotaId) {
             const usuarioActual = auth.currentUser;
             if (!usuarioActual) return false;
-            
             try {
                 const snapshot = await db.collection('solicitudes')
                     .where('usuarioId', '==', usuarioActual.uid)
                     .where('mascotaId', '==', mascotaId)
                     .where('estado', 'in', ['pendiente', 'en_proceso', 'aprobada'])
                     .get();
-                
                 return !snapshot.empty;
             } catch (error) {
                 console.error('Error al verificar solicitud:', error);
@@ -719,14 +888,12 @@
             }
         }
 
-        // ===== NUEVA FUNCIÓN: VERIFICAR SI LA MASCOTA YA FUE ADOPTADA =====
         async function verificarMascotaAdoptada(mascotaId) {
             try {
                 const snapshot = await db.collection('solicitudes')
                     .where('mascotaId', '==', mascotaId)
                     .where('estado', '==', 'aprobada')
                     .get();
-                
                 return !snapshot.empty;
             } catch (error) {
                 console.error('Error al verificar mascota adoptada:', error);
@@ -734,88 +901,44 @@
             }
         }
 
-        // ===== FUNCIONES DE MASCOTA =====
+        // ===== FUNCIÓN PRINCIPAL: CARGAR DETALLE =====
         async function cargarDetalle() {
             if (!mascotaId) {
                 detalleContainer.innerHTML = '<div class="error">No se especificó una mascota</div>';
                 return;
             }
-            
             try {
                 const mascota = await obtenerMascotaPorId(mascotaId);
-                
                 if (!mascota) {
                     detalleContainer.innerHTML = '<div class="error">Mascota no encontrada</div>';
                     return;
                 }
-                
                 mascotaActual = mascota;
-                
-                // Verificar si el usuario actual ya tiene una solicitud para esta mascota
                 const yaSolicito = await verificarSolicitudExistente(mascotaId);
-                
-                // Verificar si la mascota ya fue adoptada
                 const adoptada = await verificarMascotaAdoptada(mascotaId);
-                
-                // Formatear personalidad
+
                 const personalidadHtml = mascota.personalidad && mascota.personalidad.length > 0
                     ? mascota.personalidad.map(p => `<span class="tag">${p}</span>`).join('')
                     : '<p>No especificada</p>';
-                
-                // Determinar el estado de la mascota
+
                 let estadoTexto = 'Disponible';
                 let estadoClass = 'disponible';
-                
-                if (adoptada) {
-                    estadoTexto = 'Ya tiene un hogar';
-                    estadoClass = 'adoptada';
-                } else if (yaSolicito) {
-                    estadoTexto = 'En revisión de adopción';
-                    estadoClass = 'revision';
-                } else if (mascota.estado === 'proceso') {
-                    estadoTexto = 'En proceso de adopción';
-                    estadoClass = 'proceso';
-                } else if (mascota.estado === 'adoptado') {
-                    estadoTexto = 'Ya tiene un hogar';
-                    estadoClass = 'adoptada';
-                }
-                
-                // Determinar qué mostrar en la sección de acciones
+                if (adoptada) { estadoTexto = 'Ya tiene un hogar'; estadoClass = 'adoptada'; }
+                else if (yaSolicito) { estadoTexto = 'En revisión de adopción'; estadoClass = 'revision'; }
+                else if (mascota.estado === 'proceso') { estadoTexto = 'En proceso de adopción'; estadoClass = 'proceso'; }
+                else if (mascota.estado === 'adoptado') { estadoTexto = 'Ya tiene un hogar'; estadoClass = 'adoptada'; }
+
                 let accionesHtml = '';
-                
                 if (adoptada) {
-                    // Si ya fue adoptada, mostrar mensaje gris
-                    accionesHtml = `
-                        <div class="mensaje-adoptada">
-                            <p>Esta mascota ya tiene un hogar</p>
-                            <p>No está disponible para adopción</p>
-                        </div>
-                    `;
+                    accionesHtml = `<div class="mensaje-adoptada"><p>Esta mascota ya tiene un hogar</p><p>No está disponible para adopción</p></div>`;
                 } else if (yaSolicito) {
-                    // Si ya envió solicitud, mostrar mensaje azul
-                    accionesHtml = `
-                        <div class="mensaje-solicitud-enviada">
-                            <p>Solicitud enviada</p>
-                            <p>Tu solicitud está en revisión</p>
-                            <span class="estado">En revisión</span>
-                        </div>
-                    `;
+                    accionesHtml = `<div class="mensaje-solicitud-enviada"><p>Solicitud enviada</p><p>Tu solicitud está en revisión</p><span class="estado">En revisión</span></div>`;
                 } else if (mascota.estado === 'disponible') {
-                    // Si está disponible y no ha solicitado, mostrar botón
-                    accionesHtml = `
-                        <button onclick="abrirModalSolicitud()" class="btn-solicitar">
-                            Solicitar adopción
-                        </button>
-                    `;
+                    accionesHtml = `<button onclick="abrirModalSolicitud()" class="btn-solicitar">Solicitar adopción</button>`;
                 } else {
-                    // No disponible por otra razón
-                    accionesHtml = `
-                        <button class="btn-solicitar" disabled>
-                            No disponible
-                        </button>
-                    `;
+                    accionesHtml = `<button class="btn-solicitar" disabled>No disponible</button>`;
                 }
-                
+
                 detalleContainer.innerHTML = `
                     <div class="detalle-grid">
                         <div class="detalle-imagenes">
@@ -828,61 +951,24 @@
                                 <h1>${mascota.nombre}</h1>
                                 <span class="mascota-etiqueta grande ${estadoClass}">${estadoTexto}</span>
                             </div>
-                            
                             <div class="detalle-caracteristicas">
-                                <div class="caracteristica">
-                                    <span class="label">Especie</span>
-                                    <span class="valor">${mascota.especie || 'No especificada'}</span>
-                                </div>
-                                <div class="caracteristica">
-                                    <span class="label">Raza</span>
-                                    <span class="valor">${mascota.raza || 'No especificada'}</span>
-                                </div>
-                                <div class="caracteristica">
-                                    <span class="label">Edad</span>
-                                    <span class="valor">${mascota.edad || '?'} años</span>
-                                </div>
-                                <div class="caracteristica">
-                                    <span class="label">Tamaño</span>
-                                    <span class="valor">${mascota.tamano || 'No especificado'}</span>
-                                </div>
-                                <div class="caracteristica">
-                                    <span class="label">Sexo</span>
-                                    <span class="valor">${mascota.sexo || 'No especificado'}</span>
-                                </div>
-                                <div class="caracteristica">
-                                    <span class="label">Color</span>
-                                    <span class="valor">${mascota.color || 'No especificado'}</span>
-                                </div>
+                                <div class="caracteristica"><span class="label">Especie</span><span class="valor">${mascota.especie || 'No especificada'}</span></div>
+                                <div class="caracteristica"><span class="label">Raza</span><span class="valor">${mascota.raza || 'No especificada'}</span></div>
+                                <div class="caracteristica"><span class="label">Edad</span><span class="valor">${mascota.edad || '?'} años</span></div>
+                                <div class="caracteristica"><span class="label">Tamaño</span><span class="valor">${mascota.tamano || 'No especificado'}</span></div>
+                                <div class="caracteristica"><span class="label">Sexo</span><span class="valor">${mascota.sexo || 'No especificado'}</span></div>
+                                <div class="caracteristica"><span class="label">Color</span><span class="valor">${mascota.color || 'No especificado'}</span></div>
                             </div>
-                            
-                            <div class="detalle-descripcion">
-                                <h3>Descripción</h3>
-                                <p>${mascota.descripcion || 'No hay descripción disponible'}</p>
-                            </div>
-                            
-                            <div class="detalle-personalidad">
-                                <h3>Personalidad</h3>
-                                <div class="personalidad-tags">
-                                    ${personalidadHtml}
-                                </div>
-                            </div>
-                            
-                            <div class="detalle-salud">
-                                <h3>Salud y cuidados</h3>
-                                <p>${mascota.salud || 'No especificado'}</p>
-                            </div>
-                            
+                            <div class="detalle-descripcion"><h3>Descripción</h3><p>${mascota.descripcion || 'No hay descripción disponible'}</p></div>
+                            <div class="detalle-personalidad"><h3>Personalidad</h3><div class="personalidad-tags">${personalidadHtml}</div></div>
+                            <div class="detalle-salud"><h3>Salud y cuidados</h3><p>${mascota.salud || 'No especificado'}</p></div>
                             <div class="detalle-acciones">
-                                <button onclick="window.location.href='adoptar.html'" class="btn-volver">
-                                    ← Volver
-                                </button>
+                                <button onclick="window.location.href='adoptar.html'" class="btn-volver">← Volver</button>
                                 ${accionesHtml}
                             </div>
                         </div>
                     </div>
                 `;
-                
             } catch (error) {
                 console.error('Error al cargar mascota:', error);
                 detalleContainer.innerHTML = `<div class="error">Error al cargar la mascota: ${error.message}</div>`;
@@ -891,14 +977,12 @@
 
         // ===== INICIALIZACIÓN =====
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar autenticación y actualizar navegación
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     try {
                         const userDoc = await db.collection('usuarios').doc(user.uid).get();
                         if (userDoc.exists) {
-                            const userData = userDoc.data();
-                            enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
+                            enlacesNav.innerHTML = crearEnlacesNavegacion(user, userDoc.data());
                         } else {
                             enlacesNav.innerHTML = crearEnlacesNavegacion();
                         }
@@ -909,8 +993,6 @@
                 } else {
                     enlacesNav.innerHTML = crearEnlacesNavegacion();
                 }
-                
-                // Cargar detalle de la mascota
                 await cargarDetalle();
             });
         });
