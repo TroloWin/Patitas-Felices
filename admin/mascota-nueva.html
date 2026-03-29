@@ -260,18 +260,18 @@
             
             // Crear objeto con datos
             const datosMascota = {
-                nombre: document.getElementById('Nombre').value,
-                especie: document.getElementById('Especie').value,
-                raza: document.getElementById('Raza').value || '',
+                nombre: document.getElementById('nombre').value,
+                especie: document.getElementById('especie').value,
+                raza: document.getElementById('raza').value || '',
                 edad: parseFloat(document.getElementById('edad').value),
-                tamano: document.getElementById('Tamano').value,
-                sexo: document.getElementById('Sexo').value,
-                color: document.getElementById('Color').value || '',
+                tamano: document.getElementById('tamano').value,
+                sexo: document.getElementById('sexo').value,
+                color: document.getElementById('color').value || '',
                 personalidad: personalidad,
-                salud: document.getElementById('Salud').value || '',
-                descripcion: document.getElementById('Descripcion').value,
+                salud: document.getElementById('salud').value || '',
+                descripcion: document.getElementById('descripcion').value,
                 imagen: imagenRuta.value, // Guardamos la ruta donde "estará" la imagen
-                estado: 'Disponible',
+                estado: 'disponible',
                 fechaRegistro: firebase.firestore.FieldValue.serverTimestamp(),
                 registradoPor: auth.currentUser ? auth.currentUser.uid : null
             };
