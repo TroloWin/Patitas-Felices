@@ -1,0 +1,16 @@
+{
+  "admin": {
+    "email": "samael@email.com",
+    "password": "Admin123!",
+    "nombre": "Samael"
+  },
+  "usuario": {
+    "email": "ana.garcia@email.com",
+    "password": "Ana123456!",
+    "nombre": "Ana García"
+  },
+  "invalido": {
+    "email": "noexiste@email.com",
+    "password": "passwordincorrecta"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "mascotas": [
+    {
+      "id": "perro1",
+      "nombre": "Luna",
+      "especie": "perro",
+      "estado": "disponible"
+    },
+    {
+      "id": "perro2",
+      "nombre": "Max",
+      "especie": "perro",
+      "estado": "proceso"
+    },
+    {
+      "id": "gato1",
+      "nombre": "Simba",
+      "especie": "gato",
+      "estado": "disponible"
+    }
+  ]
+}
