@@ -120,8 +120,8 @@
                 <div class="footer-columna">
                     <h4>Enlaces rápidos</h4>
                     <a href="adoptar.html">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
-                        Adoptar
+                        <img src="assets/icons/pets.svg" alt="Mascotas" class="icono-footer" />
+                        Mascotas
                     </a>
                     <a href="donadores.html">
                         <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
@@ -199,277 +199,199 @@ window.cerrarSesion = async function () {
     }
 };
 
- function crearEnlacesNavegacion(usuario = null, userData = null) {
-            if (usuario && userData) {
-                return `
-                    <a href="index.html" class="enlace activo">
-                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
-                        Inicio
+// Función mejorada que detecta la página actual y aplica la clase 'activo'
+function crearEnlacesNavegacion(usuario = null, userData = null) {
+    // Obtener la página actual
+    const paginaActual = window.location.pathname.split('/').pop() || 'index.html';
+    
+    if (usuario && userData) {
+        return `
+            <a href="index.html" class="enlace ${paginaActual === 'index.html' ? 'activo' : ''}">
+                <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                Inicio
+            </a>
+            <a href="adoptar.html" class="enlace ${paginaActual === 'adoptar.html' ? 'activo' : ''}">
+                <img src="assets/icons/pets.svg" alt="Mascotas" class="icono" />
+                Mascotas
+            </a>
+            <a href="donadores.html" class="enlace ${paginaActual === 'donadores.html' ? 'activo' : ''}">
+                <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                Donadores
+            </a>
+            <a href="nosotros.html" class="enlace ${paginaActual === 'nosotros.html' ? 'activo' : ''}">
+                <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                Nosotros
+            </a>
+           <div class="usuario-menu-container">
+                <div class="usuario-menu" onclick="toggleDropdown(event)">
+                    <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
+                    <span class="usuario-nombre">${userData.nombre || 'Usuario'}</span>
+                    <img src="assets/icons/arrow-down.svg" alt="▼" class="icono-pequeno" />
+                </div>
+                <div class="usuario-dropdown" id="usuarioDropdown">
+                    <a href="mis-solicitudes.html">
+                        <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
+                        Mis Solicitudes
                     </a>
-                    <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
+                    ${userData.esAdmin ? `
+                        <a href="admin/index.html">
+                            <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
+                            Panel Admin
+                        </a>
+                    ` : ''}
+                    <hr>
+                    <a href="#" onclick="cerrarSesion(); return false;">
+                        <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
+                        Cerrar Sesión
                     </a>
-                    <a href="donadores.html" class="enlace">
-                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
-                        Donadores
-                    </a>
-                    <a href="nosotros.html" class="enlace">
-                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
-                        Nosotros
-                    </a>
-                   <div class="usuario-menu-container">
-                        <div class="usuario-menu" onclick="toggleDropdown(event)">
-                            <img src="assets/icons/user.svg" alt="Usuario" class="icono" />
-                            <span class="usuario-nombre">${userData.nombre || 'Usuario'}</span>
-                            <img src="assets/icons/arrow-down.svg" alt="▼" class="icono-pequeno" />
-                        </div>
-                        <div class="usuario-dropdown" id="usuarioDropdown">
-                            <a href="mis-solicitudes.html">
-                                <img src="assets/icons/pending.svg" alt="Solicitudes" class="icono-pequeno" />
-                                Mis Solicitudes
-                            </a>
-                            ${userData.esAdmin ? `
-                                <a href="admin/index.html">
-                                    <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
-                                    Panel Admin
-                                </a>
-                            ` : ' '}
-                            <hr>
-                            <a href="#" onclick="cerrarSesion(); return false;">
-                                <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
-                                Cerrar Sesión
-                            </a>
-                        </div>
-                    </div>
-                `;
-            } else {
-                return `
-                    <a href="index.html" class="enlace activo">
-                        <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
-                        Inicio
-                    </a>
-                    <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
-                    </a>
-                    <a href="donadores.html" class="enlace">
-                        <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
-                        Donadores
-                    </a>
-                    <a href="nosotros.html" class="enlace">
-                        <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
-                        Nosotros
-                    </a>
-                    <a href="login/login.html" class="btn btn-outline">
-                        <img src="assets/icons/user.svg" alt="Login" class="icono" />
-                        Iniciar Sesión
-                    </a>
-                    <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
-                `;
-            }
-        }
+                </div>
+            </div>
+        `;
+    } else {
+        return `
+            <a href="index.html" class="enlace ${paginaActual === 'index.html' ? 'activo' : ''}">
+                <img src="assets/icons/home.svg" alt="Inicio" class="icono" />
+                Inicio
+            </a>
+            <a href="adoptar.html" class="enlace ${paginaActual === 'adoptar.html' ? 'activo' : ''}">
+                <img src="assets/icons/pets.svg" alt="Mascotas" class="icono" />
+                Mascotas
+            </a>
+            <a href="donadores.html" class="enlace ${paginaActual === 'donadores.html' ? 'activo' : ''}">
+                <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
+                Donadores
+            </a>
+            <a href="nosotros.html" class="enlace ${paginaActual === 'nosotros.html' ? 'activo' : ''}">
+                <img src="assets/icons/nosotros.svg" alt="Nosotros" class="icono" />
+                Nosotros
+            </a>
+            <a href="login/login.html" class="btn btn-outline">
+                <img src="assets/icons/user.svg" alt="Login" class="icono" />
+                Iniciar Sesión
+            </a>
+            <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
+        `;
+    }
+}
 
-         window.toggleDropdown = function(event) {
-            event.stopPropagation();
-            const dropdown = document.getElementById('usuarioDropdown');
-            dropdown.classList.toggle('show');
-        };
+window.toggleDropdown = function(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('usuarioDropdown');
+    dropdown.classList.toggle('show');
+};
 
-        document.addEventListener('click', function() {
-            const dropdown = document.getElementById('usuarioDropdown');
-            if (dropdown && dropdown.classList.contains('show')) {
-                dropdown.classList.remove('show');
-            }
-        });
-     
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const userDoc = await db.collection('usuarios').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        enlacesNav.innerHTML = crearEnlacesNavegacion(user, userData);
-                    } else {
-                        enlacesNav.innerHTML = crearEnlacesNavegacion();
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    enlacesNav.innerHTML = crearEnlacesNavegacion();
-                }
-            } else {
-                enlacesNav.innerHTML = crearEnlacesNavegacion();
-            }
-        });
+document.addEventListener('click', function() {
+    const dropdown = document.getElementById('usuarioDropdown');
+    if (dropdown && dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+    }
+});
 
 // ===== FUNCIÓN PARA OBTENER TODAS LAS SOLICITUDES =====
 async function obtenerTodasLasSolicitudes() {
-
     try {
         const snapshot = await db.collection('solicitudes').get();
-
         let solicitudes = [];
-
         snapshot.forEach(doc => {
             solicitudes.push({
                 id: doc.id,
                 ...doc.data()
             });
         });
-
         return solicitudes;
-
     } catch (error) {
         console.error('Error al obtener solicitudes:', error);
         return [];
     }
 }
+
 // ===== ESTADOS DE MASCOTAS =====
 async function cargarEstadosParaMascotas(mascotas) {
-
     for (const mascota of mascotas) {
-
         try {
-
-            const estadoElement =
-                document.getElementById(`estado-${mascota.id}`);
-
+            const estadoElement = document.getElementById(`estado-${mascota.id}`);
             if (!estadoElement) continue;
 
-            const todasLasSolicitudes =
-                await obtenerTodasLasSolicitudes();
-
-            const solicitudesMascota =
-                todasLasSolicitudes.filter(
-                    s => s.mascotaId === mascota.id
-                );
+            const todasLasSolicitudes = await obtenerTodasLasSolicitudes();
+            const solicitudesMascota = todasLasSolicitudes.filter(s => s.mascotaId === mascota.id);
 
             if (solicitudesMascota.length === 0) {
-
                 estadoElement.textContent = 'Disponible';
                 estadoElement.style.backgroundColor = '#9b87f5';
                 continue;
             }
 
-            const aprobada =
-                solicitudesMascota.find(
-                    s => s.estado === 'aprobada'
-                );
-
+            const aprobada = solicitudesMascota.find(s => s.estado === 'aprobada');
             if (aprobada) {
-
                 estadoElement.textContent = 'Ya tiene un hogar';
                 estadoElement.style.backgroundColor = '#6c757d';
                 continue;
             }
 
-            const activa =
-                solicitudesMascota.find(
-                    s => s.estado === 'pendiente' ||
-                         s.estado === 'en_proceso'
-                );
-
+            const activa = solicitudesMascota.find(s => s.estado === 'pendiente' || s.estado === 'en_proceso');
             if (activa) {
-
                 estadoElement.textContent = 'En revisión de adopción';
                 estadoElement.style.backgroundColor = '#ffc107';
             }
-
         } catch (error) {
-
-            console.error(
-                `Error al cargar estado para mascota ${mascota.id}:`,
-                error
-            );
+            console.error(`Error al cargar estado para mascota ${mascota.id}:`, error);
         }
     }
 }
 
-
-
 // ===== MOSTRAR MASCOTAS =====
 function mostrarMascotas(mascotas) {
-
     const grid = document.getElementById("mascotasGrid");
-
     if (!grid) return;
 
     if (mascotas.length === 0) {
-
-        grid.innerHTML =
-            '<p class="sin-resultados">No hay mascotas disponibles</p>';
-
+        grid.innerHTML = '<p class="sin-resultados">No hay mascotas disponibles</p>';
         resultadosCount.textContent = '0 resultados';
         return;
     }
 
-    resultadosCount.textContent =
-        `${mascotas.length} resultados`;
+    resultadosCount.textContent = `${mascotas.length} resultados`;
 
-    grid.innerHTML =
-        mascotas.map(m => `
-
-            <div class="mascota-tarjeta">
-
-                <div class="mascota-imagen">
-                    <img src="${m.imagenUrl || 'assets/images/default-pet.png'}">
-                    <span class="mascota-etiqueta" id="estado-${m.id}">
-                        Disponible
-                    </span>
-                </div>
-
-                <div class="mascota-info">
-
-                    <h3>${m.nombre}</h3>
-
-                    <div class="mascota-detalles">
-                        <span>${m.edad || "?"} años</span>
-                        <span>${m.tamano || "?"}</span>
-                    </div>
-
-                    <p>
-                        ${m.descripcion
-                            ? m.descripcion.substring(0,70) + "..."
-                            : ""}
-                    </p>
-
-                    <a href="mascota-detalle.html?id=${m.id}"
-                       class="btn btn-secundario">
-                        Ver más
-                    </a>
-
-                </div>
-
+    grid.innerHTML = mascotas.map(m => `
+        <div class="mascota-tarjeta">
+            <div class="mascota-imagen">
+                <img src="${m.imagenUrl || 'assets/images/default-pet.png'}" alt="${m.nombre}">
+                <span class="mascota-etiqueta" id="estado-${m.id}">Disponible</span>
             </div>
-
-        `).join('');
+            <div class="mascota-info">
+                <h3>${m.nombre}</h3>
+                <div class="mascota-detalles">
+                    <span>${m.edad || "?"} años</span>
+                    <span>${m.tamano || "?"}</span>
+                </div>
+                <p>${m.descripcion ? m.descripcion.substring(0,70) + "..." : ""}</p>
+                <a href="mascota-detalle.html?id=${m.id}" class="btn btn-secundario">Ver más</a>
+            </div>
+        </div>
+    `).join('');
 
     cargarEstadosParaMascotas(mascotas);
 }
 
 // ===== CARGAR MASCOTAS =====
 async function cargarMascotas(filtros = {}) {
-
-    mascotasGrid.innerHTML = 'Cargando mascotas...';
-
+    mascotasGrid.innerHTML = '<div class="cargando">Cargando mascotas...</div>';
     try {
-
-        const mascotas =
-            await obtenerMascotas(filtros);
-
+        const mascotas = await obtenerMascotas(filtros);
         mostrarMascotas(mascotas);
-
     } catch (error) {
-
         console.error(error);
-        mascotasGrid.innerHTML = 'Error al cargar mascotas';
+        mascotasGrid.innerHTML = '<p class="error">Error al cargar mascotas</p>';
     }
 }
 
-
 // ===== FILTROS =====
-window.aplicarFiltros = function () {
-
+window.aplicarFiltros = function() {
+    const especie = document.getElementById('especie');
+    const edad = document.getElementById('edad');
+    const tamano = document.getElementById('tamano');
+    const busqueda = document.getElementById('busqueda');
+    
     cargarMascotas({
         especie: especie.value,
         edad: edad.value,
@@ -478,42 +400,41 @@ window.aplicarFiltros = function () {
     });
 };
 
-
-window.limpiarFiltros = function () {
-
+window.limpiarFiltros = function() {
+    const especie = document.getElementById('especie');
+    const edad = document.getElementById('edad');
+    const tamano = document.getElementById('tamano');
+    const busqueda = document.getElementById('busqueda');
+    
     especie.value = 'todos';
     edad.value = 'todos';
     tamano.value = 'todos';
     busqueda.value = '';
-
+    
     cargarMascotas();
 };
 
-
 // ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', function () {
-
+document.addEventListener('DOMContentLoaded', function() {
     auth.onAuthStateChanged(async (user) => {
-
         if (user) {
-
-            const userDoc =
-                await db.collection('usuarios')
-                .doc(user.uid).get();
-
-            enlacesNav.innerHTML =
-                crearEnlacesNavegacion(user, userDoc.data());
-
+            try {
+                const userDoc = await db.collection('usuarios').doc(user.uid).get();
+                if (userDoc.exists) {
+                    enlacesNav.innerHTML = crearEnlacesNavegacion(user, userDoc.data());
+                } else {
+                    enlacesNav.innerHTML = crearEnlacesNavegacion();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                enlacesNav.innerHTML = crearEnlacesNavegacion();
+            }
         } else {
-
-            enlacesNav.innerHTML =
-                crearEnlacesNavegacion();
+            enlacesNav.innerHTML = crearEnlacesNavegacion();
         }
-
+        
         await cargarMascotas();
-
     });
-
 });
 
 </script>

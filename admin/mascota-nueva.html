@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../css/estilos-generales.css" />
     <link rel="stylesheet" href="css/admin-styles.css" />
     <style>
-        /* Estilos adicionales para la previsualización */
         .preview-container {
             margin-top: 15px;
             text-align: center;
@@ -32,13 +31,49 @@
             font-size: 0.85rem;
             color: var(--color-texto-claro);
         }
+
+        /* ===== MEJORA CARACTERÍSTICAS ===== */
+        .checkbox-grid.mejorado {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .chip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border-radius: 20px;
+            background: #f3f0ff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .chip input {
+            display: none;
+        }
+
+        .chip:hover {
+            background: #e4dcff;
+        }
+
+        .chip input:checked + span {
+            background: var(--color-primario);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
     <div class="admin-layout">
         <aside class="admin-sidebar">
             <div class="sidebar-logo">
-                <img src="../assets/images/Logos/Logo patitas felices (8).png" alt="Patitas Felices" />
+                <img src="../assets/images/Logos/Logo patitas felices (8).png" />
                 <span>Panel de Administración</span>
             </div>
             <nav class="sidebar-nav">
@@ -59,17 +94,18 @@
 
             <form id="formMascota" class="formulario-admin">
                 <div class="form-grid">
+
                     <!-- Columna izquierda -->
                     <div class="form-columna">
                         <h3>Información básica</h3>
                         
                         <div class="campo">
-                            <label>Nombre *</label>
+                            <label>Nombre</label>
                             <input type="text" id="nombre" required>
                         </div>
 
                         <div class="campo">
-                            <label>Especie *</label>
+                            <label>Especie</label>
                             <select id="especie" required>
                                 <option value="">Seleccionar</option>
                                 <option value="perro">Perro</option>
@@ -85,13 +121,28 @@
                             <input type="text" id="raza">
                         </div>
 
+                        <!-- CAMBIO AQUÍ -->
                         <div class="campo">
-                            <label>Edad (años) *</label>
-                            <input type="number" id="edad" min="0" step="0.5" required>
+                            <label>Edad (años)</label>
+                            <select id="edad" required>
+    <option value="">Seleccionar</option>
+    <option value="0.5">0.5 años (6 meses)</option>
+    <option value="1">1 año</option>
+    <option value="1.5">1.5 años</option>
+    <option value="2">2 años</option>
+    <option value="3">3 años</option>
+    <option value="4">4 años</option>
+    <option value="5">5 años</option>
+    <option value="6">6 años</option>
+    <option value="7">7 años</option>
+    <option value="8">8 años</option>
+    <option value="9">9 años</option>
+    <option value="10">10 años</option>
+</select>
                         </div>
 
                         <div class="campo">
-                            <label>Tamaño *</label>
+                            <label>Tamaño</label>
                             <select id="tamano" required>
                                 <option value="">Seleccionar</option>
                                 <option value="pequeno">Pequeño</option>
@@ -101,7 +152,7 @@
                         </div>
 
                         <div class="campo">
-                            <label>Sexo *</label>
+                            <label>Sexo</label>
                             <select id="sexo" required>
                                 <option value="">Seleccionar</option>
                                 <option value="macho">Macho</option>
@@ -121,19 +172,19 @@
 
                         <div class="campo">
                             <label>Personalidad</label>
-                            <div class="checkbox-grid">
-                                <label><input type="checkbox" value="Jugueton"> Juguetón</label>
-                                <label><input type="checkbox" value="Tranquilo"> Tranquilo</label>
-                                <label><input type="checkbox" value="Cariñoso"> Cariñoso</label>
-                                <label><input type="checkbox" value="Energico"> Enérgico</label>
-                                <label><input type="checkbox" value="Timido"> Tímido</label>
-                                <label><input type="checkbox" value="Sociable"> Sociable</label>
+                            <div class="checkbox-grid mejorado">
+                                <label class="chip"><input type="checkbox" value="Jugueton"><span>Juguetón</span></label>
+                                <label class="chip"><input type="checkbox" value="Tranquilo"><span>Tranquilo</span></label>
+                                <label class="chip"><input type="checkbox" value="Cariñoso"><span>Cariñoso</span></label>
+                                <label class="chip"><input type="checkbox" value="Energico"><span>Enérgico</span></label>
+                                <label class="chip"><input type="checkbox" value="Timido"><span>Tímido</span></label>
+                                <label class="chip"><input type="checkbox" value="Sociable"><span>Sociable</span></label>
                             </div>
                         </div>
 
                         <div class="campo">
                             <label>Salud</label>
-                            <textarea id="salud" rows="2" placeholder="Vacunas, esterilización, condiciones especiales..."></textarea>
+                            <textarea id="salud" rows="2"></textarea>
                         </div>
 
                         <div class="campo">
@@ -144,24 +195,20 @@
                         <h3>Imagen</h3>
                         
                         <div class="campo">
-                            <label>Seleccionar imagen de la carpeta</label>
-                            <input type="file" id="imagenFile" accept="image/png, image/jpeg, image/jpg, image/gif">
-                            <small>Selecciona una imagen de tu computadora. Se guardará en la carpeta del proyecto.</small>
+                            <input type="file" id="imagenFile">
                         </div>
-                        
+
                         <div class="preview-container" id="previewContainer">
-                            <p class="sin-imagen">No hay imagen seleccionada</p>
+                            <p>No hay imagen seleccionada</p>
                         </div>
-                        
+
                         <div class="file-info" id="fileInfo"></div>
-                        
-                        <!-- Campo oculto para guardar la ruta -->
-                        <input type="hidden" id="imagenRuta" name="imagenRuta">
+                        <input type="hidden" id="imagenRuta">
                     </div>
                 </div>
 
                 <div class="form-acciones">
-                    <button type="button" onclick="window.location.href='mascotas.html'" class="btn-secundario">Cancelar</button>
+                    <button type="button" class="btn-secundario">Cancelar</button>
                     <button type="submit" class="btn-primario">Guardar mascota</button>
                 </div>
             </form>

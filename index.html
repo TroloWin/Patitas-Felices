@@ -31,8 +31,7 @@
                     <h1 class="hero-titulo">Encuentra un amigo <span class="texto-destacado">para toda la vida</span></h1>
                     <p class="hero-descripcion">Mascotas esperan por un hogar lleno de amor. Adopta y cambia una vida.</p>
                     <div class="hero-botones">
-                        <a href="/login/login.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
-                        <a href="login/registro.html" class="btn btn-outline btn-grande">Registrarme</a>
+                        <a href="login/login.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
                     </div>
                 </div>
                 <div class="hero-imagen">
@@ -52,17 +51,25 @@
                 <div class="pasos-grid">
                     <div class="paso-tarjeta">
                         <div class="paso-imagen">
-                            <img src="assets/images/WhatsApp Image 2026-03-14 at 9.22.03 PM.jpeg" alt="Paso 1" />
+                            <img src="assets/images/WhatsApp Image 2026-04-02 at 8.10.26 PM.jpeg" alt="Paso 1" />
                         </div>
                         <h3>1. Crea tu cuenta</h3>
-                        <p>En la esquina del lado derecho, darle click al botón de "Registrarse".</p>
+                        <p>En la esquina del lado derecho, darle click al botón de "Iniciar Sesión".</p>
+                    </div>
+
+                    <div class="paso-tarjeta">
+                        <div class="paso-imagen">
+                            <img src="assets/images/WhatsApp Image 2026-04-02 at 8.11.02 PM.jpeg" alt="Paso 2" />
+                        </div>
+                        <h3>2. ¿Dónde registrarte?</h3>
+                        <p>En la parte inferior del formulario, haz clic en 'Regístrate aquí' si aún no tienes cuenta</p>
                     </div>
                     
                     <div class="paso-tarjeta">
                         <div class="paso-imagen">
                             <img src="assets/images/WhatsApp Image 2026-03-14 at 9.30.54 PM.jpeg" alt="Paso 2" />
                         </div>
-                        <h3>2. Llenar los datos</h3>
+                        <h3>3. Llenar los datos</h3>
                         <p>Registrate con tu nombre, correo y contraseña donde te identificará el administrador</p>
                     </div>
                     
@@ -70,7 +77,7 @@
                         <div class="paso-imagen">
                             <img src="assets/images/WhatsApp Image 2026-03-14 at 9.49.36 PM.jpeg" alt="Paso 3" />
                         </div>
-                        <h3>3. Acepta los términos y condiciones</h3>
+                        <h3>4. Acepta los términos y condiciones</h3>
                         <p>No rechaces los términos y condiciones para mayor seguridad para ti y dar click en el botón de "Registrarse"</p>
                     </div>
                 </div>
@@ -120,6 +127,7 @@
                 </div>
             </div>
         </section>
+    </main>
     <!-- boton flotante adoptar -->
     <a href="login/login.html" class="boton-flotante">
         <img src="assets/icons/heart.svg" alt="Adoptar" />
@@ -141,8 +149,8 @@
                 <div class="footer-columna">
                     <h4>Enlaces rápidos</h4>
                     <a href="adoptar.html">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono-footer" />
-                        Adoptar
+                        <img src="assets/icons/pets.svg" alt="Mascotas" class="icono-footer" />
+                        Mascotas
                     </a>
                     <a href="donadores.html">
                         <img src="assets/icons/donadores.svg" alt="Donadores" class="icono-footer" />
@@ -223,8 +231,8 @@
                         Inicio
                     </a>
                     <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
+                        <img src="assets/icons/pets.svg" alt="Mascotas" class="icono" />
+                        Mascotas
                     </a>
                     <a href="donadores.html" class="enlace">
                         <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
@@ -250,7 +258,7 @@
                                     <img src="assets/icons/admin.svg" alt="Admin" class="icono-pequeno" />
                                     Panel Admin
                                 </a>
-                            ` : ' '}
+                            ` : ''}
                             <hr>
                             <a href="#" onclick="cerrarSesion(); return false;">
                                 <img src="assets/icons/logout.svg" alt="Salir" class="icono-pequeno" />
@@ -266,8 +274,8 @@
                         Inicio
                     </a>
                     <a href="adoptar.html" class="enlace">
-                        <img src="assets/icons/search.svg" alt="Adoptar" class="icono" />
-                        Adoptar
+                        <img src="assets/icons/pets.svg" alt="Mascotas" class="icono" />
+                        Mascotas
                     </a>
                     <a href="donadores.html" class="enlace">
                         <img src="assets/icons/donadores.svg" alt="Donadores" class="icono" />
@@ -281,7 +289,6 @@
                         <img src="assets/icons/user.svg" alt="Login" class="icono" />
                         Iniciar Sesión
                     </a>
-                    <a href="login/registro.html" class="btn btn-primario">Registrarse</a>
                 `;
             }
         }
@@ -317,7 +324,6 @@
                 enlacesNav.innerHTML = crearEnlacesNavegacion();
             }
         });
-
     </script>
 </body>
 </html>
