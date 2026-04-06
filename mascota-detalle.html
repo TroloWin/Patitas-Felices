@@ -648,19 +648,97 @@
     </main>
 
     <!-- Modales -->
+    <!-- NUEVO: Formulario completo de adopción con INE -->
     <div id="modalSolicitud" class="modal">
-        <div class="modal-contenido">
+        <div class="modal-contenido" style="max-width:600px;max-height:90vh;overflow-y:auto;">
             <div class="modal-header">
-                <h2>Confirmar solicitud</h2>
+                <h2>🐾 Solicitar adopción de <span id="mascotaNombreModal"></span></h2>
                 <button onclick="cerrarModal()" class="cerrar-modal">×</button>
             </div>
             <div class="modal-body">
-                <p>¿Estás seguro de que deseas solicitar la adopción de <strong id="mascotaNombreModal"></strong>?</p>
-                <p>Una vez enviada la solicitud, el administrador la revisará y podrás ver el estado en "Mis Solicitudes".</p>
+                <div style="background:var(--color-primario-claro);border-left:3px solid var(--color-primario);padding:10px 14px;border-radius:6px;font-size:0.85rem;color:var(--color-primario-oscuro);margin-bottom:18px;">
+                    Los campos marcados con <strong style="color:var(--color-error)">*</strong> son obligatorios.
+                </div>
+
+                <p style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--color-primario-oscuro);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--color-primario-claro);">📋 Datos personales</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Nombre completo <span style="color:var(--color-error)">*</span></label>
+                        <input type="text" id="sol_nombre" placeholder="Juan Pérez García" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Fecha de nacimiento <span style="color:var(--color-error)">*</span></label>
+                        <input type="date" id="sol_fechaNac" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Teléfono <span style="color:var(--color-error)">*</span></label>
+                        <input type="tel" id="sol_telefono" placeholder="618 000 0000" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Ocupación <span style="color:var(--color-error)">*</span></label>
+                        <input type="text" id="sol_ocupacion" placeholder="Maestro, Contador..." style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                    </div>
+                </div>
+                <div style="margin-top:12px;">
+                    <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Dirección completa <span style="color:var(--color-error)">*</span></label>
+                    <input type="text" id="sol_direccion" placeholder="Calle, número, colonia, ciudad" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                </div>
+
+                <p style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--color-primario-oscuro);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--color-primario-claro);">🏠 Condiciones del hogar</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">Tipo de vivienda <span style="color:var(--color-error)">*</span></label>
+                        <select id="sol_vivienda" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;">
+                            <option value="">Seleccionar...</option>
+                            <option value="casa">Casa propia</option>
+                            <option value="rentada">Casa rentada</option>
+                            <option value="departamento">Departamento</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">¿Tiene jardín o patio?</label>
+                        <select id="sol_jardin" style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;">
+                            <option value="si">Sí</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top:12px;">
+                    <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">¿Hay otras mascotas en casa?</label>
+                    <input type="text" id="sol_otrasMascotas" placeholder="Un perro adulto, ninguna..." style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                </div>
+                <div style="margin-top:12px;">
+                    <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">¿Hay niños en el hogar? ¿De qué edades?</label>
+                    <input type="text" id="sol_ninos" placeholder="Dos niños de 5 y 8 años, no hay niños..." style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;" />
+                </div>
+
+                <p style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--color-primario-oscuro);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--color-primario-claro);">💬 Motivación</p>
+                <div>
+                    <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">¿Por qué deseas adoptar esta mascota? <span style="color:var(--color-error)">*</span></label>
+                    <textarea id="sol_motivacion" rows="3" placeholder="Cuéntanos tus razones para adoptar..." style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+                </div>
+                <div style="margin-top:12px;">
+                    <label style="display:block;font-weight:600;font-size:0.88rem;margin-bottom:5px;">¿Tienes experiencia con mascotas?</label>
+                    <textarea id="sol_experiencia" rows="2" placeholder="Describe tu experiencia previa con animales..." style="width:100%;padding:9px 12px;border:1.5px solid var(--color-borde);border-radius:8px;font-size:0.9rem;font-family:inherit;resize:vertical;"></textarea>
+                </div>
+
+                <p style="font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--color-primario-oscuro);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--color-primario-claro);">🪪 Identificación oficial (INE) <span style="color:var(--color-error)">*</span></p>
+                <div style="border:2px dashed var(--color-primario);border-radius:12px;padding:22px;text-align:center;background:var(--color-primario-claro);position:relative;">
+                    <input type="file" id="sol_ine" accept="image/*,.pdf" onchange="previsualizarINE(this)"
+                           style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;" />
+                    <div style="font-size:2.5rem;margin-bottom:8px;">📄</div>
+                    <p style="color:var(--color-primario-oscuro);font-weight:600;margin-bottom:4px;">Haz clic o arrastra tu INE aquí</p>
+                    <small style="color:var(--color-texto-claro);">Formatos: JPG, PNG, PDF — Máximo 5MB</small>
+                </div>
+                <div id="previewINE" style="margin-top:12px;text-align:center;display:none;">
+                    <img id="previewINEImg" src="" alt="Vista previa INE" style="max-width:180px;border-radius:8px;border:2px solid var(--color-primario);" />
+                    <div id="previewINENombre" style="font-size:0.82rem;color:var(--color-texto-claro);margin-top:6px;"></div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button onclick="cerrarModal()" class="btn btn-outline">Cancelar</button>
-                <button onclick="confirmarSolicitud()" class="btn btn-primario">Enviar solicitud</button>
+                <button onclick="confirmarSolicitud()" class="btn btn-primario" id="btnEnviarSolicitud">Enviar solicitud ✓</button>
             </div>
         </div>
     </div>
@@ -756,6 +834,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/mascotas.js"></script>
     <script src="js/solicitudes.js"></script>
@@ -849,21 +928,117 @@
             modalSolicitud.style.display = 'flex';
         };
 
+        // NUEVO: Variable para el archivo INE
+        let archivoINE = null;
+
+        // NUEVO: Previsualizar INE seleccionado
+        window.previsualizarINE = function(input) {
+            const file = input.files[0]; if (!file) return;
+            if (file.size > 5*1024*1024) { alert('El archivo no debe superar los 5MB'); input.value=''; return; }
+            archivoINE = file;
+            document.getElementById('previewINENombre').textContent = '📎 ' + file.name;
+            if (file.type.startsWith('image/')) {
+                const r = new FileReader();
+                r.onload = e => { document.getElementById('previewINEImg').src = e.target.result; document.getElementById('previewINEImg').style.display='block'; };
+                r.readAsDataURL(file);
+            } else { document.getElementById('previewINEImg').style.display = 'none'; }
+            document.getElementById('previewINE').style.display = 'block';
+        };
+
+        // NUEVO: abrirModalSolicitud — pre-llena datos del usuario
+        window.abrirModalSolicitud = function() {
+            const user = auth.currentUser;
+            if (!user) { modalLogin.style.display = 'flex'; return; }
+            mascotaNombreModal.textContent = mascotaActual.nombre;
+            db.collection('usuarios').doc(user.uid).get().then(doc => {
+                if (doc.exists) {
+                    const d = doc.data();
+                    if (d.nombre)   document.getElementById('sol_nombre').value   = d.nombre;
+                    if (d.telefono) document.getElementById('sol_telefono').value = d.telefono;
+                }
+            });
+            modalSolicitud.style.display = 'flex';
+        };
+
+        // NUEVO: confirmarSolicitud — envía formulario completo + INE a Firestore
         window.confirmarSolicitud = async function() {
             const user = auth.currentUser;
             if (!user) { cerrarModal(); modalLogin.style.display = 'flex'; return; }
-            cerrarModal();
+
+            const nombre     = document.getElementById('sol_nombre').value.trim();
+            const fechaNac   = document.getElementById('sol_fechaNac').value;
+            const telefono   = document.getElementById('sol_telefono').value.trim();
+            const ocupacion  = document.getElementById('sol_ocupacion').value.trim();
+            const direccion  = document.getElementById('sol_direccion').value.trim();
+            const vivienda   = document.getElementById('sol_vivienda').value;
+            const motivacion = document.getElementById('sol_motivacion').value.trim();
+
+            if (!nombre || !fechaNac || !telefono || !ocupacion || !direccion || !vivienda || !motivacion) {
+                mostrarError('Por favor completa todos los campos obligatorios (*).'); return;
+            }
+            if (!archivoINE) { mostrarError('Por favor adjunta una foto de tu INE.'); return; }
+
+            const btn = document.getElementById('btnEnviarSolicitud');
+            btn.textContent = 'Enviando...'; btn.disabled = true;
+
             try {
-                const result = await enviarSolicitud(mascotaActual.id, mascotaActual);
-                if (result.success) {
-                    modalExito.style.display = 'flex';
-                    setTimeout(() => window.location.reload(), 2000);
-                } else {
-                    mostrarError(result.error || 'Error al enviar la solicitud');
+                // Verificar solicitud existente
+                const existentes = await db.collection('solicitudes')
+                    .where('usuarioId','==',user.uid).where('mascotaId','==',mascotaActual.id)
+                    .where('estado','in',['pendiente','aprobada']).get();
+                if (!existentes.empty) {
+                    mostrarError('Ya tienes una solicitud activa para esta mascota.');
+                    btn.textContent = 'Enviar solicitud ✓'; btn.disabled = false; return;
                 }
-            } catch (error) {
-                console.error('Error inesperado:', error);
-                mostrarError('Error inesperado al enviar la solicitud');
+
+                // Subir INE a Firebase Storage (con timeout para no bloquear)
+                let ineUrl = '', ineNombre = archivoINE.name;
+                try {
+                    if (typeof firebase.storage === 'function') {
+                        const storage = firebase.storage();
+                        const ts  = Date.now();
+                        const nom = archivoINE.name.replace(/[^a-zA-Z0-9.]/g,'_');
+                        const storageRef = storage.ref(`ines/${user.uid}_${ts}_${nom}`);
+                        const uploadPromise = storageRef.put(archivoINE);
+                        const timeoutPromise = new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error('Timeout')), 15000)
+                        );
+                        const snap = await Promise.race([uploadPromise, timeoutPromise]);
+                        ineUrl = await snap.ref.getDownloadURL();
+                    }
+                } catch(se) {
+                    console.warn('No se pudo subir el INE, continuando sin URL:', se.message);
+                }
+
+                // Guardar solicitud completa en Firestore
+                await db.collection('solicitudes').add({
+                    usuarioId: user.uid,
+                    mascotaId: mascotaActual.id,
+                    fechaSolicitud: firebase.firestore.FieldValue.serverTimestamp(),
+                    estado: 'pendiente',
+                    adoptante: { nombre, email: user.email, telefono, fechaNacimiento: fechaNac, ocupacion, direccion },
+                    hogar: {
+                        tipoVivienda: vivienda,
+                        tieneJardin:  document.getElementById('sol_jardin').value,
+                        otrasMascotas: document.getElementById('sol_otrasMascotas').value.trim(),
+                        ninos: document.getElementById('sol_ninos').value.trim()
+                    },
+                    motivacion: {
+                        razon:       motivacion,
+                        experiencia: document.getElementById('sol_experiencia').value.trim()
+                    },
+                    ine: { url: ineUrl, nombre: ineNombre },
+                    mascota: { nombre: mascotaActual.nombre, especie: mascotaActual.especie, imagen: mascotaActual.imagen || '' }
+                });
+
+                cerrarModal();
+                modalExito.style.display = 'flex';
+                setTimeout(() => window.location.reload(), 2500);
+
+            } catch(error) {
+                console.error('Error al enviar solicitud:', error);
+                mostrarError('Ocurrió un error al enviar la solicitud. Por favor intenta de nuevo.');
+                btn.textContent = 'Enviar solicitud ✓'; btn.disabled = false;
             }
         };
 
@@ -972,7 +1147,13 @@
         }
 
         // ===== INICIALIZACIÓN =====
-        document.addEventListener('DOMContentLoaded', function() {
+        // CORRECCIÓN: El detalle carga inmediatamente sin necesidad de login.
+        // El botón "Solicitar adopción" sí requiere sesión (lo maneja abrirModalSolicitud).
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Cargar detalle SIN esperar sesión — visible para todos
+            await cargarDetalle();
+
+            // Actualizar navegación y botones según sesión
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     try {
@@ -989,6 +1170,7 @@
                 } else {
                     enlacesNav.innerHTML = crearEnlacesNavegacion();
                 }
+                // Recargar para mostrar botón correcto según sesión
                 await cargarDetalle();
             });
         });

@@ -28,7 +28,7 @@
         <section class="encabezado-pagina">
             <div class="contenedor">
                 <h1>Encuentra tu compañero ideal</h1>
-                <p>Conoce a nuestras mascotas disponibles para adopción</p>
+                <p>Conoce a nuestras mascotas disponibles — no necesitas cuenta para explorar</p>
             </div>
         </section>
 
@@ -414,7 +414,23 @@ window.limpiarFiltros = function() {
 };
 
 // ===== INICIALIZACIÓN =====
+// NUEVO: Leer especie desde URL (viene del selector del home)
+const urlParams    = new URLSearchParams(window.location.search);
+const especieParam = urlParams.get('especie');
+
 document.addEventListener('DOMContentLoaded', function() {
+    // NUEVO: Pre-aplicar filtro de especie si viene en la URL
+    const filtroInicial = {};
+    if (especieParam && especieParam !== 'todos') {
+        filtroInicial.especie = especieParam;
+        const sel = document.getElementById('especie');
+        if (sel) sel.value = especieParam;
+    }
+
+    // NUEVO: Las mascotas se cargan INMEDIATAMENTE sin esperar login
+    cargarMascotas(filtroInicial);
+
+    // La navegación se actualiza según sesión, sin bloquear la carga
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             try {
@@ -431,8 +447,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             enlacesNav.innerHTML = crearEnlacesNavegacion();
         }
-        
-        await cargarMascotas();
     });
 });
 

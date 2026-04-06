@@ -25,13 +25,13 @@
     <!-- contenido principal -->
     <main>
         <!-- seccion hero -->
-        <section class="hero">
+        <section class="hero" style="background:linear-gradient(160deg,#ede9fc 0%,#e5deff 60%,#d7cff7 100%);">
             <div class="contenedor hero-contenido">
                 <div class="hero-texto">
                     <h1 class="hero-titulo">Encuentra un amigo <span class="texto-destacado">para toda la vida</span></h1>
                     <p class="hero-descripcion">Mascotas esperan por un hogar lleno de amor. Adopta y cambia una vida.</p>
                     <div class="hero-botones">
-                        <a href="login/login.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
+                        <a href="adoptar.html" class="btn btn-primario btn-grande">Adoptar Ahora</a>
                     </div>
                 </div>
                 <div class="hero-imagen">
@@ -40,8 +40,77 @@
             </div>
         </section>
 
-        <!-- seccion como adoptar -->
-        <section class="seccion">
+
+        <!-- NUEVO: Selector de tipo de mascota -->
+        <section style="background:#ede9fc;padding:35px 0;border-bottom:1px solid #c9bcf2;">
+            <div class="contenedor">
+                <div class="encabezado-seccion" style="margin-bottom:20px;">
+                    <h2>¿Qué tipo de mascota buscas?</h2>
+                    <p>Elige una categoría para ver las mascotas disponibles</p>
+                </div>
+                <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
+                    <a href="adoptar.html?especie=perro" class="tipo-opcion" id="tipo-perro"
+                       style="width:200px;padding:20px 16px 16px;border-radius:14px;border:2px solid #c9bcf2;text-decoration:none;text-align:center;background:#ffffff;box-shadow:0 2px 10px rgba(155,135,245,0.12);transition:all 0.25s;display:block;">
+                        <span style="font-size:2.8rem;display:block;margin-bottom:10px;">🐕</span>
+                        <h3 style="color:var(--color-primario-oscuro);font-size:1.05rem;margin-bottom:5px;">Perros</h3>
+                        <p style="color:var(--color-texto-claro);font-size:0.82rem;margin:0;">Leales, juguetones y llenos de amor incondicional</p>
+                    </a>
+                    <a href="adoptar.html?especie=gato" class="tipo-opcion" id="tipo-gato"
+                       style="width:200px;padding:20px 16px 16px;border-radius:14px;border:2px solid #c9bcf2;text-decoration:none;text-align:center;background:#ffffff;box-shadow:0 2px 10px rgba(155,135,245,0.12);transition:all 0.25s;display:block;">
+                        <span style="font-size:2.8rem;display:block;margin-bottom:10px;">🐈</span>
+                        <h3 style="color:var(--color-primario-oscuro);font-size:1.05rem;margin-bottom:5px;">Gatos</h3>
+                        <p style="color:var(--color-texto-claro);font-size:0.82rem;margin:0;">Independientes, cariñosos y perfectos compañeros</p>
+                    </a>
+                    <a href="adoptar.html" class="tipo-opcion" id="tipo-todos"
+                       style="width:200px;padding:20px 16px 16px;border-radius:14px;border:2px solid #c9bcf2;text-decoration:none;text-align:center;background:#ffffff;box-shadow:0 2px 10px rgba(155,135,245,0.12);transition:all 0.25s;display:block;">
+                        <span style="font-size:2.8rem;display:block;margin-bottom:10px;">🐾</span>
+                        <h3 style="color:var(--color-primario-oscuro);font-size:1.05rem;margin-bottom:5px;">Todos</h3>
+                        <p style="color:var(--color-texto-claro);font-size:0.82rem;margin:0;">Explora todas las mascotas disponibles para adoptar</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NUEVO: Mascotas Destacadas de la Semana -->
+        <section style="padding:35px 0 45px;background:#e5deff;">
+            <div class="contenedor">
+                <div class="encabezado-seccion" style="margin-bottom:20px;">
+                    <span class="badge-semana">🌟 SEMANA DEL <span id="fechaSemana"></span></span>
+                    <h2>Mascotas Destacadas</h2>
+                    <p>Las 5 mascotas con más solicitudes de adopción esta semana</p>
+                </div>
+                <!-- Cards en línea horizontal compactas -->
+                <div id="mascotasDestacadasGrid" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+                    <!-- Skeleton loaders compactos -->
+                    <div style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;box-shadow:0 2px 8px rgba(155,135,245,0.1);">
+                        <div style="height:110px;background:linear-gradient(90deg,#e8d5ff 25%,#f0e8ff 50%,#e8d5ff 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+                        <div style="padding:10px;"><div style="height:12px;background:#eee;border-radius:6px;margin-bottom:6px;"></div><div style="height:10px;background:#eee;border-radius:6px;width:60%;"></div></div>
+                    </div>
+                    <div style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;box-shadow:0 2px 8px rgba(155,135,245,0.1);">
+                        <div style="height:110px;background:linear-gradient(90deg,#e8d5ff 25%,#f0e8ff 50%,#e8d5ff 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+                        <div style="padding:10px;"><div style="height:12px;background:#eee;border-radius:6px;margin-bottom:6px;"></div><div style="height:10px;background:#eee;border-radius:6px;width:60%;"></div></div>
+                    </div>
+                    <div style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;box-shadow:0 2px 8px rgba(155,135,245,0.1);">
+                        <div style="height:110px;background:linear-gradient(90deg,#e8d5ff 25%,#f0e8ff 50%,#e8d5ff 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+                        <div style="padding:10px;"><div style="height:12px;background:#eee;border-radius:6px;margin-bottom:6px;"></div><div style="height:10px;background:#eee;border-radius:6px;width:60%;"></div></div>
+                    </div>
+                    <div style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;box-shadow:0 2px 8px rgba(155,135,245,0.1);">
+                        <div style="height:110px;background:linear-gradient(90deg,#e8d5ff 25%,#f0e8ff 50%,#e8d5ff 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+                        <div style="padding:10px;"><div style="height:12px;background:#eee;border-radius:6px;margin-bottom:6px;"></div><div style="height:10px;background:#eee;border-radius:6px;width:60%;"></div></div>
+                    </div>
+                    <div style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;box-shadow:0 2px 8px rgba(155,135,245,0.1);">
+                        <div style="height:110px;background:linear-gradient(90deg,#e8d5ff 25%,#f0e8ff 50%,#e8d5ff 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;"></div>
+                        <div style="padding:10px;"><div style="height:12px;background:#eee;border-radius:6px;margin-bottom:6px;"></div><div style="height:10px;background:#eee;border-radius:6px;width:60%;"></div></div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:24px;">
+                    <a href="adoptar.html" style="display:inline-block;background:var(--color-primario);color:white;padding:10px 26px;border-radius:50px;text-decoration:none;font-weight:600;font-size:0.95rem;">Ver todas las mascotas →</a>
+                </div>
+            </div>
+        </section>
+
+                <!-- seccion como adoptar -->
+        <section class="seccion" style="background:#f3f0fd;">
             <div class="contenedor">
                 <div class="encabezado-seccion">
                     <h2>Pasos para registrarse</h2>
@@ -85,7 +154,7 @@
         </section>
 
         <!-- seccion pasos para adoptar -->
-        <section class="seccion fondo-claro">
+        <section class="seccion fondo-claro" style="background:#ede9fc;">
             <div class="contenedor">
                 <div class="encabezado-seccion">
                     <h2>Pasos para adoptar</h2>
@@ -129,7 +198,7 @@
         </section>
     </main>
     <!-- boton flotante adoptar -->
-    <a href="login/login.html" class="boton-flotante">
+    <a href="adoptar.html" class="boton-flotante">
         <img src="assets/icons/heart.svg" alt="Adoptar" />
         <span>Adoptar</span>
     </a>
@@ -324,6 +393,106 @@
                 enlacesNav.innerHTML = crearEnlacesNavegacion();
             }
         });
+
+        // ===== NUEVO: Fecha de la semana =====
+        function obtenerFechaSemana() {
+            const ahora = new Date();
+            const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+            const diaSemana = ahora.getDay();
+            const diff = diaSemana === 0 ? -6 : 1 - diaSemana;
+            const lunes = new Date(ahora); lunes.setDate(ahora.getDate() + diff);
+            const domingo = new Date(lunes); domingo.setDate(lunes.getDate() + 6);
+            return `${lunes.getDate()} - ${domingo.getDate()} ${meses[domingo.getMonth()]} ${domingo.getFullYear()}`;
+        }
+        const fechaSpan = document.getElementById('fechaSemana');
+        if (fechaSpan) fechaSpan.textContent = obtenerFechaSemana();
+
+        // ===== NUEVO: Mascotas destacadas de la semana =====
+        // Se actualiza una vez al día. Ordenadas por número de solicitudes (mayor a menor).
+        async function cargarMascotasDestacadas() {
+            const grid = document.getElementById('mascotasDestacadasGrid');
+            if (!grid) return;
+            try {
+                const cacheFecha = localStorage.getItem('destacadas_fecha');
+                const cacheData  = localStorage.getItem('destacadas_ids');
+                const hoy = new Date().toDateString();
+                let mascotasIds = null;
+
+                if (cacheFecha === hoy && cacheData) {
+                    mascotasIds = JSON.parse(cacheData);
+                } else {
+                    const mascotasSnap    = await db.collection('mascotas').where('estado','==','disponible').get();
+                    const solicitudesSnap = await db.collection('solicitudes').get();
+                    const conteo = {};
+                    solicitudesSnap.forEach(doc => {
+                        const mid = doc.data().mascotaId;
+                        if (mid) conteo[mid] = (conteo[mid] || 0) + 1;
+                    });
+                    let mascotas = [];
+                    mascotasSnap.forEach(doc => mascotas.push({ id: doc.id, solicitudes: conteo[doc.id] || 0, ...doc.data() }));
+                    mascotas.sort((a, b) => b.solicitudes - a.solicitudes);
+                    mascotasIds = mascotas.slice(0, 5).map(m => ({ id: m.id, solicitudes: m.solicitudes }));
+                    localStorage.setItem('destacadas_fecha', hoy);
+                    localStorage.setItem('destacadas_ids', JSON.stringify(mascotasIds));
+                }
+
+                if (!mascotasIds || !mascotasIds.length) {
+                    grid.innerHTML = '<p style="text-align:center;color:var(--color-texto-claro);padding:40px;width:100%">No hay mascotas disponibles en este momento.</p>';
+                    return;
+                }
+
+                const tarjetas = await Promise.all(mascotasIds.map(async (item, index) => {
+                    const doc = await db.collection('mascotas').doc(item.id).get();
+                    if (!doc.exists) return null;
+                    const data = doc.data();
+                    const imagen = data.imagen ? 'assets/images/mascotas/' + data.imagen.split('/').pop() : 'assets/images/default-pet.png';
+                    return { ...data, id: doc.id, imagen, solicitudes: item.solicitudes, rank: index + 1 };
+                }));
+
+                const validas = tarjetas.filter(m => m !== null);
+                if (!validas.length) {
+                    grid.innerHTML = '<p style="text-align:center;padding:40px;width:100%">Sin mascotas destacadas.</p>';
+                    return;
+                }
+
+                grid.innerHTML = validas.map(m => `
+                    <a href="mascota-detalle.html?id=${m.id}"
+                       style="width:170px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #c9bcf2;text-decoration:none;display:block;transition:transform 0.2s,box-shadow 0.2s;box-shadow:0 2px 8px rgba(155,135,245,0.1);"
+                       onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 6px 18px rgba(0,0,0,0.12)'"
+                       onmouseout="this.style.transform='';this.style.boxShadow=''">
+                        <div style="position:relative;height:110px;overflow:hidden;">
+                            <img src="${m.imagen}" alt="${m.nombre}"
+                                 style="width:100%;height:100%;object-fit:cover;"
+                                 onerror="this.src='assets/images/default-pet.png'" />
+                            <span style="position:absolute;top:7px;left:7px;background:var(--color-primario);color:white;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:20px;">#${m.rank}</span>
+                        </div>
+                        <div style="padding:10px 11px 12px;">
+                            <div style="font-weight:700;font-size:0.92rem;color:var(--color-texto);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.nombre}</div>
+                            <div style="font-size:0.78rem;color:var(--color-texto-claro);margin-bottom:6px;">${m.especie || ''} · ${m.raza || 'Mestizo'}</div>
+                            <span style="display:inline-block;background:var(--color-primario-claro);color:var(--color-primario-oscuro);font-size:0.72rem;font-weight:600;padding:2px 8px;border-radius:10px;">
+                                ❤️ ${m.solicitudes} solicitud${m.solicitudes !== 1 ? 'es' : ''}
+                            </span>
+                        </div>
+                    </a>`).join('');
+
+            } catch (err) {
+                console.error('Error mascotas destacadas:', err);
+                grid.innerHTML = '<p style="text-align:center;padding:40px;width:100%;color:var(--color-texto-claro)">No se pudieron cargar.</p>';
+            }
+        }
+
+        // ===== NUEVO: Efecto hover en selector de tipo =====
+        document.querySelectorAll('.tipo-opcion').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                document.querySelectorAll('.tipo-opcion').forEach(e => e.classList.remove('seleccionado'));
+                this.classList.add('seleccionado');
+            });
+            el.addEventListener('mouseleave', function() { this.classList.remove('seleccionado'); });
+        });
+
+        // Cargar destacadas cuando Firebase esté listo
+        auth.onAuthStateChanged(() => { cargarMascotasDestacadas(); });
+    
     </script>
 </body>
 </html>

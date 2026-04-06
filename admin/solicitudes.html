@@ -163,6 +163,157 @@
             align-items: center;
             margin-bottom: 20px;
         }
+
+        /* NUEVO: Estilos para el modal de detalle */
+        .modal-detalle-contenido {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            margin: 5% auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal-detalle-header {
+            background: #a07fe9;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+        /* CORRECCIÓN: Título "Detalle de Solicitud" más oscuro y legible */
+        .modal-detalle-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #2c1a4a;
+            text-shadow: none;
+            letter-spacing: 0.5px;
+        }
+        .modal-detalle-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        .modal-detalle-header button:hover {
+            opacity: 1;
+        }
+        .modal-detalle-body {
+            padding: 20px;
+            background: #faf8ff;
+        }
+        .modal-detalle-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            position: sticky;
+            bottom: 0;
+        }
+        .det-seccion {
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #a07fe9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .det-seccion h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #a07fe9;
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f0eaff;
+        }
+        .det-fila {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .det-etiqueta {
+            font-weight: 600;
+            color: #555;
+            min-width: 140px;
+        }
+        .det-valor {
+            color: #333;
+        }
+        .ine-preview-admin {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .ine-preview-admin img {
+            max-width: 200px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .ine-preview-admin a {
+            display: inline-block;
+            margin-top: 8px;
+            background: #a07fe9;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        .sin-ine-msg {
+            color: #888;
+            font-style: italic;
+            font-size: 0.85rem;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .btn-ver-detalle {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc !important;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .btn-ver-detalle:hover {
+            background: #ddd;
+        }
+        .filtros-avanzados {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-accion {
+            background: #a07fe9;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .cargando, .sin-resultados {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -202,6 +353,22 @@
                 <p class="cargando">Cargando solicitudes...</p>
             </div>
         </main>
+    </div>
+
+    <!-- MODAL DETALLE DE SOLICITUD -->
+    <div id="modalDetalle" class="modal">
+        <div class="modal-detalle-contenido">
+            <div class="modal-detalle-header">
+                <h3> Detalle de Solicitud</h3>
+                <button onclick="cerrarModalDetalle()">×</button>
+            </div>
+            <div class="modal-detalle-body" id="detalleBody">
+                <!-- Contenido dinámico -->
+            </div>
+            <div class="modal-detalle-footer" id="detalleAcciones">
+                <button onclick="cerrarModalDetalle()" style="background:#6c757d; color:white; padding:8px 18px; border:none; border-radius:4px; cursor:pointer;">Cerrar</button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal para aprobar con motivo de rechazo automático -->
@@ -319,9 +486,10 @@
                                     <span class="estado ${s.estado}">${s.estado}</span>
                                 </div>
                                 <div class="acciones">
+                                    <button onclick="verDetalle('${s.id}')" class="btn-ver-detalle"> Ver detalle</button>
                                     ${s.estado === 'pendiente' ? `
-                                        <button onclick="abrirModalAprobar('${s.id}', '${mascotaId}')" class="btn-aprobar">✓</button>
-                                        <button onclick="abrirModalRechazar('${s.id}')" class="btn-rechazar">✗</button>
+                                        <button onclick="abrirModalAprobar('${s.id}', '${mascotaId}')" class="btn-aprobar">✓ Aprobar</button>
+                                        <button onclick="abrirModalRechazar('${s.id}')" class="btn-rechazar">✗ Rechazar</button>
                                     ` : ''}
                                 </div>
                             </div>
@@ -345,7 +513,7 @@
             grupo.style.display = grupo.style.display === 'none' ? 'block' : 'none';
         };
 
-        // ===== NUEVAS FUNCIONES PARA APROBAR CON MOTIVO =====
+        // ===== FUNCIONES PARA APROBAR CON MOTIVO =====
         window.abrirModalAprobar = function(solicitudId, mascotaId) {
             solicitudAprobadaId = solicitudId;
             mascotaAprobadaId = mascotaId;
@@ -386,7 +554,7 @@
                     if (doc.id !== solicitudAprobadaId) {
                         batch.update(doc.ref, {
                             estado: 'rechazada',
-                            motivoRechazo: motivoMasivo, // Usar el motivo ingresado
+                            motivoRechazo: motivoMasivo,
                             fechaProcesamiento: firebase.firestore.FieldValue.serverTimestamp()
                         });
                     }
@@ -446,6 +614,92 @@
         window.cerrarSesion = async function() {
             await auth.signOut();
             window.location.href = '../login/login.html';
+        };
+
+        // ===== VER DETALLE COMPLETO DE SOLICITUD =====
+        window.cerrarModalDetalle = function() {
+            document.getElementById('modalDetalle').style.display = 'none';
+        };
+
+        window.verDetalle = async function(solicitudId) {
+            try {
+                const snap = await db.collection('solicitudes').doc(solicitudId).get();
+                if (!snap.exists) return;
+                const s = { id: snap.id, ...snap.data() };
+
+                const fecha = s.fechaSolicitud?.seconds
+                    ? new Date(s.fechaSolicitud.seconds * 1000).toLocaleString('es-MX')
+                    : 'Fecha no disponible';
+
+                let ineHtml = '';
+                if (s.ine?.url) {
+                    ineHtml = `<div class="ine-preview-admin">
+                        <img src="${s.ine.url}" alt="INE" onclick="window.open('${s.ine.url}','_blank')" title="Click para ampliar" />
+                        <br><a href="${s.ine.url}" target="_blank"> Ver INE completo</a>
+                    </div>`;
+                } else if (s.ine?.nombre) {
+                    ineHtml = `<div class="sin-ine-msg"> Archivo: ${s.ine.nombre} (pendiente de subida al servidor)</div>`;
+                } else {
+                    ineHtml = `<div class="sin-ine-msg">No se adjuntó INE en esta solicitud.</div>`;
+                }
+
+                document.getElementById('detalleBody').innerHTML = `
+                    <div class="det-seccion">
+                        <h4> MASCOTA SOLICITADA</h4>
+                        <div class="det-fila"><span class="det-etiqueta">Nombre:</span><span class="det-valor">${s.mascota?.nombre || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Especie:</span><span class="det-valor">${s.mascota?.especie || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Fecha solicitud:</span><span class="det-valor">${fecha}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Estado:</span><span class="det-valor"><span class="estado ${s.estado}">${s.estado}</span></span></div>
+                    </div>
+                    <div class="det-seccion">
+                        <h4> DATOS DEL SOLICITANTE</h4>
+                        <div class="det-fila"><span class="det-etiqueta">Nombre completo:</span><span class="det-valor">${s.adoptante?.nombre || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Email:</span><span class="det-valor">${s.adoptante?.email || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Teléfono:</span><span class="det-valor">${s.adoptante?.telefono || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Fecha nacimiento:</span><span class="det-valor">${s.adoptante?.fechaNacimiento || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Ocupación:</span><span class="det-valor">${s.adoptante?.ocupacion || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Dirección:</span><span class="det-valor">${s.adoptante?.direccion || '—'}</span></div>
+                    </div>
+                    <div class="det-seccion">
+                        <h4> CONDICIONES DEL HOGAR</h4>
+                        <div class="det-fila"><span class="det-etiqueta">Tipo de vivienda:</span><span class="det-valor">${s.hogar?.tipoVivienda || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Jardín/Patio:</span><span class="det-valor">${s.hogar?.tieneJardin || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Otras mascotas:</span><span class="det-valor">${s.hogar?.otrasMascotas || 'Ninguna'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Niños en casa:</span><span class="det-valor">${s.hogar?.ninos || 'Ninguno'}</span></div>
+                    </div>
+                    <div class="det-seccion">
+                        <h4> Motivación</h4>
+                        <div class="det-fila"><span class="det-etiqueta">Razón:</span><span class="det-valor">${s.motivacion?.razon || '—'}</span></div>
+                        <div class="det-fila"><span class="det-etiqueta">Experiencia previa:</span><span class="det-valor">${s.motivacion?.experiencia || 'Sin especificar'}</span></div>
+                    </div>
+                    <div class="det-seccion">
+                        <h4> Identificación (INE)</h4>
+                        ${ineHtml}
+                    </div>
+                    ${s.estado === 'rechazada' && s.motivoRechazo ? `
+                    <div class="det-seccion" style="background:#f8d7da;border-color:#f5c6cb;">
+                        <h4 style="color:#721c24;">Motivo de rechazo</h4>
+                        <p style="color:#721c24;margin:0;">${s.motivoRechazo}</p>
+                    </div>` : ''}
+                `;
+
+                const accFooter = document.getElementById('detalleAcciones');
+                if (s.estado === 'pendiente') {
+                    // CORRECCIÓN: Botón Aprobar ahora es VERDE (#28a745)
+                    accFooter.innerHTML = `
+                        <button onclick="cerrarModalDetalle()" style="background:#6c757d; color:white; padding:8px 18px; border:none; border-radius:4px; cursor:pointer;">Cerrar</button>
+                        <button onclick="cerrarModalDetalle();abrirModalRechazar('${s.id}')" style="background:#dc3545; color:white; padding:8px 18px; border:none; border-radius:4px; cursor:pointer;">✗ Rechazar</button>
+                        <button onclick="cerrarModalDetalle();abrirModalAprobar('${s.id}','${s.mascotaId}')" style="background:#28a745; color:white; padding:8px 18px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">✓ Aprobar</button>
+                    `;
+                } else {
+                    accFooter.innerHTML = `<button onclick="cerrarModalDetalle()" style="background:#6c757d; color:white; padding:8px 18px; border:none; border-radius:4px; cursor:pointer;">Cerrar</button>`;
+                }
+
+                document.getElementById('modalDetalle').style.display = 'block';
+            } catch(error) {
+                console.error('Error al cargar detalle:', error);
+                alert('Error al cargar el detalle de la solicitud.');
+            }
         };
     </script>
 </body>

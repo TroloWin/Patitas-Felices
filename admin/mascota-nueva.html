@@ -67,6 +67,56 @@
             border-radius: 15px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.15);
         }
+
+        /* ===== NUEVO: Estilos del crop de imagen ===== */
+        .upload-trigger {
+            border: 2px dashed var(--color-primario);
+            border-radius: 10px; padding: 22px; text-align: center;
+            cursor: pointer; background: var(--color-primario-claro);
+            transition: all 0.25s; position: relative;
+        }
+        .upload-trigger:hover { background: var(--color-primario-claro); filter: brightness(0.95); }
+        .upload-trigger input[type="file"] {
+            position: absolute; inset: 0; opacity: 0;
+            cursor: pointer; width: 100%; height: 100%;
+        }
+        .crop-area-wrapper { display: none; margin-top: 16px; }
+        .crop-instrucciones {
+            background: var(--color-primario-claro);
+            border-left: 3px solid var(--color-primario);
+            padding: 10px 14px; border-radius: 6px;
+            font-size: 0.84rem; color: var(--color-primario-oscuro); margin-bottom: 12px;
+        }
+        .crop-canvas-container {
+            position: relative; display: inline-block; cursor: crosshair;
+            border: 2px solid var(--color-primario);
+            border-radius: 10px; overflow: hidden; max-width: 100%;
+        }
+        #cropCanvas { display: block; max-width: 100%; }
+        .crop-selection {
+            position: absolute; border: 2.5px solid white;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+            pointer-events: none; display: none;
+        }
+        .crop-previews { display: flex; gap: 18px; align-items: flex-start; margin-top: 14px; flex-wrap: wrap; }
+        .preview-box { text-align: center; }
+        .preview-box p { font-size: 0.8rem; color: var(--color-texto-claro); margin-bottom: 6px; font-weight: 600; }
+        .preview-perfil { width: 110px; height: 110px; border-radius: 50%; overflow: hidden; border: 3px solid var(--color-primario); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+        .preview-card   { width: 190px; height: 140px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-borde); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .preview-perfil canvas, .preview-card canvas { width: 100%; height: 100%; }
+        .crop-botones { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+        .btn-crop { padding: 7px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.87rem; font-weight: 600; transition: all 0.2s; }
+        .btn-crop-confirmar { background: var(--color-primario); color: white; }
+        .btn-crop-confirmar:hover { background: var(--color-primario-oscuro); }
+        .btn-crop-todo   { background: var(--color-primario-oscuro); color: white; }
+        .btn-crop-todo:hover { background: var(--color-primario); }
+        .btn-crop-reset  { background: #ddd; color: #333; }
+        .btn-crop-reset:hover { background: #ccc; }
+        .crop-status { font-size: 0.82rem; font-weight: 600; margin-top: 8px; padding: 4px 12px; border-radius: 20px; display: inline-block; background: #fff3cd; color: #856404; }
+        .crop-status.ok { background: var(--color-primario-claro); color: var(--color-primario-oscuro); }
+        .imagen-guardada-preview { margin-top: 12px; text-align: center; display: none; }
+        .imagen-guardada-preview img { max-width: 130px; border-radius: 10px; border: 2px solid var(--color-primario); }
+        .imagen-guardada-preview p { font-size: 0.82rem; color: var(--color-primario-oscuro); font-weight: 600; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -193,17 +243,50 @@
                         </div>
 
                         <h3>Imagen</h3>
-                        
-                        <div class="campo">
-                            <input type="file" id="imagenFile">
+
+                        <!-- NUEVO: Upload con selector de recorte -->
+                        <div class="upload-trigger">
+                            <input type="file" id="imagenFile" accept="image/*" />
+                            <div style="font-size:2.2rem;margin-bottom:6px;">🖼️</div>
+                            <p style="color:var(--color-primario-oscuro);font-weight:600;margin-bottom:3px;">Haz clic para seleccionar imagen</p>
+                            <small style="color:var(--color-texto-claro);font-size:0.82rem;">JPG, PNG, WEBP — Máximo 5MB</small>
+                        </div>
+                        <div class="file-info" id="fileInfo"></div>
+
+                        <!-- NUEVO: Área de recorte interactiva -->
+                        <div class="crop-area-wrapper" id="cropAreaWrapper">
+                            <div class="crop-instrucciones">
+                                🖱️ <strong>Arrastra sobre la imagen</strong> para elegir qué parte se verá en el perfil. Luego haz clic en "Confirmar recorte".
+                            </div>
+                            <div class="crop-canvas-container" id="cropContainer">
+                                <canvas id="cropCanvas"></canvas>
+                                <div class="crop-selection" id="cropSelection"></div>
+                            </div>
+                            <div class="crop-previews">
+                                <div class="preview-box"><p>Vista perfil</p><div class="preview-perfil"><canvas id="previewPerfilCanvas"></canvas></div></div>
+                                <div class="preview-box"><p>Vista tarjeta</p><div class="preview-card"><canvas id="previewCardCanvas"></canvas></div></div>
+                            </div>
+                            <div class="crop-botones">
+                                <button type="button" class="btn-crop btn-crop-todo"      onclick="seleccionarTodo()">📐 Seleccionar todo</button>
+                                <button type="button" class="btn-crop btn-crop-confirmar" onclick="confirmarRecorte()">✓ Confirmar recorte</button>
+                                <button type="button" class="btn-crop btn-crop-reset"     onclick="resetearImagen()">↩ Cambiar imagen</button>
+                            </div>
+                            <span class="crop-status" id="cropStatus">⚠️ Selecciona el área de recorte</span>
                         </div>
 
-                        <div class="preview-container" id="previewContainer">
+                        <!-- NUEVO: Preview de imagen con recorte confirmado -->
+                        <div class="imagen-guardada-preview" id="imagenGuardadaPreview">
+                            <img id="imagenGuardadaImg" src="" alt="Recorte aplicado" />
+                            <p>✅ Recorte aplicado correctamente</p>
+                            <button type="button" class="btn-crop btn-crop-reset" onclick="resetearImagen()" style="margin-top:8px;">✏️ Cambiar recorte</button>
+                        </div>
+
+                        <div class="preview-container" id="previewContainer" style="display:none;">
                             <p>No hay imagen seleccionada</p>
                         </div>
 
-                        <div class="file-info" id="fileInfo"></div>
                         <input type="hidden" id="imagenRuta">
+                        <input type="hidden" id="imagenCropData">
                     </div>
                 </div>
 
@@ -223,121 +306,167 @@
     <script src="../js/auth.js"></script>
     
     <script>
-        // Referencias a elementos
+        // ===== NUEVO: Variables del editor de recorte =====
+        let imagenOriginal = null, imagenFile_obj = null, cropRect = null;
+        let cropConfirmado = false, canvasEscala = 1;
+        let isDragging = false, startX = 0, startY = 0;
+        const MAX_CANVAS_W = 500;
+
         const imagenFile = document.getElementById('imagenFile');
-        const previewContainer = document.getElementById('previewContainer');
-        const fileInfo = document.getElementById('fileInfo');
+        const fileInfo   = document.getElementById('fileInfo');
         const imagenRuta = document.getElementById('imagenRuta');
 
-        // Mapa de archivos seleccionados (para simular la "copia" a la carpeta del proyecto)
-        // En un entorno real, necesitarías un backend para mover el archivo
-        const archivosSeleccionados = {};
-
-        // Vista previa de imagen al seleccionar archivo
+        // Cargar imagen y mostrar editor de crop
         imagenFile.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            
-            if (file) {
-                // Validar tipo de archivo
-                const tipoValido = file.type.startsWith('image/');
-                if (!tipoValido) {
-                    alert('Por favor selecciona un archivo de imagen válido (PNG, JPG, GIF)');
-                    imagenFile.value = '';
-                    return;
-                }
-                
-                // Validar tamaño (máximo 5MB)
-                const maxSize = 5 * 1024 * 1024; // 5MB
-                if (file.size > maxSize) {
-                    alert('La imagen no debe superar los 5MB');
-                    imagenFile.value = '';
-                    return;
-                }
-
-                // Crear nombre único para el archivo
-                const timestamp = Date.now();
-                const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
-                const nuevoNombre = `${timestamp}_${nombreLimpio}`;
-                
-                // En un entorno real, aquí necesitarías subir el archivo al servidor
-                // Como es solo frontend, simulamos que se guarda en la carpeta mascotas
-                const rutaSimulada = `assets/images/mascotas/${nuevoNombre}`;
-                
-                // Guardar la referencia del archivo (simulado)
-                archivosSeleccionados[nuevoNombre] = file;
-                imagenRuta.value = rutaSimulada;
-                
-                // Mostrar vista previa
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewContainer.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
-                };
-                reader.readAsDataURL(file);
-                
-                // Mostrar información del archivo
-                fileInfo.innerHTML = `
-                    <strong>Archivo seleccionado:</strong> ${file.name}<br>
-                    <strong>Tamaño:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
-                    <strong>Se guardará como:</strong> ${rutaSimulada}
-                `;
-            } else {
-                previewContainer.innerHTML = '<p class="sin-imagen">No hay imagen seleccionada</p>';
-                fileInfo.innerHTML = '';
-                imagenRuta.value = '';
-            }
+            const file = e.target.files[0]; if (!file) return;
+            if (!file.type.startsWith('image/')) { alert('Selecciona una imagen válida (PNG, JPG, WEBP).'); this.value=''; return; }
+            if (file.size > 5*1024*1024) { alert('La imagen no debe superar los 5MB.'); this.value=''; return; }
+            imagenFile_obj = file;
+            fileInfo.innerHTML = `<strong>Archivo:</strong> ${file.name} — <strong>Tamaño:</strong> ${(file.size/1024).toFixed(1)} KB`;
+            const reader = new FileReader();
+            reader.onload = ev => { const img = new Image(); img.onload = () => { imagenOriginal = img; iniciarCrop(img); }; img.src = ev.target.result; };
+            reader.readAsDataURL(file);
         });
 
-        // Guardar mascota
+        function iniciarCrop(img) {
+            const canvas = document.getElementById('cropCanvas');
+            const ctx = canvas.getContext('2d');
+            const escala = Math.min(1, MAX_CANVAS_W / img.width);
+            const cw = Math.round(img.width * escala), ch = Math.round(img.height * escala);
+            canvasEscala = escala;
+            canvas.width = cw; canvas.height = ch;
+            ctx.drawImage(img, 0, 0, cw, ch);
+            cropRect = null; cropConfirmado = false;
+            actualizarSeleccionVisual();
+            document.getElementById('imagenGuardadaPreview').style.display = 'none';
+            document.getElementById('cropAreaWrapper').style.display = 'block';
+            document.getElementById('cropStatus').textContent = '⚠️ Selecciona el área de recorte';
+            document.getElementById('cropStatus').className = 'crop-status';
+            canvas.onmousedown = iniciarDrag;
+            canvas.ontouchstart = iniciarDragTouch;
+        }
+
+        function getPosCanvas(canvas, e) {
+            const rect = canvas.getBoundingClientRect();
+            const sx = canvas.width/rect.width, sy = canvas.height/rect.height;
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: Math.max(0,Math.min(canvas.width,(cx-rect.left)*sx)), y: Math.max(0,Math.min(canvas.height,(cy-rect.top)*sy)) };
+        }
+
+        function iniciarDrag(e) { const p=getPosCanvas(this,e); isDragging=true; startX=p.x; startY=p.y; cropRect={x:p.x,y:p.y,w:0,h:0}; document.onmousemove=moverDrag; document.onmouseup=terminarDrag; e.preventDefault(); }
+        function iniciarDragTouch(e) { const p=getPosCanvas(this,e); isDragging=true; startX=p.x; startY=p.y; cropRect={x:p.x,y:p.y,w:0,h:0}; document.ontouchmove=moverDragTouch; document.ontouchend=terminarDrag; e.preventDefault(); }
+        function moverDrag(e) { if(!isDragging) return; const canvas=document.getElementById('cropCanvas'); const p=getPosCanvas(canvas,e); actualizarCrop(p.x,p.y); }
+        function moverDragTouch(e) { if(!isDragging) return; const canvas=document.getElementById('cropCanvas'); const p=getPosCanvas(canvas,e); actualizarCrop(p.x,p.y); e.preventDefault(); }
+
+        function actualizarCrop(cx,cy) {
+            cropRect={x:Math.min(startX,cx),y:Math.min(startY,cy),w:Math.abs(cx-startX),h:Math.abs(cy-startY)};
+            actualizarSeleccionVisual(); actualizarPreviews();
+        }
+
+        function terminarDrag() {
+            isDragging=false; document.onmousemove=null; document.onmouseup=null; document.ontouchmove=null; document.ontouchend=null;
+            if (cropRect && cropRect.w>10 && cropRect.h>10) {
+                document.getElementById('cropStatus').textContent='✅ Área seleccionada — haz clic en "Confirmar recorte"';
+                document.getElementById('cropStatus').className='crop-status ok';
+            }
+        }
+
+        function actualizarSeleccionVisual() {
+            const sel=document.getElementById('cropSelection'), canvas=document.getElementById('cropCanvas');
+            const rect=canvas.getBoundingClientRect();
+            if (!cropRect||cropRect.w<2||cropRect.h<2) { sel.style.display='none'; return; }
+            const sx=rect.width/canvas.width, sy=rect.height/canvas.height;
+            sel.style.display='block';
+            sel.style.left=(cropRect.x*sx)+'px'; sel.style.top=(cropRect.y*sy)+'px';
+            sel.style.width=(cropRect.w*sx)+'px'; sel.style.height=(cropRect.h*sy)+'px';
+        }
+
+        function actualizarPreviews() {
+            if (!imagenOriginal||!cropRect||cropRect.w<5||cropRect.h<5) return;
+            const ox=cropRect.x/canvasEscala,oy=cropRect.y/canvasEscala,ow=cropRect.w/canvasEscala,oh=cropRect.h/canvasEscala;
+            dibujarPreview('previewPerfilCanvas',ox,oy,ow,oh,110,110);
+            dibujarPreview('previewCardCanvas',ox,oy,ow,oh,190,140);
+        }
+
+        function dibujarPreview(id,sx,sy,sw,sh,dw,dh) {
+            const c=document.getElementById(id); c.width=dw; c.height=dh;
+            c.getContext('2d').drawImage(imagenOriginal,sx,sy,sw,sh,0,0,dw,dh);
+        }
+
+        function seleccionarTodo() {
+            const canvas=document.getElementById('cropCanvas');
+            cropRect={x:0,y:0,w:canvas.width,h:canvas.height};
+            actualizarSeleccionVisual(); actualizarPreviews();
+            document.getElementById('cropStatus').textContent='✅ Imagen completa seleccionada — haz clic en "Confirmar recorte"';
+            document.getElementById('cropStatus').className='crop-status ok';
+        }
+
+        function confirmarRecorte() {
+            if (!cropRect||cropRect.w<10||cropRect.h<10) { alert('Primero selecciona un área arrastrando sobre la imagen.'); return; }
+            const ox=cropRect.x/canvasEscala,oy=cropRect.y/canvasEscala,ow=cropRect.w/canvasEscala,oh=cropRect.h/canvasEscala;
+            const tmp=document.createElement('canvas'); tmp.width=ow; tmp.height=oh;
+            tmp.getContext('2d').drawImage(imagenOriginal,ox,oy,ow,oh,0,0,ow,oh);
+            const dataURL=tmp.toDataURL('image/jpeg',0.88);
+            document.getElementById('imagenCropData').value=JSON.stringify({x:Math.round(ox),y:Math.round(oy),w:Math.round(ow),h:Math.round(oh)});
+            cropConfirmado=true;
+            document.getElementById('cropAreaWrapper').style.display='none';
+            document.getElementById('imagenGuardadaImg').src=dataURL;
+            document.getElementById('imagenGuardadaPreview').style.display='block';
+            const ts=Date.now(), nom=imagenFile_obj.name.replace(/[^a-zA-Z0-9.]/g,'_');
+            imagenRuta.value=`assets/images/mascotas/${ts}_${nom}`;
+        }
+
+        function resetearImagen() {
+            imagenOriginal=null; imagenFile_obj=null; cropRect=null; cropConfirmado=false;
+            imagenFile.value=''; imagenRuta.value='';
+            document.getElementById('imagenCropData').value='';
+            document.getElementById('cropAreaWrapper').style.display='none';
+            document.getElementById('imagenGuardadaPreview').style.display='none';
+            fileInfo.innerHTML='';
+        }
+
+        window.addEventListener('resize', actualizarSeleccionVisual);
+
+        // ===== Guardar mascota =====
         const form = document.getElementById('formMascota');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Validar que se haya seleccionado una imagen
-            if (!imagenRuta.value) {
-                alert('Debes seleccionar una imagen para la mascota');
+
+            if (!imagenRuta.value || !cropConfirmado) {
+                alert('Debes seleccionar una imagen y confirmar el recorte.');
                 return;
             }
-            
-            // Obtener personalidad seleccionada
+
             const personalidad = [];
             document.querySelectorAll('.checkbox-grid input:checked').forEach(cb => {
                 personalidad.push(cb.value);
             });
-            
-            // Crear objeto con datos
+
             const datosMascota = {
-                nombre: document.getElementById('nombre').value,
-                especie: document.getElementById('especie').value,
-                raza: document.getElementById('raza').value || '',
-                edad: parseFloat(document.getElementById('edad').value),
-                tamano: document.getElementById('tamano').value,
-                sexo: document.getElementById('sexo').value,
-                color: document.getElementById('color').value || '',
+                nombre:      document.getElementById('nombre').value,
+                especie:     document.getElementById('especie').value,
+                raza:        document.getElementById('raza').value || '',
+                edad:        parseFloat(document.getElementById('edad').value),
+                tamano:      document.getElementById('tamano').value,
+                sexo:        document.getElementById('sexo').value,
+                color:       document.getElementById('color').value || '',
                 personalidad: personalidad,
-                salud: document.getElementById('salud').value || '',
+                salud:       document.getElementById('salud').value || '',
                 descripcion: document.getElementById('descripcion').value,
-                imagen: imagenRuta.value, // Guardamos la ruta donde "estará" la imagen
-                estado: 'disponible',
-                fechaRegistro: firebase.firestore.FieldValue.serverTimestamp(),
-                registradoPor: auth.currentUser ? auth.currentUser.uid : null
+                imagen:      imagenRuta.value,
+                imagenCrop:  document.getElementById('imagenCropData').value,
+                estado:      'disponible',
+                fechaRegistro:  firebase.firestore.FieldValue.serverTimestamp(),
+                registradoPor:  auth.currentUser ? auth.currentUser.uid : null
             };
-            
+
             try {
-        
-                
-                // Guardamos la referencia en Firestore
                 await db.collection('mascotas').add(datosMascota);
-                
-                alert('Mascota registrada correctamente');
-                
-                // Opcional: Mostrar instrucciones para mover el archivo manualmente
-                if (imagenFile.files[0]) {
-                    alert(`"Usa el nombre"${imagenRuta.value.split('/').pop()}"" en la carpeta mascotas"`);
-                }
-                
+                const nombreArch = datosMascota.imagen.split('/').pop();
+                alert('✅ Mascota registrada correctamente.\n\nRecuerda copiar el archivo con el nombre:\n' + nombreArch + '\na la carpeta: assets/images/mascotas/');
                 window.location.href = 'mascotas.html';
-                
             } catch (error) {
                 console.error('Error:', error);
                 alert('Error: ' + error.message);
