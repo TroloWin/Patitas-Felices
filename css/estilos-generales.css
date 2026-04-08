@@ -3,7 +3,7 @@
     --color-fondo: #ffffff;
     --color-primario: #9b87f5;
     --color-primario-oscuro: #7c6ac4;
-    --color-primario-claro: #a391e9;
+    --color-primario-claro: #b5a6f1;
     --color-blanco: #ffffff;
     --color-texto: #333333;
     --color-texto-claro: #666666;
@@ -447,201 +447,48 @@ p {
     color: var(--color-texto-claro);
     font-size: 0.95rem;
 }
-
-/* ===== SECCIÓN DE FILTROS MEJORADA ===== */
-.seccion-filtros {
-    background: var(--color-blanco);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(155, 135, 245, 0.1);
-    border: 1px solid rgba(155, 135, 245, 0.2);
-}
-
-.titulo-filtros {
-    color: var(--color-primario-oscuro);
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.grupo-filtro {
-    margin-bottom: 20px;
-}
-
-.grupo-filtro label {
-    display: block;
-    color: var(--color-primario-oscuro);
-    font-weight: 500;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-.grupo-filtro select,
-.grupo-filtro input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 2px solid #e0d5f5;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    transition: var(--transicion);
-    background: var(--color-blanco);
-}
-
-.grupo-filtro select:focus,
-.grupo-filtro input:focus {
-    outline: none;
-    border-color: var(--color-primario-claro);
-    box-shadow: 0 0 0 3px rgba(163, 145, 233, 0.1);
-}
-
-.botones-filtro {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.btn-filtro {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transicion);
-}
-
-.btn-aplicar {
-    background: var(--color-primario-claro);
-    color: white;
-}
-
-.btn-aplicar:hover {
-    background: var(--color-primario);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(163, 145, 233, 0.3);
-}
-
-.btn-limpiar {
-    background: #f0e8ff;
-    color: var(--color-primario-oscuro);
-}
-
-.btn-limpiar:hover {
-    background: #e5d8ff;
-    transform: translateY(-2px);
-}
-
-/* ===== FILTROS CONTAINER (color sólido #a391e9) ===== */
-.filtros-container {
-    background: var(--color-primario-claro);
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 30px;
-}
-
-.filtros-container h3 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 1.3rem;
-}
-
-.filtros-container .grupo-filtro label {
-    color: white;
-}
-
-.filtros-container select,
-.filtros-container input {
-    background: white;
-    border: none;
-    border-radius: 10px;
-}
-
-.filtros-container select:focus,
-.filtros-container input:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-}
-
-/* ===== SECCIÓN DE MASCOTAS DISPONIBLES ===== */
-.seccion-mascotas {
-    background: rgba(163, 145, 233, 0.06);
-    border-radius: 20px;
-    padding: 30px;
-    margin-top: 20px;
-}
-
-.encabezado-mascotas {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.encabezado-mascotas h2 {
-    color: var(--color-primario-oscuro);
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.contador-resultados {
-    color: #8b77d6;
-    background: var(--color-blanco);
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* ===== MASCOTAS CONTAINER (fondo más bajito) ===== */
-.mascotas-container {
-    background: rgba(163, 145, 233, 0.08);
-    border-radius: 16px;
-    padding: 25px;
-}
-
-/* Versión con color sólido más claro */
-.mascotas-container-solid {
-    background: #f5f0ff;
-    border-radius: 16px;
-    padding: 25px;
-}
-
-/* ===== TARJETAS DE MASCOTAS ===== */
 .mascotas-grid {
+
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+
+    grid-template-columns:
+        repeat(auto-fill, minmax(340px, 1fr));   /* 🔥 AQUI ESTA LA MAGIA */
+
     gap: 30px;
 }
 
+/* ===== TARJETAS DE MASCOTAS ===== */
+
 .mascota-tarjeta {
-    background: var(--color-blanco);
-    border-radius: 16px;
+
+    background-color: var(--color-blanco);
+    border-radius: var(--borde-redondo);
     overflow: hidden;
-    transition: var(--transicion);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(163, 145, 233, 0.2);
+    border: 2px solid var(--color-borde);
+
+    transition: 
+        transform .5s ease,
+        box-shadow .5s ease;
+
     max-width: 360px;
     width: 100%;
     margin: 0 auto;
+
     display: flex;
     flex-direction: column;
 }
 
 .mascota-tarjeta:hover {
+
     transform: translateY(-8px);
     box-shadow: 0 12px 25px rgba(0,0,0,0.18);
-    border-color: rgba(163, 145, 233, 0.4);
 }
 
+
+/* ===== IMAGEN ===== */
+
 .mascota-imagen {
+
     position: relative;
     height: 170px;
     background-color: #eee;
@@ -650,75 +497,87 @@ p {
 }
 
 .mascota-imagen img {
+
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
+
+/* ===== ETIQUETA ===== */
+
 .mascota-etiqueta {
+
     position: absolute;
     top: 12px;
     right: 12px;
+
     padding: 6px 14px;
     border-radius: 20px;
+
     font-size: .8rem;
     font-weight: 600;
 }
 
-.mascota-etiqueta.disponible {
-    background: var(--color-disponible);
-    color: white;
-}
 
-.mascota-etiqueta.proceso {
-    background: var(--color-proceso);
-    color: white;
-}
-
-.mascota-etiqueta.adoptado {
-    background: var(--color-adoptado);
-    color: white;
-}
+/* ===== INFO ===== */
 
 .mascota-info {
+
     padding: 18px;
+
     display: flex;
     flex-direction: column;
     gap: 10px;
+
     flex-grow: 1;
 }
 
 .mascota-nombre {
+
     font-size: 1.25rem;
     margin: 0;
     color: var(--color-primario-oscuro);
 }
 
+
+/* ===== DETALLES ===== */
+
 .mascota-detalles {
+
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
 
 .detalle {
+
     background-color: var(--color-primario-claro);
     padding: 4px 12px;
     border-radius: 14px;
     font-size: .85rem;
 }
 
+
+/* ===== DESCRIPCIÓN ===== */
+
 .mascota-descripcion {
+
     font-size: .9rem;
     color: var(--color-texto-claro);
     line-height: 1.4;
 }
 
+
+/* ===== BOTÓN ===== */
+
 .mascota-info .btn {
+
     margin-top: auto;
 }
 
-/* ===== FILTROS ORIGINAL ===== */
+/* ===== FILTROS ===== */
 .filtros-seccion {
     background-color: var(--color-blanco);
     padding: 30px 0;
@@ -1320,11 +1179,6 @@ p {
     animation: fadeIn 0.3s ease;
 }
 
-@keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
 /* ===== UTILIDADES ===== */
 .texto-centrado {
     text-align: center;
@@ -1360,29 +1214,6 @@ p {
     padding: 40px;
     color: var(--color-error);
     font-size: 1.1rem;
-}
-
-/* ===== NAVBAR IGUALADO ===== */
-.enlaces-nav {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.enlace {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    padding: 0 15px;
-}
-
-.btn-outline,
-.btn-primario {
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1477,31 +1308,6 @@ p {
     .creador-imagen {
         height: 200px;
     }
-    
-    .seccion-filtros {
-        padding: 20px;
-    }
-    
-    .seccion-mascotas {
-        padding: 20px;
-    }
-    
-    .encabezado-mascotas h2 {
-        font-size: 1.4rem;
-    }
-    
-    .botones-filtro {
-        flex-direction: column;
-    }
-    
-    .filtros-container {
-        padding: 20px;
-    }
-    
-    .mascotas-container,
-    .mascotas-container-solid {
-        padding: 20px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -1548,3 +1354,31 @@ p {
         font-size: 1rem;
     }
 }
+
+/* ===== NAVBAR IGUALADO ===== */
+
+.enlaces-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.enlace {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;          /* MISMA ALTURA */
+    padding: 0 15px;
+}
+
+.btn-outline,
+.btn-primario {
+    height: 40px;          /* BOTONES MISMA ALTURA */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
