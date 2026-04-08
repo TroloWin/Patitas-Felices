@@ -5,7 +5,7 @@
     --color-fondo: #d7cff7;
     --color-primario: #9b87f5;
     --color-primario-oscuro: #7c6ac4;
-    --color-primario-claro: #e5deff;
+    --color-primario-claro: #bd7f93;
     --color-blanco: #ffffff;
     --color-texto: #333333;
     --color-texto-claro: #666666;
@@ -302,7 +302,7 @@
 }
 
 .tabla-admin th {
-    background: var(--color-primario);
+    background: #bd7f93;
     color: white;
     padding: 12px;
     text-align: left;

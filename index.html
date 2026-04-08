@@ -54,13 +54,13 @@
                     <p>Elige una categoría para ver las mascotas disponibles</p>
                 </div>
                 <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
-                    <a href="adoptar.html?especie=perro" class="tipo-opcion" id="tipo-perro"
+                    <a href="adoptar.html" class="tipo-opcion" id="tipo-perro"
                        style="width:200px;padding:20px 16px 16px;border-radius:14px;border:2px solid #c9bcf2;text-decoration:none;text-align:center;background:#ffffff;box-shadow:0 2px 10px rgba(155,135,245,0.12);transition:all 0.25s;display:block;">
                         <span style="font-size:2.8rem;display:block;margin-bottom:10px;">🐕</span>
                         <h3 style="color:var(--color-primario-oscuro);font-size:1.05rem;margin-bottom:5px;">Perros</h3>
                         <p style="color:var(--color-texto-claro);font-size:0.82rem;margin:0;">Leales, juguetones y llenos de amor incondicional</p>
                     </a>
-                    <a href="adoptar.html?especie=gato" class="tipo-opcion" id="tipo-gato"
+                    <a href="adoptar.html" class="tipo-opcion" id="tipo-gato"
                        style="width:200px;padding:20px 16px 16px;border-radius:14px;border:2px solid #c9bcf2;text-decoration:none;text-align:center;background:#ffffff;box-shadow:0 2px 10px rgba(155,135,245,0.12);transition:all 0.25s;display:block;">
                         <span style="font-size:2.8rem;display:block;margin-bottom:10px;">🐈</span>
                         <h3 style="color:var(--color-primario-oscuro);font-size:1.05rem;margin-bottom:5px;">Gatos</h3>
@@ -445,13 +445,13 @@
                             <div style="padding:12px;">
                                 <div style="font-weight:bold;font-size:1rem;margin-bottom:4px;">${emoji} ${mascota.nombre}</div>
                                 <div style="font-size:0.75rem;color:#666;margin-bottom:8px;">${mascota.especie} · ${mascota.raza}</div>
-                                <span style="display:inline-block;background:#f0e8ff;color:#6b4c9e;font-size:0.7rem;padding:3px 10px;border-radius:15px;">🏠 Disponible</span>
+                                <span style="display:inline-block;background:#f0e8ff;color:#6b4c9e;font-size:0.7rem;padding:3px 10px;border-radius:15px;">Disponible</span>
                             </div>
                         </div>
                     `;
                 }).join('');
                 
-                console.log('✅ Mascotas destacadas cargadas correctamente:', mascotasDestacadas.length);
+                console.log('Mascotas destacadas cargadas correctamente:', mascotasDestacadas.length);
             } else {
                 console.error('La función obtenerMascotasDestacadas no está disponible');
                 grid.innerHTML = '<p style="text-align:center;width:100%;padding:40px;color:red;">Error: funciones no cargadas</p>';
