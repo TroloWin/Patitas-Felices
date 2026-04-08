@@ -1,0 +1,25 @@
+1. Abrir dos
+
+2. Abrir proyecto:
+   cd C:\Users\trolo\OneDrive\Documentos\GitHub\Adop
+   
+3. Iniciar servidor:
+   python -m http.server 8080
+   
+4. Verificar:
+   Abrir navegador → http://localhost:8080
+
+5. Abrir otro dos
+
+6. Abrir ngrok:
+   cd C:\ngrok
+   
+7. Iniciar ngrok:
+   ngrok http 8080
+
+8. Copiar link:
+   Forwarding https://XXXX-XXXX-XX.ngrok-free.app
+
+9. Monitoreo:
+   http://localhost:4040
+
