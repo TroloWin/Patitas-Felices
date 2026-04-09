@@ -75,7 +75,7 @@ h3 {
 
 p {
     margin-bottom: 15px;
-    color: var(--color-texto-claro);
+    color: var(--color-blanco);
 }
 
 /* ===== HEADER Y NAVEGACION ===== */
@@ -117,7 +117,7 @@ p {
 .logo-texto {
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--color-primario);
+    color: var(--color-primario-oscuro);
 }
 
 .enlaces-nav {
@@ -1084,6 +1084,12 @@ p {
     color: var(--color-blanco);
     padding: 60px 0 20px;
     margin-top: 60px;
+}
+.pie-pagina .logo-texto {
+    font-weight: bold;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-blanco);
 }
 
 .footer-grid {
