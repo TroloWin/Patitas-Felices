@@ -314,7 +314,7 @@
 }
 
 .tabla-admin tr:hover {
-    background-color: var(--color-tabla-hover);
+    background-color: var(--color-primario-claro);
 }
 
 .tabla-admin .acciones {
