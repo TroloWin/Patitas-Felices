@@ -5,7 +5,7 @@
     --color-primario-oscuro: #7c6ac4;
     --color-primario-claro: #e5deff;
     --color-tabla-header: #bd7f93;  /* ← Nueva variable */
-    --color-tabla-hover: #f5e6eb;   /* ← Nueva variable */
+    --color-tabla-hover: #fbeff3;   /* ← Nueva variable */
     --color-blanco: #ffffff;
     --color-texto: #333333;
     --color-texto-claro: #666666;
@@ -314,7 +314,7 @@
 }
 
 .tabla-admin tr:hover {
-    background-color: var(--color-primario-claro);
+    background-color: var(--color-tabla-hover);
 }
 
 .tabla-admin .acciones {
