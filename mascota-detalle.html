@@ -991,23 +991,19 @@
                     btn.textContent = 'Enviar solicitud ✓'; btn.disabled = false; return;
                 }
 
-                // Subir INE a Firebase Storage (con timeout para no bloquear)
-                let ineUrl = '', ineNombre = archivoINE.name;
+                // Convertir INE a Base64 para guardarlo directo en Firestore
+                // (No requiere Firebase Storage ni permisos especiales)
+                let ineUrl = '', ineNombre = archivoINE.name, ineBase64 = '';
                 try {
-                    if (typeof firebase.storage === 'function') {
-                        const storage = firebase.storage();
-                        const ts  = Date.now();
-                        const nom = archivoINE.name.replace(/[^a-zA-Z0-9.]/g,'_');
-                        const storageRef = storage.ref(`ines/${user.uid}_${ts}_${nom}`);
-                        const uploadPromise = storageRef.put(archivoINE);
-                        const timeoutPromise = new Promise((_, reject) =>
-                            setTimeout(() => reject(new Error('Timeout')), 15000)
-                        );
-                        const snap = await Promise.race([uploadPromise, timeoutPromise]);
-                        ineUrl = await snap.ref.getDownloadURL();
-                    }
+                    ineBase64 = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload  = e => resolve(e.target.result); // data:image/...;base64,...
+                        reader.onerror = () => reject(new Error('Error leyendo archivo'));
+                        reader.readAsDataURL(archivoINE);
+                    });
+                    ineUrl = ineBase64; // La URL ES el Base64 — funciona directo en <img src>
                 } catch(se) {
-                    console.warn('No se pudo subir el INE, continuando sin URL:', se.message);
+                    console.warn('No se pudo leer el INE:', se.message);
                 }
 
                 // Guardar solicitud completa en Firestore
@@ -1027,7 +1023,7 @@
                         razon:       motivacion,
                         experiencia: document.getElementById('sol_experiencia').value.trim()
                     },
-                    ine: { url: ineUrl, nombre: ineNombre },
+                    ine: { url: ineUrl, base64: ineBase64, nombre: ineNombre },
                     mascota: { nombre: mascotaActual.nombre, especie: mascotaActual.especie, imagen: mascotaActual.imagen || '' }
                 });
 
