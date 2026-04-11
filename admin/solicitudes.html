@@ -17,7 +17,7 @@
         }
         
         .mascota-header {
-            background: #bd7f93;
+            background: #a07fe9;
             color: white;
             padding: 12px 15px;
             font-weight: bold;
@@ -356,6 +356,17 @@
     </div>
 
     <!-- MODAL DETALLE DE SOLICITUD -->
+    <!-- Modal para ver INE ampliado -->
+    <div id="modalVerINE" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;">
+        <button onclick="cerrarModalINE()" style="position:absolute;top:20px;right:24px;background:none;border:none;color:white;font-size:2.5rem;cursor:pointer;line-height:1;">×</button>
+        <img id="modalVerINEImg" src="" alt="INE ampliado"
+             style="max-width:90vw;max-height:80vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.6);" />
+        <button onclick="descargarINE()"
+                style="margin-top:18px;background:var(--color-primario);color:white;border:none;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:0.95rem;font-weight:600;">
+             Descargar INE
+        </button>
+    </div>
+
     <div id="modalDetalle" class="modal">
         <div class="modal-detalle-contenido">
             <div class="modal-detalle-header">
@@ -633,9 +644,17 @@
 
                 let ineHtml = '';
                 if (s.ine?.url) {
+                    const esBase64 = s.ine.url.startsWith('data:');
+                    if (esBase64) window._ineBase64Actual = s.ine.url;
                     ineHtml = `<div class="ine-preview-admin">
-                        <img src="${s.ine.url}" alt="INE" onclick="window.open('${s.ine.url}','_blank')" title="Click para ampliar" />
-                        <br><a href="${s.ine.url}" target="_blank"> Ver INE completo</a>
+                        <img src="${s.ine.url}" alt="INE"
+                             onclick="abrirModalINE('${esBase64 ? 'BASE64' : s.ine.url}', ${esBase64})"
+                             title="Click para ampliar" style="cursor:zoom-in;" />
+                        <br>
+                        <button onclick="abrirModalINE('${esBase64 ? 'BASE64' : s.ine.url}', ${esBase64})"
+                                style="margin-top:8px;background:var(--color-primario);color:white;padding:6px 14px;border-radius:20px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;">
+                             Ver INE ampliado
+                        </button>
                     </div>`;
                 } else if (s.ine?.nombre) {
                     ineHtml = `<div class="sin-ine-msg"> Archivo: ${s.ine.nombre} (pendiente de subida al servidor)</div>`;
@@ -701,6 +720,33 @@
                 alert('Error al cargar el detalle de la solicitud.');
             }
         };
+        // ===== NUEVO: Modal INE ampliado (compatible con Base64) =====
+        window._ineBase64Actual = '';
+
+        window.abrirModalINE = function(urlOrFlag, esBase64) {
+            const modal = document.getElementById('modalVerINE');
+            const img   = document.getElementById('modalVerINEImg');
+            img.src = esBase64 ? window._ineBase64Actual : urlOrFlag;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.cerrarModalINE = function() {
+            document.getElementById('modalVerINE').style.display = 'none';
+            document.body.style.overflow = '';
+        };
+
+        window.descargarINE = function() {
+            const src = document.getElementById('modalVerINEImg').src;
+            const a   = document.createElement('a');
+            a.href = src; a.download = 'INE_solicitante.jpg'; a.click();
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('modalVerINE').addEventListener('click', function(e) {
+                if (e.target === this) cerrarModalINE();
+            });
+        });
     </script>
 </body>
 </html>
