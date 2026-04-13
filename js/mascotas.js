@@ -139,17 +139,14 @@ async function obtenerMascotaPorId(id) {
 async function obtenerMascotasDestacadas(limite = 5) {
     try {
         console.log('Obteniendo mascotas destacadas, limite:', limite);
-        
         // Obtener todas las mascotas disponibles
         const mascotasSnap = await db.collection('mascotas')
             .where('estado', '==', 'disponible')
             .get();
-        
         if (mascotasSnap.empty) {
             console.log('No hay mascotas disponibles');
             return [];
         }
-        
         // Intentar obtener solicitudes (puede fallar si no hay datos)
         let conteoSolicitudes = {};
         try {
@@ -183,22 +180,16 @@ async function obtenerMascotasDestacadas(limite = 5) {
                 solicitudes: conteoSolicitudes[doc.id] || 0,
                 fechaRegistro: data.fechaRegistro
             };
-            
             // Asignar la ruta correcta de la imagen
             mascota.imagenUrl = obtenerRutaImagen(mascota);
-            
             mascotas.push(mascota);
         });
-        
         // Ordenar por número de solicitudes (mayor a menor)
         mascotas.sort((a, b) => b.solicitudes - a.solicitudes);
-        
         // Tomar las primeras 'limite' mascotas
         mascotas = mascotas.slice(0, limite);
-        
         console.log('Mascotas destacadas obtenidas:', mascotas.length);
         return mascotas;
-        
     } catch (error) {
         console.error('Error al obtener mascotas destacadas:', error);
         return [];
